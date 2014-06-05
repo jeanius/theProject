@@ -1,0 +1,146 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    tools:context=".MainActivity" >
+    
+	<ScrollView  
+    	android:id="@+id/ScrollVertical"
+    	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:layout_alignParentRight="true">
+    
+			<LinearLayout
+	   			android:id="@+id/register_frame"
+	   			android:orientation="vertical"
+	   			android:layout_width="fill_parent"
+        		android:layout_height="wrap_content">
+        	
+		       	<Button 
+		         	android:text="@string/zero" android:id="@+id/register0"
+           		 	android:layout_width="wrap_content" android:layout_height="wrap_content"
+         		 	android:layout_gravity="center">
+      		   	</Button>
+      		  
+		       	<Button 
+		       	  	android:text="@string/zero" android:id="@+id/register1"
+           		  	android:layout_width="wrap_content" android:layout_height="wrap_content"
+         		  	android:layout_gravity="center">
+      		   	</Button>
+      		  
+		       	<Button 
+		          	android:text="@string/zero" android:id="@+id/register2"
+           		  	android:layout_width="wrap_content" android:layout_height="wrap_content"
+         		  	android:layout_gravity="center">
+      		   	</Button>
+      		  
+		       	<Button 
+		          	android:text="@string/zero" android:id="@+id/register3"
+           		  	android:layout_width="wrap_content" android:layout_height="wrap_content"
+         		  	android:layout_gravity="center">
+      		   	</Button>
+      		  
+		       	<Button 
+		          	android:text="@string/zero" android:id="@+id/register4"
+           		  	android:layout_width="wrap_content" android:layout_height="wrap_content"
+         		  	android:layout_gravity="center">
+      		   	</Button>
+      		  
+		       	<Button 
+		          	android:text="@string/zero" android:id="@+id/register5"
+           		  	android:layout_width="wrap_content" android:layout_height="wrap_content"
+         		  	android:layout_gravity="center">
+      		   	</Button>
+      		  
+		       	<Button 
+		          	android:text="@string/zero" android:id="@+id/register6"
+           		  	android:layout_width="wrap_content" android:layout_height="wrap_content"
+         		  	android:layout_gravity="center">
+      		   	</Button>
+      		  
+		       	<Button 
+		          	android:text="@string/zero" android:id="@+id/register7"
+           		  	android:layout_width="wrap_content" android:layout_height="wrap_content"
+         		  	android:layout_gravity="center">
+      		   	</Button>
+      		  
+		       	<Button 
+		          	android:text="@string/zero" android:id="@+id/register8"
+           		  	android:layout_width="wrap_content" android:layout_height="wrap_content"
+         		  	android:layout_gravity="center">
+      		   	</Button>
+      		  
+		       	<Button 
+		          	android:text="@string/zero" android:id="@+id/register9"
+           		  	android:layout_width="wrap_content" android:layout_height="wrap_content"
+         		  	android:layout_gravity="center">
+      		   	</Button>
+      		  
+		       	<Button 
+		          	android:text="@string/zero" android:id="@+id/register10"
+           		  	android:layout_width="wrap_content" android:layout_height="wrap_content"
+         		  	android:layout_gravity="center">
+      		   	</Button>
+       
+   			</LinearLayout>
+	</ScrollView>
+		
+		
+	<LinearLayout
+    	android:id="@+id/centre_frame"
+		android:orientation="vertical"
+		android:layout_width="fill_parent"
+    	android:layout_height="fill_parent">	
+        	
+			<Button 
+				android:text="@string/one" 
+		    	android:id="@+id/randomText"
+           		android:layout_width="wrap_content" 
+           		android:layout_height="wrap_content"
+         		android:layout_gravity="center">
+      		</Button>
+	</LinearLayout>
+		 
+		
+	<LinearLayout
+	   	android:id="@+id/bottom_frame"
+	   	android:orientation="vertical"
+	   	android:layout_width="fill_parent"
+        android:layout_height="fill_parent">	
+        	
+		    <Button
+		        android:text="@string/box" 
+				android:id="@+id/new_box_button"
+           		android:layout_width="wrap_content" 
+           		android:layout_height="wrap_content"
+         		android:layout_gravity="center">
+      		</Button>
+      		
+		    <Button 
+		        android:text="@string/arrow"
+				android:id="@+id/new_arrow_button"
+           		android:layout_width="wrap_content" 
+           		android:layout_height="wrap_content"
+         		android:layout_gravity="center">
+      		</Button>
+      		
+		    <Button 
+		        android:text="@string/end"
+				android:id="@+id/new_end_button"
+           		android:layout_width="wrap_content" 
+           		android:layout_height="wrap_content"
+         		android:layout_gravity="center">
+      		</Button>
+      		
+		    <Button 
+		        android:text="@string/run"
+				android:id="@+id/new_end_button"
+           		android:layout_width="wrap_content" 
+           		android:layout_height="wrap_content"
+         		android:layout_gravity="center">
+      		</Button>
+		    
+	</LinearLayout>
+		
+</RelativeLayout>

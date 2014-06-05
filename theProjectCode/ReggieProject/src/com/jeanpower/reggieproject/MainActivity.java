@@ -32,4 +32,9 @@ public class MainActivity extends Activity {
       super.onConfigurationChanged(newConfig);
     }
     
+   // public void onStart(){
+    	
+    	//called straight after oncreate
+   // }
+    
 }

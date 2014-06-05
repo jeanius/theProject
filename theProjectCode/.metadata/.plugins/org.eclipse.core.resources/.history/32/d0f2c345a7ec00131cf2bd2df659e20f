@@ -1,0 +1,104 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:weightSum="10.0"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".MainActivity" >
+    
+<ScrollView  
+    android:id="@+id/ScrollVertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_alignParentRight>
+    
+		<RelativeLayout
+	   		android:id="@+id/register_frame"
+	   		android:orientation="vertical"
+	   		android:layout_width="fill_parent"
+        	android:layout_height="wrap_content"
+        	>
+        	
+		       <Button 
+		         android:text="@string/zero" android:id="@+id/register0"
+           		 android:layout_width="wrap_content" android:layout_height="wrap_content"
+         		 android:layout_gravity="center">
+      		  </Button>
+      		  
+		       	<Button 
+		       	  android:text="@string/zero" android:id="@+id/register1"
+           		  android:layout_width="wrap_content" android:layout_height="wrap_content"
+         		  android:layout_gravity="center">
+      		  </Button>
+      		  
+		       <Button 
+		          android:text="@string/zero" android:id="@+id/register2"
+           		  android:layout_width="wrap_content" android:layout_height="wrap_content"
+         		  android:layout_gravity="center">
+      		  </Button>
+      		  
+		      <Button 
+		          android:text="@string/zero" android:id="@+id/register3"
+           		  android:layout_width="wrap_content" android:layout_height="wrap_content"
+         		  android:layout_gravity="center">
+      		  </Button>
+      		  
+		      <Button 
+		          android:text="@string/zero" android:id="@+id/register4"
+           		  android:layout_width="wrap_content" android:layout_height="wrap_content"
+         		  android:layout_gravity="center">
+      		  </Button>
+      		  
+		      <Button 
+		          android:text="@string/zero" android:id="@+id/register5"
+           		  android:layout_width="wrap_content" android:layout_height="wrap_content"
+         		  android:layout_gravity="center">
+      		  </Button>
+      		  
+		      <Button 
+		          android:text="@string/zero" android:id="@+id/register6"
+           		  android:layout_width="wrap_content" android:layout_height="wrap_content"
+         		  android:layout_gravity="center">
+      		  </Button>
+      		  
+		      <Button 
+		          android:text="@string/zero" android:id="@+id/register7"
+           		  android:layout_width="wrap_content" android:layout_height="wrap_content"
+         		  android:layout_gravity="center">
+      		  </Button>
+      		  
+		      <Button 
+		          android:text="@string/zero" android:id="@+id/register8"
+           		  android:layout_width="wrap_content" android:layout_height="wrap_content"
+         		  android:layout_gravity="center">
+      		  </Button>
+      		  
+		      <Button 
+		          android:text="@string/zero" android:id="@+id/register9"
+           		  android:layout_width="wrap_content" android:layout_height="wrap_content"
+         		  android:layout_gravity="center">
+      		  </Button>
+      		  
+		      <Button 
+		          android:text="@string/zero" android:id="@+id/register10"
+           		  android:layout_width="wrap_content" android:layout_height="wrap_content"
+         		  android:layout_gravity="center">
+      		  </Button>
+       
+   		</RelativeLayout>
+</ScrollView>
+		
+		
+		<LinearLayout
+	   		android:id="@+id/centre_frame"
+	   		android:orientation="vertical"
+	   		android:layout_width="fill_parent"
+        	android:layout_height="fill_parent"
+        	android:layout_weight="6">	
+		</LinearLayout>
+		
+</RelativeLayout>
