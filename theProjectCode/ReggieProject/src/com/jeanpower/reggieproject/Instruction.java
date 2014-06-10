@@ -1,7 +1,7 @@
 package com.jeanpower.reggieproject;
 
 public interface Instruction {
-	
+
 	public void dowork();
 	public void setSucc(Instruction successor);
 	public Instruction getSucc();

@@ -1,0 +1,15 @@
+package com.jeanpower.reggieproject;
+
+public class gameTest {
+
+	
+	public static void main (String [] args){
+		 MainActivity a = new MainActivity();
+		 
+		 Game g = new Game(a);
+		 
+		 for (int i = 0; i<10; i++){
+			 System.out.println(g.getRegData(i));
+		 }
+	}
+}

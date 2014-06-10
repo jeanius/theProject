@@ -7,16 +7,24 @@ import android.content.res.Configuration;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.Menu;
+import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
 public class MainActivity extends Activity {
+	
+	private Game game;
+	final int MAXREGISTERS = 10;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
        super.onCreate(savedInstanceState);
-       setContentView(R.layout.activity_main);
+       
+       setContentView(R.layout.activity_main); 
     }
 
     @Override
@@ -32,9 +40,28 @@ public class MainActivity extends Activity {
       super.onConfigurationChanged(newConfig);
     }
     
-   // public void onStart(){
+    public void onStart(){
     	
-    	//called straight after oncreate
-   // }
+    	game = new Game(this);
+   }
     
+    public void setRegisters(){
+        
+        for (int i = 0; i<MAXREGISTERS; i++){
+        	
+        	String regName = ("register" + i);
+        
+        	int resID = getResources().getIdentifier(regName, "id", getPackageName()); //Get register button unique resource ID
+        
+        	Button but = ((Button) findViewById(resID));
+        	
+        	Log.d("here", game.getRegData(0) + "");
+        	String data = game.getRegData(i) + "";
+        	but.setText(data);
+        }
+    }
+    
+    public int getMaxReg(){
+    	return MAXREGISTERS;
+    }
 }

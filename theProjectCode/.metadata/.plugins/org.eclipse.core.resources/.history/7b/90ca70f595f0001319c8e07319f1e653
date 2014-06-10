@@ -1,0 +1,181 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity" >
+    
+	<ScrollView  
+    	android:id="@+id/ScrollVertical"
+    	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:layout_alignParentLeft="true">
+    
+			<LinearLayout
+	   			android:id="@+id/register_frame"
+	   			android:orientation="vertical"
+	   			android:layout_width="match_parent"
+        		android:layout_height="wrap_content">
+        	
+		       	<Button 
+		         	android:text="@string/zero" 
+		         	android:id="@+id/register0"
+           		 	android:layout_width="wrap_content" 
+           		 	android:layout_height="wrap_content"
+         		 	android:layout_gravity="center"
+       				android:background="@color/teal">
+      		   	</Button>
+      		  
+		       	<Button 
+		       	  	android:text="@string/zero" 
+		       	  	android:id="@+id/register1"
+           		  	android:layout_width="wrap_content" 
+           		  	android:layout_height="wrap_content"
+         		  	android:layout_gravity="center"
+         		  	android:background="@color/red">
+      		   	</Button>
+      		  
+		       	<Button 
+		          	android:text="@string/zero" 
+		          	android:id="@+id/register2"
+           		  	android:layout_width="wrap_content" 
+           		  	android:layout_height="wrap_content"
+         		  	android:layout_gravity="center"
+         		  	android:background="@color/orange">
+      		   	</Button>
+      		  
+		       	<Button 
+		          	android:text="@string/zero" 
+		          	android:id="@+id/register3"
+           		  	android:layout_width="wrap_content" 
+           		  	android:layout_height="wrap_content"
+         		  	android:layout_gravity="center"
+         		  	android:background="@color/magenta">
+      		   	</Button>
+      		  
+		       	<Button 
+		          	android:text="@string/zero" 
+		          	android:id="@+id/register4"
+           		  	android:layout_width="wrap_content" 
+           		  	android:layout_height="wrap_content"
+         		  	android:layout_gravity="center"
+         		  	android:background="@color/green">
+      		   	</Button>
+      		  
+		       	<Button 
+		          	android:text="@string/zero" 
+		          	android:id="@+id/register5"
+           		  	android:layout_width="wrap_content" 
+           		  	android:layout_height="wrap_content"
+         		  	android:layout_gravity="center"
+         		  	android:background="@color/blue">
+      		   	</Button>
+      		  
+		       	<Button 
+		          	android:text="@string/zero" 
+		          	android:id="@+id/register6"
+           		  	android:layout_width="wrap_content" 
+           		  	android:layout_height="wrap_content"
+         		  	android:layout_gravity="center"
+         		  	android:background="@color/yellow">
+      		   	</Button>
+      		  
+		       	<Button 
+		          	android:text="@string/zero" 
+		          	android:id="@+id/register7"
+           		  	android:layout_width="wrap_content" 
+           		  	android:layout_height="wrap_content"
+         		  	android:layout_gravity="center"
+         		  	android:background="@color/purple">
+      		   	</Button>
+      		  
+		       	<Button 
+		          	android:text="@string/zero" 
+		          	android:id="@+id/register8"
+           		  	android:layout_width="wrap_content" 
+           		  	android:layout_height="wrap_content"
+         		  	android:layout_gravity="center"
+         		  	android:background="@color/pink">
+      		   	</Button>
+      		  
+		       	<Button 
+		          	android:text="@string/zero" 
+		          	android:id="@+id/register9"
+           		  	android:layout_width="wrap_content" 
+           		  	android:layout_height="wrap_content"
+         		  	android:layout_gravity="center"
+         		  	android:background="@color/brown">
+      		   	</Button>
+       
+   			</LinearLayout>
+	</ScrollView>
+	
+
+	<RelativeLayout
+	   	android:id="@+id/bottom_frame"
+	   	android:orientation="vertical"
+	   	android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/ScrollVertical">	
+        	
+		    <Button
+		        android:text="@string/box" 
+				android:id="@+id/new_box_button"
+           		android:layout_width="wrap_content" 
+           		android:layout_height="wrap_content"
+         		android:layout_gravity="center"
+         		android:layout_alignParentLeft="true"
+         		android:layout_alignParentBottom="true">
+      		</Button>
+      		
+		    <Button 
+		        android:text="@string/arrow"
+				android:id="@+id/new_arrow_button"
+           		android:layout_width="wrap_content" 
+           		android:layout_height="wrap_content"
+         		android:layout_gravity="center"
+         		android:layout_toRightOf="@+id/new_box_button"
+         		android:layout_alignParentBottom="true">
+      		</Button>
+      		
+		    <Button 
+		        android:text="@string/end"
+				android:id="@+id/new_end_button"
+           		android:layout_width="wrap_content" 
+           		android:layout_height="wrap_content"
+         		android:layout_gravity="center"
+         		android:layout_toRightOf="@+id/new_arrow_button"
+         		android:layout_alignParentBottom="true">
+      		</Button>
+      		
+		    <Button 
+		        android:text="@string/run"
+				android:id="@+id/new_run_button"
+           		android:layout_width="wrap_content" 
+           		android:layout_height="wrap_content"
+         		android:layout_gravity="center"
+         		android:layout_alignParentRight="true"
+         		android:layout_alignParentBottom="true">
+      		</Button>
+		    
+	</RelativeLayout>
+	
+	<HorizontalScrollView
+	    android:id="@+id/scrollHorizontal"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:layout_toRightOf="@id/ScrollVertical"
+	    android:fillViewport="true">
+
+			<View
+				android:id="@+id/theLine"
+				android:layout_width="wrap_content"
+				android:layout_height="2dp"
+				android:background="@drawable/gradient"
+				android:layout_gravity="center">
+		       
+			</View>
+	</HorizontalScrollView>
+		
+</RelativeLayout>
+

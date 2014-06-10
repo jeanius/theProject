@@ -6,10 +6,30 @@ public class Box implements Instruction{
 	private Game caller;
 	private Instruction succ;
 	private Instruction pred;
+	private boolean inc;
+	
+	public Box(Game g){
+		 
+		inc = true;
+		register = 0;
+		caller = g;
+
+	}
 
 	@Override
 	public void dowork() {
-		// TODO Auto-generated method stub
+		
+		int currentData = caller.getRegData(register);
+		
+		if (inc)
+		{
+			caller.setRegData(register, currentData++);
+		}
+		
+		else 
+		{
+			caller.setRegData(register, currentData--);
+		}
 	}
 
 	@Override

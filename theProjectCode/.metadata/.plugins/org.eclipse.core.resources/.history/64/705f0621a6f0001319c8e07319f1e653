@@ -1,0 +1,46 @@
+package com.jeanpower.reggieproject;
+
+public class Game {
+	
+	private Instruction first;
+	private Instruction currPos;
+	private int [] registers;
+
+	
+	public Game(){
+		registers = new int [10];
+	}
+
+	public void runGame(){}
+	
+	public void getInstructionSet(){}
+
+	public void updateIns(Object o){}
+	
+	public void delBox(Instruction delete){
+		
+	}
+	public void delArrow(Instruction delete){
+		
+	}
+	public void delEnd(Instruction delete){
+		
+	}
+	public void setCurrPos(Instruction newPos){
+		
+		currPos = newPos;
+		
+	}
+	
+	public int getRegData(int registerNum){
+		
+		return registers[registerNum];
+	}
+	
+	public void setRegData(int registerNum, int data){
+		
+		registers[registerNum] = data;
+		
+	}
+
+}

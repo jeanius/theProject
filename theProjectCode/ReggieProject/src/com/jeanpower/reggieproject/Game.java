@@ -1,14 +1,29 @@
 package com.jeanpower.reggieproject;
 
+import android.app.Activity;
+import android.util.Log;
+
 public class Game {
 	
 	private Instruction first;
 	private Instruction currPos;
 	private int [] registers;
+	private MainActivity activity;
 
 	
-	public Game(){
+	public Game(MainActivity a){
+		activity = a;
 		registers = new int [10];
+		int x = 1;
+		
+		for (int i = 0; i<10; i++)
+		{
+			x = x + 7;
+			registers[i] = x;
+		}
+		
+		
+		activity.setRegisters();
 	}
 
 	public void runGame(){}
@@ -26,15 +41,24 @@ public class Game {
 	public void delEnd(Instruction delete){
 		
 	}
-	public void setCurrPos(Instruction current){
+	public void setCurrPos(Instruction newPos){
+		
+		currPos = newPos;
 		
 	}
 	
-	public void getRegData(int register){
+	public int getRegData(int registerNum){
 		
+		int returnedVal = registers[registerNum];
+		Log.d("here", returnedVal + "");
+		
+		return returnedVal;
 	}
-	public void setRegData(int register, int data){
+	
+	public void setRegData(int registerNum, int data){
 		
+		registers[registerNum] = data;
+		activity.setRegisters();
 	}
 
 }
