@@ -1,6 +1,7 @@
+//Presenter - Gateway to model, provides View with data it needs.
+
 package com.jeanpower.reggieproject;
 
-import android.app.Activity;
 import android.util.Log;
 
 public class Game {
@@ -13,20 +14,18 @@ public class Game {
 	
 	public Game(MainActivity a){
 		activity = a;
-		registers = new int [10];
-		int x = 1;
+		registers = new int [activity.getMaxReg()];
 		
-		for (int i = 0; i<10; i++)
+		for (int i = 0; i<activity.getMaxReg(); i++)
 		{
-			x = x + 7;
-			registers[i] = x;
+			registers[i] = 0;
 		}
 		
-		
-		activity.setRegisters();
 	}
 
-	public void runGame(){}
+	public void runGame(){
+	
+	}
 	
 	public void getInstructionSet(){}
 
@@ -35,12 +34,15 @@ public class Game {
 	public void delBox(Instruction delete){
 		
 	}
+	
 	public void delArrow(Instruction delete){
 		
 	}
+	
 	public void delEnd(Instruction delete){
 		
 	}
+	
 	public void setCurrPos(Instruction newPos){
 		
 		currPos = newPos;
@@ -49,16 +51,25 @@ public class Game {
 	
 	public int getRegData(int registerNum){
 		
-		int returnedVal = registers[registerNum];
-		Log.d("here", returnedVal + "");
-		
-		return returnedVal;
+		return registers[registerNum];
 	}
 	
-	public void setRegData(int registerNum, int data){
+	public void incrementReg(int registerNum){
 		
-		registers[registerNum] = data;
+		int newNum = registers[registerNum]+1;
+		registers[registerNum] = newNum;
 		activity.setRegisters();
 	}
-
+	
+	public void decrementReg(int registerNum){
+		
+		registers[registerNum] = registers[registerNum]--;
+		activity.setRegisters();
+	}
+	
+	public void zeroReg(int registerNum){
+		
+		registers[registerNum] = 0;;
+		activity.setRegisters();
+	}
 }

@@ -1,0 +1,124 @@
+//View - handles UI components and events
+
+package com.jeanpower.reggieproject;
+
+import android.os.Bundle;
+import android.app.Activity;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
+import android.content.res.Configuration;
+import android.text.Layout;
+import android.util.Log;
+import android.view.Menu;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.app.ActionBar;
+
+public class MainActivity extends Activity implements View.OnClickListener, View.OnLongClickListener {
+
+	private Game game;
+	final int MAXREGISTERS = 10;
+	private static final int[] BUTTON_IDS = {
+		R.id.register0,
+		R.id.register1, 
+		R.id.register2,
+		R.id.register3,
+		R.id.register4,
+		R.id.register5, 
+		R.id.register6,
+		R.id.register7,
+		R.id.register8,
+		R.id.register9,
+		R.id.new_box_button,
+		R.id.new_arrow_button,
+		R.id.new_end_button,
+		R.id.run_button};
+
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main); 
+		game = new Game(this);
+
+		int i = 0;       
+		//Add action listeners to 
+		for (int buttonID: BUTTON_IDS){
+
+			Button btn = (Button) findViewById(buttonID);
+			btn.setOnClickListener(this);
+			btn.setTag(i);
+			i++;
+			addListeners(getWindow().getDecorView().findViewById(android.R.id.content));
+			}
+
+	}
+
+	public void addListeners(ViewGroup root){
+
+		for(int i = 0; i <root.getChildCount(); i++) {
+			View v = root.getChildAt(i);
+			if(v instanceof Button ) 
+			{        
+				Button btn = (Button) v;
+				btn.setOnClickListener(this);
+				btn.setTag(i);				
+			}
+			else if(v instanceof ViewGroup) {
+				this.addListeners((ViewGroup) v);
+			}
+
+		}
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.main, menu);
+		return true;
+	}
+
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		// ignore orientation/keyboard change
+		super.onConfigurationChanged(newConfig);
+	}
+
+	@Override
+	public void onStart(){
+		super.onStart();
+	}
+
+	public void setRegisters(){
+
+		for (int i = 0; i<MAXREGISTERS; i++){
+
+			String regName = ("register" + i);
+			int resID = getResources().getIdentifier(regName, "id", getPackageName()); //Get register button unique resource ID
+			Button b = (Button) findViewById(resID);
+			String data = game.getRegData(i) + "";
+			b.setText(data);
+		}
+	}
+
+	public int getMaxReg(){
+		return MAXREGISTERS;
+	}
+
+	@Override
+	public boolean onLongClick(View v) {
+		v.getTag();
+
+		return false;
+	}
+
+	@Override
+	public void onClick(View v) {
+
+		int resid = v.getId();
+		String name = v.getResources().getResourceEntryName(resid);
+
+	}
+}

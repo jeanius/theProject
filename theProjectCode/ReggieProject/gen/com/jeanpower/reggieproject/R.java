@@ -44,7 +44,6 @@ public final class R {
         public static final int new_arrow_button=0x7f09000e;
         public static final int new_box_button=0x7f09000d;
         public static final int new_end_button=0x7f09000f;
-        public static final int new_run_button=0x7f090010;
         public static final int register0=0x7f090002;
         public static final int register1=0x7f090003;
         public static final int register2=0x7f090004;
@@ -56,6 +55,7 @@ public final class R {
         public static final int register8=0x7f09000a;
         public static final int register9=0x7f09000b;
         public static final int register_frame=0x7f090001;
+        public static final int run_button=0x7f090010;
         public static final int scrollHorizontal=0x7f090011;
         public static final int theLine=0x7f090013;
     }
@@ -68,13 +68,11 @@ public final class R {
     public static final class string {
         public static final int action_settings=0x7f060001;
         public static final int app_name=0x7f060000;
-        public static final int arrow=0x7f060005;
-        public static final int box=0x7f060006;
-        public static final int end=0x7f060007;
-        public static final int hello_world=0x7f060002;
-        public static final int one=0x7f060004;
-        public static final int run=0x7f060008;
-        public static final int zero=0x7f060003;
+        public static final int arrow=0x7f060003;
+        public static final int box=0x7f060004;
+        public static final int end=0x7f060005;
+        public static final int run=0x7f060006;
+        public static final int zero=0x7f060002;
     }
     public static final class style {
         /** 

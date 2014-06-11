@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Reggie</string>
+    <string name="zero">0</string>
+	<string name="arrow">Arrow</string>
+    <string name="box">Box</string>
+    <string name="end">End</string>
+    <string name="run">Run</string>
+</resources>

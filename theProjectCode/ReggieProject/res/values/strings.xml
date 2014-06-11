@@ -3,9 +3,7 @@
 
     <string name="app_name">Reggie</string>
     <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
     <string name="zero">0</string>
-    <string name="one">This is where the action happens</string>
 	<string name="arrow">Arrow</string>
     <string name="box">Box</string>
     <string name="end">End</string>

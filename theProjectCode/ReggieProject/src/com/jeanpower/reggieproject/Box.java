@@ -19,16 +19,14 @@ public class Box implements Instruction{
 	@Override
 	public void dowork() {
 		
-		int currentData = caller.getRegData(register);
-		
 		if (inc)
 		{
-			caller.setRegData(register, currentData++);
+			caller.incrementReg(register);
 		}
 		
 		else 
 		{
-			caller.setRegData(register, currentData--);
+			caller.decrementReg(register);
 		}
 	}
 

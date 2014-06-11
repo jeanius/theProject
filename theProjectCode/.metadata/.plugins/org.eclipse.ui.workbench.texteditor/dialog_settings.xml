@@ -15,6 +15,8 @@
 		<item value="false" key="wholeword"/>
 		<item value="" key="selection"/>
 		<list key="findhistory">
+			<item value="onclick"/>
+			<item value="holo"/>
 			<item value="fill"/>
 			<item value="value"/>
 		</list>

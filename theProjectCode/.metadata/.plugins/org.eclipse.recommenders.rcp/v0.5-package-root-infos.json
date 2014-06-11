@@ -1,0 +1,28 @@
+[
+  {
+    "symbolicName": "android",
+    "version": {
+      "major": -1,
+      "minor": -1,
+      "micro": -1,
+      "qualifier": ""
+    },
+    "jarFileFingerprint": "7f972d2aa0fcb741fc84a9a10c98555f6f431a7a",
+    "jarFileModificationDate": "2014-06-11T13:59:52.225+01:00",
+    "location": "C:\\local\\android-sdk\\platforms\\android-19\\android.jar",
+    "javaRuntime": false
+  },
+  {
+    "symbolicName": "android-support-v4",
+    "version": {
+      "major": -1,
+      "minor": -1,
+      "micro": -1,
+      "qualifier": ""
+    },
+    "jarFileFingerprint": "db0f122c99ef9f90dbab3fada6d191f2880cbb8e",
+    "jarFileModificationDate": "2014-06-03T13:16:06.821+01:00",
+    "location": "H:\\workspace\\theProject\\theProjectCode\\ReggieProject\\libs\\android-support-v4.jar",
+    "javaRuntime": false
+  }
+]
