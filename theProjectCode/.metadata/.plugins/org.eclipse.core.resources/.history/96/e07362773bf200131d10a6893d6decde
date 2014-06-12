@@ -1,0 +1,147 @@
+//View - handles UI components and events
+
+package com.jeanpower.reggieproject;
+
+import android.os.Bundle;
+import android.app.Activity;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
+import android.content.res.Configuration;
+import android.gesture.GestureOverlayView.OnGestureListener;
+import android.text.Layout;
+import android.util.Log;
+import android.view.DragEvent;
+import android.view.Menu;
+import android.view.View;
+import android.view.View.OnLongClickListener;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.app.ActionBar;
+
+public class MainActivity extends Activity implements View.OnClickListener, View.OnLongClickListener{
+
+	private Game game;
+	final int MAXREGISTERS = 10;
+
+	
+	/**
+	 * Called when application is opened.                  
+	 * <p>
+	 * Sets the view to first screen, adds register buttons
+	 * Adds listeners to activity buttons
+	 * <p>
+	 * @return void
+	 */
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main); 
+		game = new Game(this);
+		
+		//Array of colours, from color.xml
+		int[] buttonColours = getResources().getIntArray(R.array.rainbow);
+		LinearLayout container = (LinearLayout) findViewById(R.id.register_frame);
+		LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT); 
+		
+		for (int i=0; i<MAXREGISTERS; i++){
+			Button button = new Button(this);
+			button.setText(game.getRegData(i) + ""); //Set initial text to 0
+			button.setId(i);
+			button.setLayoutParams(lp); //For wrap content
+			button.setBackgroundColor(buttonColours[i]);
+			button.setOnClickListener(this);
+			button.setOnLongClickListener(this);
+			container.addView(button); //Add to register frame
+		}
+		
+		//Add listeners to activity buttons. //TODO Is there a better way to do this?
+		
+		Button arrowButton = (Button) findViewById(R.id.new_arrow_button);
+		arrowButton.setOnClickListener(this);
+		
+		Button runButton = (Button) findViewById(R.id.run_button);
+		runButton.setOnClickListener(this);
+		
+		
+	}
+
+	/**
+	 * Inflates the menu and adds items                 
+	 * <p>
+	 * @param Menu. Menu which has items added
+	 * @return boolean
+	 */
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		// TODO Add help, save, return
+		
+		getMenuInflater().inflate(R.menu.main, menu);
+		return true;
+	}
+
+	/**
+	 * To ignore orientation change, so UI is horizontal                   
+	 * <p>
+	 * @return void
+	 */
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
+	}
+
+	@Override
+	public void onStart(){
+		super.onStart();
+	}
+
+	/**
+	 * Iterates through register buttons, getting their data from Game class.                   
+	 * <p>
+	 * @return void
+	 */
+	public void setRegisters(){
+
+		for (int i = 0; i<MAXREGISTERS; i++){
+
+			int resID = i;
+			Button b = (Button) findViewById(resID);
+			String data = game.getRegData(i) + "";
+			b.setText(data);
+		}
+	}
+
+	public int getMaxReg(){
+		return MAXREGISTERS;
+	}
+
+	/**
+	 * Takes click on register button and increments register                     
+	 * <p>
+	 * @param View. The button which has been clicked      
+	 * @return void
+	 */
+	@Override
+	public void onClick(View v) {
+
+		int resid = v.getId();
+		game.incrementReg(resid);
+	}
+
+	/**
+	 * Takes long click on register button and zeros register                      
+	 * <p>
+	 * @param View. Button which has been clicked      
+	 * @return boolean
+	 */
+	@Override
+	public boolean onLongClick(View v) {
+		
+		int resid = v.getId();
+		Log.d("onClick", "listener caught");
+		game.zeroReg(resid);
+		return true;
+	}
+}

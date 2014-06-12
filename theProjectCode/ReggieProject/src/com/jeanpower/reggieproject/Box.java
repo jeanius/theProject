@@ -13,7 +13,8 @@ public class Box implements Instruction{
 		inc = true;
 		register = 0;
 		caller = g;
-
+		succ = null;
+		pred = null;
 	}
 
 	@Override
@@ -33,6 +34,11 @@ public class Box implements Instruction{
 	@Override
 	public void setSucc(Instruction successor) {
 		// TODO Auto-generated method stub
+		
+	}
+	
+	public boolean getType(){
+		return inc;
 		
 	}
 

@@ -8,5 +8,10 @@
     "location": "H:\\workspace\\theProject\\theProjectCode\\ReggieProject\\src",
     "status": "UNRESOLVED",
     "error": "No class path info available for \u0027H:\\workspace\\theProject\\theProjectCode\\ReggieProject\\src\u0027. Skipped."
+  },
+  "H:\\workspace\\theProject\\theProjectCode\\ReggieProject\\gen": {
+    "location": "H:\\workspace\\theProject\\theProjectCode\\ReggieProject\\gen",
+    "status": "UNRESOLVED",
+    "error": "No class path info available for \u0027H:\\workspace\\theProject\\theProjectCode\\ReggieProject\\gen\u0027. Skipped."
   }
 }

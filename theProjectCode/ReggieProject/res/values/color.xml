@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-
+<!-- Button colours -->
 <resources>
-    
      <color name="teal">#009999</color>
      <color name="red">#CC0000</color>
      <color name="orange">#FF9900</color>
@@ -13,5 +12,18 @@
      <color name="purple">#6600CC</color>
      <color name="pink">#E68AE6</color>
      <color name="brown">#993300</color>
-     
+        
+     <array name="rainbow">
+        <item>@color/teal</item>
+        <item>@color/red</item>
+        <item>@color/orange</item>
+        <item>@color/magenta</item>
+        <item>@color/green</item>
+        <item>@color/blue</item>
+        <item>@color/yellow</item>
+        <item>@color/purple</item>
+        <item>@color/pink</item>
+        <item>@color/brown</item>
+    </array>
+    
 </resources>

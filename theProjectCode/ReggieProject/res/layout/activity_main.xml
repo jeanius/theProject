@@ -15,119 +15,55 @@
 	   			android:id="@+id/register_frame"
 	   			android:orientation="vertical"
 	   			android:layout_width="match_parent"
-        		android:layout_height="wrap_content">
-        	
-		       	<Button 
-		         	android:text="@string/zero" 
-		         	android:id="@+id/register0"
-           		 	android:layout_width="wrap_content" 
-           		 	android:layout_height="wrap_content"
-         		 	android:layout_gravity="center"
-       				android:background="@color/teal"
-       				>
-      		   	</Button>
-      		  
-		       	<Button 
-		       	  	android:text="@string/zero" 
-		       	  	android:id="@+id/register1"
-           		  	android:layout_width="wrap_content" 
-           		  	android:layout_height="wrap_content"
-         		  	android:layout_gravity="center"
-         		  	android:background="@color/red"
-         		  	>
-      		   	</Button>
-      		  
-		       	<Button 
-		          	android:text="@string/zero" 
-		          	android:id="@+id/register2"
-           		  	android:layout_width="wrap_content" 
-           		  	android:layout_height="wrap_content"
-         		  	android:layout_gravity="center"
-         		  	android:background="@color/orange"
-         		  	>
-      		   	</Button>
-      		  
-		       	<Button 
-		          	android:text="@string/zero" 
-		          	android:id="@+id/register3"
-           		  	android:layout_width="wrap_content" 
-           		  	android:layout_height="wrap_content"
-         		  	android:layout_gravity="center"
-         		  	android:background="@color/magenta"
-         		  	>
-      		   	</Button>
-      		  
-		       	<Button 
-		          	android:text="@string/zero" 
-		          	android:id="@+id/register4"
-           		  	android:layout_width="wrap_content" 
-           		  	android:layout_height="wrap_content"
-         		  	android:layout_gravity="center"
-         		  	android:background="@color/green"
-         		  	>
-      		   	</Button>
-      		  
-		       	<Button 
-		          	android:text="@string/zero" 
-		          	android:id="@+id/register5"
-           		  	android:layout_width="wrap_content" 
-           		  	android:layout_height="wrap_content"
-         		  	android:layout_gravity="center"
-         		  	android:background="@color/blue"
-         		  	>
-      		   	</Button>
-      		  
-		       	<Button 
-		          	android:text="@string/zero" 
-		          	android:id="@+id/register6"
-           		  	android:layout_width="wrap_content" 
-           		  	android:layout_height="wrap_content"
-         		  	android:layout_gravity="center"
-         		  	android:background="@color/yellow"
-         		  	>
-      		   	</Button>
-      		  
-		       	<Button 
-		          	android:text="@string/zero" 
-		          	android:id="@+id/register7"
-           		  	android:layout_width="wrap_content" 
-           		  	android:layout_height="wrap_content"
-         		  	android:layout_gravity="center"
-         		  	android:background="@color/purple"
-         		  	>
-      		   	</Button>
-      		  
-		       	<Button 
-		          	android:text="@string/zero" 
-		          	android:id="@+id/register8"
-           		  	android:layout_width="wrap_content" 
-           		  	android:layout_height="wrap_content"
-         		  	android:layout_gravity="center"
-         		  	android:background="@color/pink"
-         		  	>
-      		   	</Button>
-      		  
-		       	<Button 
-		          	android:text="@string/zero" 
-		          	android:id="@+id/register9"
-           		  	android:layout_width="wrap_content" 
-           		  	android:layout_height="wrap_content"
-         		  	android:layout_gravity="center"
-         		  	android:background="@color/brown"
-         		  	>
-      		   	</Button>
-       
+        		android:layout_height="wrap_content">       
    			</LinearLayout>
-	</ScrollView>
+   			
+	</ScrollView>	
 	
-	<RelativeLayout
-	   	android:id="@+id/bottom_frame"
-	   	android:orientation="vertical"
-	   	android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/ScrollVertical">	
+	<LinearLayout 
+	    android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        android:layout_toRightOf="@id/ScrollVertical"
+        android:weightSum="100"
+        android:baselineAligned="false">
+			
+	    
+	    <HorizontalScrollView
+	    	android:id="@+id/scrollHorizontal"
+	    	android:layout_width="match_parent"
+	    	android:layout_height="0dip"
+	   		android:fillViewport="true"
+	   		android:layout_weight="85"
+	   		android:layout_gravity="center">
+		    
+			<RelativeLayout
+	        	android:id="@+id/actionFrame"
+	        	android:layout_width="wrap_content"
+	        	android:layout_height="match_parent"
+	        	android:layout_gravity="center">
+		       	
+	        	<View
+			    	android:id="@+id/theLine"
+			    	android:layout_width="match_parent"
+			    	android:layout_height="2dip"
+			    	android:layout_centerInParent="true"
+			    	android:background="@drawable/gradient">
+				</View>
+			
+			</RelativeLayout>
+			
+		</HorizontalScrollView>
+			
+	    
+	    <RelativeLayout
+	   		android:id="@+id/bottom_frame"
+	   		android:orientation="vertical"
+	   		android:layout_width="match_parent"
+        	android:layout_height="0dip"
+        	android:layout_weight="15">	
         	
-		    <Button
+			<Button
 		        android:text="@string/box" 
 				android:id="@+id/new_box_button"
            		android:layout_width="wrap_content" 
@@ -167,111 +103,13 @@
          		android:layout_alignParentBottom="true">
       		</Button>
 		    
-	</RelativeLayout>
-	
-	<HorizontalScrollView
-	    android:id="@+id/scrollHorizontal"
-	    android:layout_width="match_parent"
-	    android:layout_height="match_parent"
-	    android:layout_toRightOf="@id/ScrollVertical"
-	    android:fillViewport="true">
-		   
-		    
-	    <RelativeLayout
-	        android:id="@+id/actionFrame"
-	        android:layout_width="wrap_content"
-	        android:layout_height="match_parent">
-		       	
-	        <View
-			    android:id="@+id/theLine"
-			    android:layout_width="match_parent"
-			    android:layout_height="2dip"
-			    android:layout_centerInParent="true"
-			    android:background="@drawable/gradient">
-			</View>
-				 <!--  	
-			<Button
-		        android:text="@string/arrow" 
-				android:id="@+id/a1"
-           		android:layout_width="wrap_content" 
-           		android:layout_height="wrap_content"
-         		android:layout_gravity="center"
-         		android:layout_above="@id/theLine">
-      		</Button>
-      		
-      		<Button
-		        android:text="@string/arrow" 
-				android:id="@+id/a2"
-           		android:layout_width="wrap_content" 
-           		android:layout_height="wrap_content"
-         		android:layout_gravity="center"
-         		android:layout_toRightOf="@id/a1"
-         		android:layout_above="@id/theLine">
-      		</Button>
-      		
-      		<Button
-		        android:text="@string/arrow" 
-				android:id="@+id/a3"
-           		android:layout_width="wrap_content" 
-           		android:layout_height="wrap_content"
-         		android:layout_gravity="center"
-         		android:layout_toRightOf="@id/a2"
-         		android:layout_above="@id/theLine">
-      		</Button>
-      		
-      		<Button
-		        android:text="@string/arrow" 
-				android:id="@+id/a4"
-           		android:layout_width="wrap_content" 
-           		android:layout_height="wrap_content"
-         		android:layout_gravity="center"
-         		android:layout_toRightOf="@id/a3"
-         		android:layout_above="@id/theLine">
-      		</Button>
-      		
-      		<Button
-		        android:text="@string/arrow" 
-				android:id="@+id/a5"
-           		android:layout_width="wrap_content" 
-           		android:layout_height="wrap_content"
-         		android:layout_gravity="center"
-         		android:layout_toRightOf="@id/a4"
-         		android:layout_above="@id/theLine">
-      		</Button>
-      		
-      		<Button
-		        android:text="@string/arrow" 
-				android:id="@+id/a6"
-           		android:layout_width="wrap_content" 
-           		android:layout_height="wrap_content"
-         		android:layout_gravity="center"
-         		android:layout_toRightOf="@id/a5"
-         		android:layout_above="@id/theLine">
-      		</Button>
-      		
-      		<Button
-		        android:text="@string/arrow" 
-				android:id="@+id/a7"
-           		android:layout_width="wrap_content" 
-           		android:layout_height="wrap_content"
-         		android:layout_gravity="center"
-         		android:layout_toRightOf="@id/a6"
-         		android:layout_above="@id/theLine">
-      		</Button>
-      		
-      		<Button
-		        android:text="@string/arrow" 
-				android:id="@+id/a8"
-           		android:layout_width="wrap_content" 
-           		android:layout_height="wrap_content"
-         		android:layout_gravity="center"
-         		android:layout_toRightOf="@id/a7"
-         		android:layout_above="@id/theLine">
-      		</Button>-->
-			
 		</RelativeLayout>
-			
-	</HorizontalScrollView>
+	    
+	
+
+	
+
+	
+	</LinearLayout>
 		
 </RelativeLayout>
-

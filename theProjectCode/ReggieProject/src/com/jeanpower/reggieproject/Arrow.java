@@ -8,6 +8,15 @@ public class Arrow implements Instruction{
 	private Game caller;
 	private int register;
 
+	
+	public Arrow(Game g){
+		 
+		caller = g;
+		succ = null;
+		pred = null;
+	}
+	
+	
 	@Override
 	public void dowork() {
 		// TODO Auto-generated method stub

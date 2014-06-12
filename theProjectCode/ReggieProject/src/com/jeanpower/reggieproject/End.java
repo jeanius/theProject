@@ -2,6 +2,15 @@ package com.jeanpower.reggieproject;
 
 public class End implements Instruction{
 
+	private Game caller;
+	
+	public End(Game g){
+		 
+		caller = g;
+
+	}
+	
+	
 	@Override
 	public void dowork() {
 		// TODO Auto-generated method stub

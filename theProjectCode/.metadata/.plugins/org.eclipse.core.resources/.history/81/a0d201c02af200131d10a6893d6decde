@@ -1,0 +1,75 @@
+//Presenter - Gateway to model, provides View with data it needs.
+
+package com.jeanpower.reggieproject;
+
+import android.util.Log;
+
+public class Game {
+	
+	private Instruction first;
+	private Instruction currPos;
+	private int [] registers;
+	private MainActivity activity;
+
+	
+	public Game(MainActivity a){
+		activity = a;
+		registers = new int [activity.getMaxReg()];
+		
+		for (int i = 0; i<activity.getMaxReg(); i++)
+		{
+			registers[i] = 0;
+		}
+		
+	}
+
+	public void runGame(){
+	
+	}
+	
+	public void getInstructionSet(){}
+
+	public void updateIns(Object o){}
+	
+	public void delBox(Instruction delete){
+		
+	}
+	
+	public void delArrow(Instruction delete){
+		
+	}
+	
+	public void delEnd(Instruction delete){
+		
+	}
+	
+	public void setCurrPos(Instruction newPos){
+		
+		currPos = newPos;
+		
+	}
+	
+	public int getRegData(int registerNum){
+		
+		return registers[registerNum];
+	}
+	
+	public void incrementReg(int registerNum){
+		
+		int newNum = registers[registerNum]+1;
+		registers[registerNum] = newNum;
+		activity.setRegisters();
+	}
+	
+	public void decrementReg(int registerNum){
+		
+		registers[registerNum] = registers[registerNum]--;
+		activity.setRegisters();
+	}
+	
+	public void zeroReg(int registerNum){
+		
+		registers[registerNum] = 0;;
+		activity.setRegisters();
+	}
+}
