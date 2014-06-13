@@ -52,8 +52,6 @@
 	        	    android:padding="0dp">
 				</View>
 			
-	        	
-	        	
 			</RelativeLayout>
 			
 		</HorizontalScrollView>

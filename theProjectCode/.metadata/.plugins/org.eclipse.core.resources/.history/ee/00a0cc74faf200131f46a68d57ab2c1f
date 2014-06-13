@@ -51,9 +51,18 @@
 	        	    android:background="@drawable/gradient"
 	        	    android:padding="0dp">
 				</View>
+				
+	        <Button 
+		        android:text="@string/box"
+				android:id="@+id/check"
+           		android:layout_width="wrap_content" 
+           		android:layout_height="wrap_content"
+         		android:layout_gravity="center"
+         		android:layout_ABOVE="@id/theLine"
+         		android:layout_alignBottom="@id/theLine">
+      		</Button>
+	        	
 			
-	        	
-	        	
 			</RelativeLayout>
 			
 		</HorizontalScrollView>

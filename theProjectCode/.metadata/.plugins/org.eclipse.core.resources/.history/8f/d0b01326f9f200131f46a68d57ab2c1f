@@ -38,11 +38,6 @@ public class Game {
 
 	}
 
-	/**
-	 * Iterates through linked list of instructions, returns list of instructions in correct order          
-	 * <p>
-	 * @return List<Instruction>
-	 */	
 	public List<Instruction> getInstructionList(){
 		
 		List<Instruction> instructionList = new ArrayList<Instruction>();

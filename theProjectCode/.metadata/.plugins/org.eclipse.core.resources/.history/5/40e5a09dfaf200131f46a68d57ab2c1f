@@ -116,7 +116,8 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 
 		RelativeLayout container = (RelativeLayout) findViewById(R.id.actionFrame);
 		//Layout for the instructions
-		RelativeLayout.LayoutParams instructionParameters = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+		RelativeLayout.LayoutParams actionParameters = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+		actionParameters.addRule(RelativeLayout.ALIGN_BASELINE, R.id.theLine);
 
 		//Keep track of what instruction has been added
 		int currentPosition = 0;
@@ -131,30 +132,27 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 				Button button = new Button(this);
 				button.setBackgroundColor(buttonColours[0]); //Starts as 
 
-				if (instruction.getType()) //If Increment
+				if (instruction.getType())
 				{
-					Log.d("Knows", "that is is increment");
-					instructionParameters.addRule(RelativeLayout.ALIGN_BOTTOM, R.id.theLine);
-					
+					actionParameters.addRule(RelativeLayout.ALIGN_BASELINE, R.id.theLine);
 				}
 
 				else
 				{
-					instructionParameters.addRule(RelativeLayout.ALIGN_TOP, R.id.theLine);
+					actionParameters.addRule(RelativeLayout.BELOW, R.id.theLine);
 				}
 
 				if (0==currentPosition)
 				{
-					instructionParameters.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+					actionParameters.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
 					currentPosition = button.getId();
 				}
 
 				else
 				{
-					instructionParameters.addRule(RelativeLayout.LEFT_OF, currentPosition);
+					actionParameters.addRule(RelativeLayout.LEFT_OF, currentPosition);
 				}
 				
-				button.setLayoutParams(instructionParameters);
 				container.addView(button);
 			}
 		}
@@ -190,15 +188,20 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 	public void onClick(View v) {
 
 		int resid = v.getId();
+		
+		Log.d("Hey", "You clicked anyyyyy instruction");
 
 		if (resid>=0 && resid<10)
 		{
+			Log.d("Hey", "You clicked a reg");
 			game.incrementReg(resid);
 		}
 
 		else if (resid == R.id.new_arrow_button || resid == R.id.new_box_button || resid == R.id.new_end_button)
 		{
+			Log.d("Hey", "You clicked an instruction");
 			game.newInstruction(resid);
+			Log.d("Hey", "I've returned from the instructions");
 			this.updateDisplay();
 		}
 

@@ -116,7 +116,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 
 		RelativeLayout container = (RelativeLayout) findViewById(R.id.actionFrame);
 		//Layout for the instructions
-		RelativeLayout.LayoutParams instructionParameters = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+		RelativeLayout.LayoutParams actionParameters = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 
 		//Keep track of what instruction has been added
 		int currentPosition = 0;
@@ -134,27 +134,25 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 				if (instruction.getType()) //If Increment
 				{
 					Log.d("Knows", "that is is increment");
-					instructionParameters.addRule(RelativeLayout.ALIGN_BOTTOM, R.id.theLine);
-					
+					actionParameters.addRule(RelativeLayout.ALIGN_BOTTOM, R.id.theLine);
 				}
 
 				else
 				{
-					instructionParameters.addRule(RelativeLayout.ALIGN_TOP, R.id.theLine);
+					actionParameters.addRule(RelativeLayout.ALIGN_TOP, R.id.theLine);
 				}
-
+/*
 				if (0==currentPosition)
 				{
-					instructionParameters.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+					actionParameters.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
 					currentPosition = button.getId();
 				}
 
 				else
 				{
-					instructionParameters.addRule(RelativeLayout.LEFT_OF, currentPosition);
+					actionParameters.addRule(RelativeLayout.LEFT_OF, currentPosition);
 				}
-				
-				button.setLayoutParams(instructionParameters);
+				*/
 				container.addView(button);
 			}
 		}
