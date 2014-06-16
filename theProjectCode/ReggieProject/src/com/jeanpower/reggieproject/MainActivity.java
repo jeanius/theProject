@@ -3,8 +3,9 @@
 package com.jeanpower.reggieproject;
 
 import java.util.List;
-
+import android.os.Build;
 import android.os.Bundle;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -26,7 +27,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 
 	private Game game;
 	final int MAXREGISTERS = 10;
-	int[] buttonColours;
+	private int[] buttonColours;
 
 	/**
 	 * Called when application is opened.                  
@@ -71,7 +72,6 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 
 		Button endButton = (Button) findViewById(R.id.new_end_button);
 		endButton.setOnClickListener(this);
-
 	}
 
 	/**
@@ -112,6 +112,8 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 	 * <p>
 	 * @return void
 	 */
+
+	@SuppressLint("NewApi")
 	public void updateDisplay(){
 
 		RelativeLayout container = (RelativeLayout) findViewById(R.id.actionFrame);
@@ -125,17 +127,17 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 
 		for(Instruction inst: list)
 		{
+			Log.d("Returned", currentPosition + "");
 			if (inst instanceof Box)
 			{
 				Box instruction = (Box) inst;
 				Button button = new Button(this);
 				button.setBackgroundColor(buttonColours[0]); //Starts as 
+				button.setId(inst.getId());
 
 				if (instruction.getType()) //If Increment
 				{
-					Log.d("Knows", "that is is increment");
-					instructionParameters.addRule(RelativeLayout.ALIGN_BOTTOM, R.id.theLine);
-					
+					instructionParameters.addRule(RelativeLayout.ALIGN_BOTTOM, R.id.theLine);	
 				}
 
 				else
@@ -143,19 +145,25 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 					instructionParameters.addRule(RelativeLayout.ALIGN_TOP, R.id.theLine);
 				}
 
-				if (0==currentPosition)
+				if (currentPosition <= 0)
 				{
-					instructionParameters.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-					currentPosition = button.getId();
+					instructionParameters.addRule(RelativeLayout.LEFT_OF, R.id.ScrollVertical);				
+					Log.d("It should be placed left of", "the parent");
 				}
 
 				else
 				{
 					instructionParameters.addRule(RelativeLayout.LEFT_OF, currentPosition);
+					button.setBackgroundColor(buttonColours[1]);
+					Log.d("It should be placed left of", currentPosition + "");
 				}
-				
+
+				currentPosition = button.getId();
 				button.setLayoutParams(instructionParameters);
 				container.addView(button);
+				Log.d("Leaving, should loop back with current position of", currentPosition + "");
+				
+				//TODO - This is where there is an issue with placement
 			}
 		}
 	}

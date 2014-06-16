@@ -7,6 +7,7 @@ public class Box implements Instruction{
 	private Instruction succ;
 	private Instruction pred;
 	private boolean inc;
+	private int identity;
 	
 	public Box(Game g){
 		 
@@ -32,8 +33,8 @@ public class Box implements Instruction{
 	}
 
 	@Override
-	public void setSucc(Instruction successor) {
-		// TODO Auto-generated method stub
+	public void setSucc(Instruction successor) {	
+		succ = successor;
 		
 	}
 	
@@ -44,20 +45,18 @@ public class Box implements Instruction{
 
 	@Override
 	public Instruction getSucc() {
-		// TODO Auto-generated method stub
-		return null;
+		return succ;
 	}
 
 	@Override
 	public void setPred(Instruction predecessor) {
-		// TODO Auto-generated method stub
 		
+		pred = predecessor;
 	}
 
 	@Override
 	public Instruction getPred() {
-		// TODO Auto-generated method stub
-		return null;
+		return pred;
 	}
 
 	@Override
@@ -71,4 +70,15 @@ public class Box implements Instruction{
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
+	@Override
+	public void setId(int ID) {
+		identity = ID;
+	}
+	
+	@Override
+	public int getId() {
+		return identity;
+	}
+
 }

@@ -9,5 +9,7 @@ public interface Instruction {
 	public Instruction getPred();
 	public void setRegister(int register);
 	public int getRegister();
+	public void setId(int ID);
+	public int getId();
 
 }

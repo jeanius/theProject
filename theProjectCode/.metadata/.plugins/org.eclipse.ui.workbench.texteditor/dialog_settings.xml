@@ -13,15 +13,16 @@
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="false" key="wholeword"/>
-		<item value="update" key="selection"/>
+		<item value="Left" key="selection"/>
 		<list key="findhistory">
+			<item value="left"/>
+			<item value="null"/>
+			<item value="log"/>
 			<item value="update"/>
 			<item value="R."/>
 			<item value="R"/>
 			<item value="onclick"/>
 			<item value="holo"/>
-			<item value="fill"/>
-			<item value="value"/>
 		</list>
 		<list key="replacehistory">
 		</list>

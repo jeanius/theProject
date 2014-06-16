@@ -3,6 +3,7 @@ package com.jeanpower.reggieproject;
 public class End implements Instruction{
 
 	private Game caller;
+	private int identity;
 	
 	public End(Game g){
 		 
@@ -52,5 +53,17 @@ public class End implements Instruction{
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
+
+	@Override
+	public void setId(int ID) {
+		identity = ID;
+	}
+	
+	@Override
+	public int getId() {
+		return identity;
+	}
+
 
 }

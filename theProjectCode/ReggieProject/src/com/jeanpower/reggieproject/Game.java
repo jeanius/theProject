@@ -4,7 +4,8 @@ package com.jeanpower.reggieproject;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import android.annotation.SuppressLint;
+import android.os.Build;
 import android.util.Log;
 import android.view.View;
 
@@ -44,22 +45,24 @@ public class Game {
 	 * @return List<Instruction>
 	 */	
 	public List<Instruction> getInstructionList(){
-		
+
 		List<Instruction> instructionList = new ArrayList<Instruction>();
-		
-		currPos = first;
-		
-		while(null != currPos)
+
+		Instruction currentPosition = first;
+
+		while(null != currentPosition)
 		{
-			instructionList.add(currPos);
-			currPos = currPos.getSucc();
+			instructionList.add(currentPosition);
+			currentPosition = currentPosition.getSucc();
 		}
-		
+
+		Log.d("This is the size of the instruction list", instructionList.size() +"");
 		return instructionList;
 	}
 
+	@SuppressLint("NewApi") //Have dealt with different versions in code.
 	public void newInstruction(int resourceID){
-		
+
 		Instruction instruction = null;
 
 		switch (resourceID) {
@@ -68,29 +71,34 @@ public class Game {
 			break;
 		case R.id.new_box_button:
 			instruction = new Box(this);
-			Log.d("Hello", "I'm a new box");
 			break;
 		case R.id.new_end_button:
 			instruction = new End(this);
 			break;
 		}
 
-		if (null != instruction)
+		
+		if (null == first)
 		{
-			if (null == first)
-			{
-				first = instruction;
-				last = instruction;
-				instruction.setSucc(null);
-			}
+			first = instruction;
+			last = instruction;
+			instruction.setSucc(null);
+		}
+
+		else {
+			last.setSucc(instruction);
+			instruction.setPred(last);
+			last = instruction;
+		}
+		
+		if (Build.VERSION.SDK_INT >= 17 ) {
+			instruction.setId(View.generateViewId());
+		}
+		
+		else {
 			
-			else {
-				
-				instruction.setPred(last);
-				last.setSucc(instruction);
-				last = instruction;
-			}
-		}	
+			instruction.setId(Util.generateViewId());
+		}
 	}
 
 	public void updateIns(Object o){}

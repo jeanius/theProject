@@ -7,6 +7,7 @@ public class Arrow implements Instruction{
 	private Instruction succ;
 	private Game caller;
 	private int register;
+	private int identity;
 
 	
 	public Arrow(Game g){
@@ -57,6 +58,16 @@ public class Arrow implements Instruction{
 	public int getRegister() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public void setId(int ID) {
+		identity = ID;
+	}
+	
+	@Override
+	public int getId() {
+		return identity;
 	}
 
 }
