@@ -40,16 +40,32 @@ public class Game {
 	}
 
 	/**
-	 * Iterates through linked list of instructions, returns list of instructions in correct order          
+	 * Iterates through linked list of instructions, returns list of instructions in correct order, from a certain point in list      
 	 * <p>
+	 * @param int. Targeted point of instruction
 	 * @return List<Instruction>
 	 */	
-	public List<Instruction> getInstructionList(){
+	public List<Instruction> getInstructionList(int atPoint){
 
 		List<Instruction> instructionList = new ArrayList<Instruction>();
 
 		Instruction currentPosition = first;
-
+		int targetInstruction = atPoint;
+		boolean done = false;
+		
+		while (!done)
+		{
+			if (currentPosition.getId() == targetInstruction)
+			{
+				done = true;
+			}
+			
+			else
+			{
+				currentPosition = currentPosition.getSucc();
+			}
+		}
+		
 		while(null != currentPosition)
 		{
 			instructionList.add(currentPosition);
@@ -61,9 +77,10 @@ public class Game {
 	}
 
 	@SuppressLint("NewApi") //Have dealt with different versions in code.
-	public void newInstruction(int resourceID){
+	public int newInstruction(int resourceID){
 
 		Instruction instruction = null;
+		int returned = 0;
 
 		switch (resourceID) {
 		case R.id.new_arrow_button:
@@ -89,6 +106,7 @@ public class Game {
 			last.setSucc(instruction);
 			instruction.setPred(last);
 			last = instruction;
+			returned = instruction.getPred().getId();
 		}
 		
 		if (Build.VERSION.SDK_INT >= 17 ) {
@@ -99,6 +117,8 @@ public class Game {
 			
 			instruction.setId(Util.generateViewId());
 		}
+		
+		return returned;
 	}
 
 	public void updateIns(Object o){}

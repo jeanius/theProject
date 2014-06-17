@@ -7,7 +7,7 @@ public class Box implements Instruction{
 	private Instruction succ;
 	private Instruction pred;
 	private boolean inc;
-	private int identity;
+	int identity;
 	
 	public Box(Game g){
 		 

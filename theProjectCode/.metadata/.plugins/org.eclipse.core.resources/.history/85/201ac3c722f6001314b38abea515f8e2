@@ -1,0 +1,233 @@
+//View - handles UI components and events
+
+package com.jeanpower.reggieproject;
+
+import java.util.List;
+import android.os.Build;
+import android.os.Bundle;
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
+import android.content.res.Configuration;
+import android.gesture.GestureOverlayView.OnGestureListener;
+import android.text.Layout;
+import android.util.Log;
+import android.view.DragEvent;
+import android.view.Menu;
+import android.view.View;
+import android.view.View.OnLongClickListener;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.app.ActionBar;
+
+public class MainActivity extends Activity implements View.OnClickListener, View.OnLongClickListener{
+
+	private Game game;
+	final int MAXREGISTERS = 10;
+	private int[] buttonColours;
+
+	/**
+	 * Called when application is opened.                  
+	 * <p>
+	 * Sets the view to first screen, adds register buttons
+	 * Adds listeners to activity buttons
+	 * <p>
+	 * @return void
+	 */
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main); 
+		game = new Game(this);
+
+		//Array of colours, from color.xml
+		buttonColours = getResources().getIntArray(R.array.rainbow);
+		LinearLayout container = (LinearLayout) findViewById(R.id.register_frame);
+		LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT); 
+
+		for (int i=0; i<MAXREGISTERS; i++){
+			Button button = new Button(this);
+			button.setText(game.getRegData(i) + ""); //Set initial text to 0
+			button.setId(i);
+			button.setLayoutParams(lp); //For wrap content
+			button.setBackgroundColor(buttonColours[i]);
+			button.setOnClickListener(this);
+			button.setOnLongClickListener(this);
+			container.addView(button); //Add to register frame
+		}
+
+		//Add listeners to activity buttons. //TODO Is there a better way to do this?
+		Button arrowButton = (Button) findViewById(R.id.new_arrow_button);
+		arrowButton.setOnClickListener(this);
+
+		Button runButton = (Button) findViewById(R.id.run_button);
+		runButton.setOnClickListener(this);
+
+		Button boxButton = (Button) findViewById(R.id.new_box_button);
+		boxButton.setOnClickListener(this);
+
+		Button endButton = (Button) findViewById(R.id.new_end_button);
+		endButton.setOnClickListener(this);
+	}
+
+	/**
+	 * Inflates the menu and adds items                 
+	 * <p>
+	 * @param Menu. Menu which has items added
+	 * @return boolean
+	 */
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		// TODO Add help, save, return
+
+		getMenuInflater().inflate(R.menu.main, menu);
+		return true;
+	}
+
+	/**
+	 * To ignore orientation change, so UI is horizontal                   
+	 * <p>
+	 * @return void
+	 */
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
+	}
+
+	@Override
+	public void onStart(){
+		super.onStart();
+	}
+
+	/**
+	 * Updates action frame with instructions - boxes and arrows                 
+	 * <p>
+	 * Iterates through list of instructions, and adds to action frame as appropriate.
+	 * Above/below the line, backwards/forwards arrows.
+	 * <p>
+	 * @return void
+	 */
+
+	@SuppressLint("NewApi")
+	public void updateDisplay(){
+
+		RelativeLayout container = (RelativeLayout) findViewById(R.id.actionFrame);
+
+		//Keep track of what instruction has been added
+		int currentPosition = 0;
+
+		List<Instruction> list = game.getInstructionList();
+
+		for(Instruction inst: list)
+		{			
+			if (inst instanceof Box)
+			{
+				Box instruction = (Box) inst;
+				Button button = new Button(this);
+				button.setBackgroundColor(buttonColours[0]); //Starts as 
+				button.setId(inst.getId());
+
+				//Have new layout for each button, as causes conflicts when not
+				RelativeLayout.LayoutParams instructionParameters = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+				
+				if (instruction.getType()) //If Increment
+				{
+					instructionParameters.addRule(RelativeLayout.ALIGN_BOTTOM, R.id.theLine);	
+				}
+
+				else
+				{
+					instructionParameters.addRule(RelativeLayout.ALIGN_TOP, R.id.theLine);
+				}
+
+				if (currentPosition <= 0)
+				{
+					instructionParameters.addRule(RelativeLayout.ALIGN_PARENT_LEFT);				
+					Log.d("It should be placed left of", "the parent");
+				}
+
+				else
+				{
+					//instructionParameters.addRule(RelativeLayout.ALIGN_PARENT_LEFT, 0);
+					instructionParameters.addRule(RelativeLayout.RIGHT_OF, currentPosition);
+					button.setBackgroundColor(buttonColours[1]);
+					Log.d("It should be placed left of", currentPosition + "");
+				}
+
+				currentPosition = button.getId();
+				button.setLayoutParams(instructionParameters);
+				container.addView(button);
+				
+			}
+		}
+	}
+
+	/**
+	 * Iterates through register buttons, getting their data from Game class.                   
+	 * <p>
+	 * @return void
+	 */
+	public void setRegisters(){
+
+		for (int i = 0; i<MAXREGISTERS; i++){
+
+			int resID = i;
+			Button b = (Button) findViewById(resID);
+			String data = game.getRegData(i) + "";
+			b.setText(data);
+		}
+	}
+
+	public int getMaxReg(){
+		return MAXREGISTERS;
+	}
+
+	/**
+	 * Takes click on register button and increments register                     
+	 * <p>
+	 * @param View. The button which has been clicked      
+	 * @return void
+	 */
+	@Override
+	public void onClick(View v) {
+
+		int resid = v.getId();
+
+		if (resid>=0 && resid<10)
+		{
+			game.incrementReg(resid);
+		}
+
+		else if (resid == R.id.new_arrow_button || resid == R.id.new_box_button || resid == R.id.new_end_button)
+		{
+			game.newInstruction(resid);
+			this.updateDisplay();
+		}
+
+		else if(resid == R.id.run_button)
+		{
+			game.runGame();
+		}
+
+		//else if it's a instruction, do xyz.
+	}
+
+	/**
+	 * Takes long click on register button and zeros register                      
+	 * <p>
+	 * @param View. Button which has been clicked      
+	 * @return boolean
+	 */
+	@Override
+	public boolean onLongClick(View v) {
+
+		int resid = v.getId();
+		game.zeroReg(resid);
+		return true;
+	}
+}

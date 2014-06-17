@@ -3,6 +3,7 @@
 package com.jeanpower.reggieproject;
 
 import java.util.List;
+
 import android.os.Build;
 import android.os.Bundle;
 import android.annotation.SuppressLint;
@@ -11,6 +12,11 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.res.Configuration;
 import android.gesture.GestureOverlayView.OnGestureListener;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.text.Layout;
 import android.util.Log;
 import android.view.DragEvent;
@@ -22,13 +28,13 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.app.ActionBar;
+import android.graphics.PorterDuff;
 
 public class MainActivity extends Activity implements View.OnClickListener, View.OnLongClickListener{
 
 	private Game game;
 	final int MAXREGISTERS = 10;
 	private int[] buttonColours;
-
 	/**
 	 * Called when application is opened.                  
 	 * <p>
@@ -37,6 +43,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 	 * <p>
 	 * @return void
 	 */
+	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 
@@ -48,13 +55,21 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 		buttonColours = getResources().getIntArray(R.array.rainbow);
 		LinearLayout container = (LinearLayout) findViewById(R.id.register_frame);
 		LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT); 
+		
+		//To give black border
+		lp.setMargins(1, 1, 1, 1); 
+		container.setBackgroundColor(Color.BLACK);
 
-		for (int i=0; i<MAXREGISTERS; i++){
+		for (int i = 0; i<MAXREGISTERS; i++){
+			
 			Button button = new Button(this);
 			button.setText(game.getRegData(i) + ""); //Set initial text to 0
 			button.setId(i);
-			button.setLayoutParams(lp); //For wrap content
-			button.setBackgroundColor(buttonColours[i]);
+			
+			button.setLayoutParams(lp); //For wrap content	
+		
+			button.setBackgroundColor(buttonColours[i]);	
+			
 			button.setOnClickListener(this);
 			button.setOnLongClickListener(this);
 			container.addView(button); //Add to register frame
@@ -62,7 +77,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 
 		//Add listeners to activity buttons. //TODO Is there a better way to do this?
 		Button arrowButton = (Button) findViewById(R.id.new_arrow_button);
-		arrowButton.setOnClickListener(this);
+		arrowButton.setOnClickListener(this);	
 
 		Button runButton = (Button) findViewById(R.id.run_button);
 		runButton.setOnClickListener(this);
@@ -108,33 +123,47 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 	 * Updates action frame with instructions - boxes and arrows                 
 	 * <p>
 	 * Iterates through list of instructions, and adds to action frame as appropriate.
+	 * To be efficient, only redraws from specific position
 	 * Above/below the line, backwards/forwards arrows.
 	 * <p>
+	 * @param int. The instruction to redraw from
 	 * @return void
 	 */
 
 	@SuppressLint("NewApi")
-	public void updateDisplay(){
+	public void updateDisplay(int fromID){
+		
+		//TODO - Have to redraw FROM the previous instruction
 
 		RelativeLayout container = (RelativeLayout) findViewById(R.id.actionFrame);
-		//Layout for the instructions
-		RelativeLayout.LayoutParams instructionParameters = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 
 		//Keep track of what instruction has been added
-		int currentPosition = 0;
+		int currentPosition = fromID;
 
-		List<Instruction> list = game.getInstructionList();
+		List<Instruction> list = game.getInstructionList(fromID); //From the edited point
 
 		for(Instruction inst: list)
-		{
-			Log.d("Returned", currentPosition + "");
+		{			
 			if (inst instanceof Box)
 			{
 				Box instruction = (Box) inst;
 				Button button = new Button(this);
 				button.setBackgroundColor(buttonColours[0]); //Starts as 
-				button.setId(inst.getId());
+				int instructionID = instruction.identity;  //BP in android is direct access
+				button.setId(instructionID);
 
+				//Have new layout for each button, as causes conflicts when not
+				RelativeLayout.LayoutParams instructionParameters = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+				
+				//To give black border
+				LinearLayout instructionContainer = new LinearLayout(this);
+				LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT); 
+				lp.setMargins(1, 1, 1, 1); 
+				instructionContainer.setBackgroundColor(Color.BLACK);
+				instructionContainer.setLayoutParams(lp);
+				instructionContainer.setId(instructionID); //instruction container is same ID as button and instruction - treated as one object.
+	
+				
 				if (instruction.getType()) //If Increment
 				{
 					instructionParameters.addRule(RelativeLayout.ALIGN_BOTTOM, R.id.theLine);	
@@ -147,23 +176,19 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 
 				if (currentPosition <= 0)
 				{
-					instructionParameters.addRule(RelativeLayout.LEFT_OF, R.id.ScrollVertical);				
-					Log.d("It should be placed left of", "the parent");
+					instructionParameters.addRule(RelativeLayout.ALIGN_PARENT_LEFT);			
 				}
 
 				else
 				{
-					instructionParameters.addRule(RelativeLayout.LEFT_OF, currentPosition);
-					button.setBackgroundColor(buttonColours[1]);
-					Log.d("It should be placed left of", currentPosition + "");
+					instructionParameters.addRule(RelativeLayout.RIGHT_OF, currentPosition); //Right of the 
 				}
 
-				currentPosition = button.getId();
-				button.setLayoutParams(instructionParameters);
-				container.addView(button);
-				Log.d("Leaving, should loop back with current position of", currentPosition + "");
-				
-				//TODO - This is where there is an issue with placement
+				currentPosition = instructionID;
+				button.setLayoutParams(lp);
+				instructionContainer.addView(button);
+				instructionContainer.setLayoutParams(instructionParameters);
+				container.addView(instructionContainer);
 			}
 		}
 	}
@@ -206,8 +231,9 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 
 		else if (resid == R.id.new_arrow_button || resid == R.id.new_box_button || resid == R.id.new_end_button)
 		{
-			game.newInstruction(resid);
-			this.updateDisplay();
+			int prevInstructionId = game.newInstruction(resid);
+			
+			this.updateDisplay(prevInstructionId);
 		}
 
 		else if(resid == R.id.run_button)
