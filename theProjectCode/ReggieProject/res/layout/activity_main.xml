@@ -15,7 +15,77 @@
 	   			android:id="@+id/register_frame"
 	   			android:orientation="vertical"
 	   			android:layout_width="match_parent"
-        		android:layout_height="wrap_content">       
+        		android:layout_height="wrap_content">    
+        		
+			    <Button 	         	
+		         	android:id="@string/Register0"
+           		 	android:layout_width="wrap_content" 
+           		 	android:layout_height="wrap_content"
+         		 	android:layout_gravity="center">
+      		   	</Button>
+      		  
+		       	<Button 
+		       	  	android:id="@string/Register1"
+           		  	android:layout_width="wrap_content" 
+           		  	android:layout_height="wrap_content"
+         		  	android:layout_gravity="center">
+      		   	</Button>
+      		  
+		       	<Button 
+		          	android:id="@string/Register2"
+           		  	android:layout_width="wrap_content" 
+           		  	android:layout_height="wrap_content"
+         		  	android:layout_gravity="center">
+      		   	</Button>
+      		  
+		       	<Button 
+		          	android:id="@string/Register3"
+           		  	android:layout_width="wrap_content" 
+           		  	android:layout_height="wrap_content"
+         		  	android:layout_gravity="center">
+      		   	</Button>
+      		  
+		       	<Button 
+		          	android:id="@string/Register4"
+           		  	android:layout_width="wrap_content" 
+           		  	android:layout_height="wrap_content"
+         		  	android:layout_gravity="center">
+      		   	</Button>
+      		  
+		       	<Button 
+		          	android:id="@string/Register5"
+           		  	android:layout_width="wrap_content" 
+           		  	android:layout_height="wrap_content"
+         		  	android:layout_gravity="center">
+      		   	</Button>
+      		  
+		       	<Button 
+		          	android:id="@string/Register6"
+           		  	android:layout_width="wrap_content" 
+           		  	android:layout_height="wrap_content"
+         		  	android:layout_gravity="center">
+      		   	</Button>
+      		  
+		       	<Button 
+		          	android:id="@string/Register7"
+           		  	android:layout_width="wrap_content" 
+           		  	android:layout_height="wrap_content"
+         		  	android:layout_gravity="center">
+      		   	</Button>
+      		  
+		       	<Button 
+		          	android:id="@string/Register8"
+           		  	android:layout_width="wrap_content" 
+           		  	android:layout_height="wrap_content"
+         		  	android:layout_gravity="center">
+      		   	</Button>
+      		  
+		       	<Button 
+		          	android:id="@string/Register9"
+           		  	android:layout_width="wrap_content" 
+           		  	android:layout_height="wrap_content"
+         		  	android:layout_gravity="center">
+      		   	</Button>			    
    			</LinearLayout>
    			
 	</ScrollView>	

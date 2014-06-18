@@ -33,8 +33,9 @@ import android.graphics.PorterDuff;
 public class MainActivity extends Activity implements View.OnClickListener, View.OnLongClickListener{
 
 	private Game game;
-	final int MAXREGISTERS = 10;
-	private int[] buttonColours;
+	private int[] registerColours;
+	private int[] registerIds;
+
 	/**
 	 * Called when application is opened.                  
 	 * <p>
@@ -52,27 +53,33 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 		game = new Game(this);
 
 		//Array of colours, from color.xml
-		buttonColours = getResources().getIntArray(R.array.rainbow);
+		registerColours = getResources().getIntArray(R.array.rainbow);
+		String[]registerNames = getResources().getStringArray(R.array.register_names);	
+		registerIds = new int[game.MAXREGISTERS];
+
+		for (int i = 0; i<game.MAXREGISTERS; i++){
+
+			int resID = getResources().getIdentifier(registerNames[i] , "string", getPackageName());
+			registerIds[i] = resID;
+		}
+
 		LinearLayout container = (LinearLayout) findViewById(R.id.register_frame);
 		LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT); 
-		
+
 		//To give black border
 		lp.setMargins(1, 1, 1, 1); 
 		container.setBackgroundColor(Color.BLACK);
 
-		for (int i = 0; i<MAXREGISTERS; i++){
-			
-			Button button = new Button(this);
-			button.setText(game.getRegData(i) + ""); //Set initial text to 0
-			button.setId(i);
-			
+		for (int i = 0; i<game.MAXREGISTERS; i++){
+
+			Button button = (Button) findViewById(registerIds[i]);
+			button.setText(game.getRegData(i) + ""); //Set initial text to 0			
 			button.setLayoutParams(lp); //For wrap content	
-		
-			button.setBackgroundColor(buttonColours[i]);	
-			
+
+			button.setBackgroundColor(registerColours[i]);	
+
 			button.setOnClickListener(this);
 			button.setOnLongClickListener(this);
-			container.addView(button); //Add to register frame
 		}
 
 		//Add listeners to activity buttons. //TODO Is there a better way to do this?
@@ -131,16 +138,18 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 	 */
 
 	@SuppressLint("NewApi")
-	public void updateDisplay(int fromID){
-		
-		//TODO - Have to redraw FROM the previous instruction
+	public void updateDisplay(int fromInstruction){
 
 		RelativeLayout container = (RelativeLayout) findViewById(R.id.actionFrame);
-
+		Button button = new Button(this);
+		button.setOnClickListener(this);
+		container.addView(button);
+		
+		
 		//Keep track of what instruction has been added
-		int currentPosition = fromID;
+		/*int currentPosition = fromInstruction;
 
-		List<Instruction> list = game.getInstructionList(fromID); //From the edited point
+		List<Instruction> list = game.getInstructionList(fromInstruction); //From the edited point
 
 		for(Instruction inst: list)
 		{			
@@ -148,13 +157,13 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 			{
 				Box instruction = (Box) inst;
 				Button button = new Button(this);
-				button.setBackgroundColor(buttonColours[0]); //Starts as 
+				button.setBackgroundColor(registerColours[instruction.register]); //The colour of the register held in this instruction
 				int instructionID = instruction.identity;  //BP in android is direct access
 				button.setId(instructionID);
 
 				//Have new layout for each button, as causes conflicts when not
 				RelativeLayout.LayoutParams instructionParameters = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-				
+
 				//To give black border
 				LinearLayout instructionContainer = new LinearLayout(this);
 				LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT); 
@@ -162,8 +171,8 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 				instructionContainer.setBackgroundColor(Color.BLACK);
 				instructionContainer.setLayoutParams(lp);
 				instructionContainer.setId(instructionID); //instruction container is same ID as button and instruction - treated as one object.
-	
-				
+
+
 				if (instruction.getType()) //If Increment
 				{
 					instructionParameters.addRule(RelativeLayout.ALIGN_BOTTOM, R.id.theLine);	
@@ -186,11 +195,22 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 
 				currentPosition = instructionID;
 				button.setLayoutParams(lp);
+				button.setOnClickListener(this);
 				instructionContainer.addView(button);
 				instructionContainer.setLayoutParams(instructionParameters);
+				//instructionContainer.setOnClickListener(this);
 				container.addView(instructionContainer);
+				instructionContainer.bringToFront();
 			}
-		}
+		}*/
+	}
+
+	public void updateColour(Instruction instruction, int instructionID){
+
+		Button button = (Button) findViewById(instructionID);
+		Box inst = (Box) instruction;
+
+		button.setBackgroundColor(registerColours[inst.register]);		
 	}
 
 	/**
@@ -200,18 +220,15 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 	 */
 	public void setRegisters(){
 
-		for (int i = 0; i<MAXREGISTERS; i++){
+		for (int i = 0; i<game.MAXREGISTERS; i++){
 
-			int resID = i;
+			int resID = registerIds[i];
 			Button b = (Button) findViewById(resID);
 			String data = game.getRegData(i) + "";
 			b.setText(data);
 		}
 	}
 
-	public int getMaxReg(){
-		return MAXREGISTERS;
-	}
 
 	/**
 	 * Takes click on register button and increments register                     
@@ -223,25 +240,37 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 	public void onClick(View v) {
 
 		int resid = v.getId();
+		boolean done = false;
 
-		if (resid>=0 && resid<10)
+		for (int i = 0; i<game.MAXREGISTERS; i++)
 		{
-			game.incrementReg(resid);
+			if (resid == registerIds[i])
+			{
+				game.incrementReg(i);
+				done = true;
+			}
 		}
 
-		else if (resid == R.id.new_arrow_button || resid == R.id.new_box_button || resid == R.id.new_end_button)
+		if (!done)
 		{
-			int prevInstructionId = game.newInstruction(resid);
-			
-			this.updateDisplay(prevInstructionId);
-		}
+			if (resid == R.id.new_arrow_button || resid == R.id.new_box_button || resid == R.id.new_end_button)
+			{
+				int prevInstructionId = game.newInstruction(resid);
+				this.updateDisplay(prevInstructionId);
+			}
 
-		else if(resid == R.id.run_button)
-		{
-			game.runGame();
-		}
+			else if(resid == R.id.run_button)
+			{
+				game.runGame();
+			}
 
-		//else if it's a instruction, do xyz.
+			else 
+			{
+				Instruction i = game.updateInstruction(resid);
+				Log.d("Caught instruction, id is", resid +"");
+				this.updateColour(i, resid);
+			}
+		}
 	}
 
 	/**
@@ -254,7 +283,15 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 	public boolean onLongClick(View v) {
 
 		int resid = v.getId();
-		game.zeroReg(resid);
+
+		for (int i = 0; i< game.MAXREGISTERS; i++)
+		{
+			if (resid == registerIds[i])
+			{
+				game.zeroReg(i);
+			}
+		}
+
 		return true;
 	}
 }

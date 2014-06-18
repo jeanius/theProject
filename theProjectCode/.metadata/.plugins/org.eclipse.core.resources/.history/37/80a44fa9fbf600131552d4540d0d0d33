@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<!-- Register names -->
+<resources>
+    <string-array
+        name="register_names">
+        <item>Register0</item>
+        <item>Register1</item>
+        <item>Register2</item>
+        <item>Register3</item>
+        <item>Register4</item>
+        <item>Register5</item>
+        <item>Register6</item>
+        <item>Register7</item>
+        <item>Register8</item>
+        <item>Register9</item>
+    </string-array>
+</resources>

@@ -16,10 +16,11 @@ public class Game {
 	private Instruction currPos;
 	private int [] registers;
 	private MainActivity activity;
+	final int MAXREGISTERS = 10;
 
 
 	/**
-	 * Constructor. Zeros all registers, instansiates instance variables.                
+	 * Constructor. Zeros all registers, instantiates instance variables.                
 	 * <p>
 	 * @return void
 	 */	
@@ -27,9 +28,9 @@ public class Game {
 		activity = a;
 		first = null;
 		last = null;
-		registers = new int [activity.getMaxReg()];
+		registers = new int [MAXREGISTERS];
 
-		for (int i = 0; i<activity.getMaxReg(); i++)
+		for (int i = 0; i<MAXREGISTERS; i++)
 		{
 			registers[i] = 0;
 		}
@@ -45,34 +46,38 @@ public class Game {
 	 * @param int. Targeted point of instruction
 	 * @return List<Instruction>
 	 */	
-	public List<Instruction> getInstructionList(int atPoint){
+	public List<Instruction> getInstructionList(int fromInst){
 
 		List<Instruction> instructionList = new ArrayList<Instruction>();
 
 		Instruction currentPosition = first;
-		int targetInstruction = atPoint;
-		boolean done = false;
-		
-		while (!done)
-		{
-			if (currentPosition.getId() == targetInstruction)
+		int targetInstruction = fromInst;
+
+		while(null != currentPosition){
+
+			if (targetInstruction == currentPosition.getId())
 			{
-				done = true;
+				while(null != currentPosition)
+				{
+					currentPosition = currentPosition.getSucc();
+					instructionList.add(currentPosition);
+				}
+			}	
+			else if (targetInstruction == 0)
+			{
+				while(null != currentPosition)
+				{
+					instructionList.add(currentPosition);
+					currentPosition = currentPosition.getSucc();	
+				}
 			}
-			
+
 			else
 			{
 				currentPosition = currentPosition.getSucc();
 			}
 		}
-		
-		while(null != currentPosition)
-		{
-			instructionList.add(currentPosition);
-			currentPosition = currentPosition.getSucc();
-		}
 
-		Log.d("This is the size of the instruction list", instructionList.size() +"");
 		return instructionList;
 	}
 
@@ -80,7 +85,7 @@ public class Game {
 	public int newInstruction(int resourceID){
 
 		Instruction instruction = null;
-		int returned = 0;
+		int previousInstruction = 0;
 
 		switch (resourceID) {
 		case R.id.new_arrow_button:
@@ -94,7 +99,6 @@ public class Game {
 			break;
 		}
 
-		
 		if (null == first)
 		{
 			first = instruction;
@@ -106,22 +110,45 @@ public class Game {
 			last.setSucc(instruction);
 			instruction.setPred(last);
 			last = instruction;
-			returned = instruction.getPred().getId();
+			previousInstruction = instruction.getPred().getId();
 		}
-		
+
 		if (Build.VERSION.SDK_INT >= 17 ) {
 			instruction.setId(View.generateViewId());
 		}
-		
+
 		else {
-			
+
 			instruction.setId(Util.generateViewId());
 		}
-		
-		return returned;
+
+		Log.d("Instruction ID is", instruction.getId() +"");
+
+		return previousInstruction;
 	}
 
-	public void updateIns(Object o){}
+	public Instruction updateInstruction(int instructionID){
+
+		Instruction currentPosition = first;
+		int targetInstruction = instructionID;
+
+		while(null != currentPosition){
+
+			if (targetInstruction == currentPosition.getId())
+			{	
+				if (currentPosition instanceof Box)
+				{
+					currentPosition.setRegister();
+				}
+			}	
+			else
+			{
+				currentPosition = currentPosition.getSucc();	
+			}
+		}
+
+		return currentPosition;
+	}
 
 	public void delBox(Instruction delete){}
 
@@ -193,4 +220,9 @@ public class Game {
 		registers[registerNum] = 0;;
 		activity.setRegisters();
 	}
+
+	public int getMaxReg(){
+		return MAXREGISTERS;
+	}
+	
 }

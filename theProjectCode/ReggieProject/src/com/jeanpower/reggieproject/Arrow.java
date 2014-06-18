@@ -49,8 +49,8 @@ public class Arrow implements Instruction{
 	}
 
 	@Override
-	public void setRegister(int register) {
-		// TODO Auto-generated method stub
+	public void setRegister() {
+		pred.getRegister();
 		
 	}
 

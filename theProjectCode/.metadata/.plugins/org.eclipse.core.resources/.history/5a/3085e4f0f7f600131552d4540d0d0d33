@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Register names -->
+<resources>
+     <register name="Register0">Register0</register>
+     <register name="Register1">Register1</register>
+     <register name="Register2">Register2</register>
+     <register name="Register3">Register3</register>
+     <register name="Register4">Register4</register>
+     <register name="Register5">Register5</register>
+     <register name="Register6">Register6</register>
+     <register name="Register7">Register7</register>
+     <register name="Register8">Register8</register>
+     <register name="Register9">Register9</register>
+        
+     <array name="rainbow">
+        <item>@register/Register0</item>
+        <item>@register/Register1</item>
+        <item>@register/Register2</item>
+        <item>@register/Register3</item>
+        <item>@register/Register4</item>
+        <item>@register/Register5</item>
+        <item>@register/Register6</item>
+        <item>@register/Register7</item>
+        <item>@register/Register8</item>
+        <item>@register/Register9</item>
+    </array>
+    
+</resources>

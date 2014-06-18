@@ -1,0 +1,83 @@
+package com.jeanpower.reggieproject;
+
+public class Box implements Instruction{
+	
+	int register;
+	private Game caller;
+	private Instruction succ;
+	private Instruction pred;
+	private boolean inc;
+	int identity;
+	
+	public Box(Game g){
+		 
+		inc = true;
+		register = 0;
+		caller = g;
+		succ = null;
+		pred = null;
+	}
+
+	@Override
+	public void dowork() {
+		
+		if (inc)
+		{
+			caller.incrementReg(register);
+		}
+		
+		else 
+		{
+			caller.decrementReg(register);
+		}
+	}
+
+	@Override
+	public void setSucc(Instruction successor) {	
+		succ = successor;
+		
+	}
+	
+	public boolean getType(){
+		return inc;
+		
+	}
+
+	@Override
+	public Instruction getSucc() {
+		return succ;
+	}
+
+	@Override
+	public void setPred(Instruction predecessor) {
+		
+		pred = predecessor;
+	}
+
+	@Override
+	public Instruction getPred() {
+		return pred;
+	}
+
+	@Override
+	public void setRegister(int register) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public int getRegister() {
+		return 0;
+	}
+
+	@Override
+	public void setId(int ID) {
+		identity = ID;
+	}
+	
+	@Override
+	public int getId() {
+		return identity;
+	}
+
+}

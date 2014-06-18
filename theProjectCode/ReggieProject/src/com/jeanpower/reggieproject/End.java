@@ -43,7 +43,7 @@ public class End implements Instruction{
 	}
 
 	@Override
-	public void setRegister(int register) {
+	public void setRegister() {
 		// TODO Auto-generated method stub
 		
 	}

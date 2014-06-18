@@ -2,7 +2,7 @@ package com.jeanpower.reggieproject;
 
 public class Box implements Instruction{
 	
-	private int register;
+	int register;
 	private Game caller;
 	private Instruction succ;
 	private Instruction pred;
@@ -60,15 +60,22 @@ public class Box implements Instruction{
 	}
 
 	@Override
-	public void setRegister(int register) {
-		// TODO Auto-generated method stub
+	public void setRegister() {
+
+		if (register<caller.MAXREGISTERS){
+			
+			register++;
+		}
 		
+		else
+		{
+			register = 0;
+		}
 	}
 
 	@Override
 	public int getRegister() {
-		// TODO Auto-generated method stub
-		return 0;
+		return register;
 	}
 
 	@Override

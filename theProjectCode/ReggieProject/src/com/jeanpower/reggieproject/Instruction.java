@@ -9,7 +9,7 @@ public interface Instruction {
 	public Instruction getSucc();
 	public void setPred(Instruction predecessor);
 	public Instruction getPred();
-	public void setRegister(int register);
+	public void setRegister();
 	public int getRegister();
 	public void setId(int ID);
 	public int getId();

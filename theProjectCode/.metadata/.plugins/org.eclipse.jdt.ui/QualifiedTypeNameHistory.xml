@@ -28,6 +28,6 @@
 <fullyQualifiedTypeName name="android.graphics.drawable.LayerDrawable"/>
 <fullyQualifiedTypeName name="android.graphics.ColorFilter"/>
 <fullyQualifiedTypeName name="android.graphics.PorterDuffColorFilter"/>
-<fullyQualifiedTypeName name="com.jeanpower.reggieproject.R.id"/>
 <fullyQualifiedTypeName name="android.graphics.Color"/>
+<fullyQualifiedTypeName name="com.jeanpower.reggieproject.R.id"/>
 </qualifiedTypeNameHistroy>

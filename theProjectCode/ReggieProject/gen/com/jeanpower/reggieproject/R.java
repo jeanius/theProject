@@ -10,6 +10,7 @@ package com.jeanpower.reggieproject;
 public final class R {
     public static final class array {
         public static final int rainbow=0x7f050000;
+        public static final int register_names=0x7f050001;
     }
     public static final class attr {
     }
@@ -60,6 +61,16 @@ public final class R {
         public static final int main=0x7f090000;
     }
     public static final class string {
+        public static final int Register0=0x7f070006;
+        public static final int Register1=0x7f070007;
+        public static final int Register2=0x7f070008;
+        public static final int Register3=0x7f070009;
+        public static final int Register4=0x7f07000a;
+        public static final int Register5=0x7f07000b;
+        public static final int Register6=0x7f07000c;
+        public static final int Register7=0x7f07000d;
+        public static final int Register8=0x7f07000e;
+        public static final int Register9=0x7f07000f;
         public static final int action_settings=0x7f070001;
         public static final int app_name=0x7f070000;
         public static final int arrow=0x7f070002;
