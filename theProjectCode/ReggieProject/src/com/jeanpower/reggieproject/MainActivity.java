@@ -4,37 +4,34 @@ package com.jeanpower.reggieproject;
 
 import java.util.List;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.content.res.Configuration;
-import android.gesture.GestureOverlayView.OnGestureListener;
+import android.content.res.TypedArray;
 import android.graphics.Color;
-import android.graphics.ColorFilter;
-import android.graphics.PorterDuffColorFilter;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.LayerDrawable;
-import android.text.Layout;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.Menu;
+import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.app.ActionBar;
-import android.graphics.PorterDuff;
 
-public class MainActivity extends Activity implements View.OnClickListener, View.OnLongClickListener{
+public class MainActivity extends Activity implements View.OnClickListener, View.OnLongClickListener, View.OnTouchListener{
 
 	private Game game;
 	private int[] registerColours;
 	private int[] registerIds;
+	private TypedArray instructionIcons;
+	private float theLineY;
+	private float origX = 0;
+	private float origY = 0;
+	private boolean clicked;
 
 	/**
 	 * Called when application is opened.                  
@@ -52,10 +49,14 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 		setContentView(R.layout.activity_main); 
 		game = new Game(this);
 
+		View v = findViewById(R.id.theLine);
+		theLineY = v.getY();
+
 		//Array of colours, from color.xml
 		registerColours = getResources().getIntArray(R.array.rainbow);
+		instructionIcons = getResources().obtainTypedArray(R.array.instruction_icons);
 		String[]registerNames = getResources().getStringArray(R.array.register_names);	
-		registerIds = new int[game.MAXREGISTERS];
+		registerIds = new int[game.MAXREGISTERS];	
 
 		for (int i = 0; i<game.MAXREGISTERS; i++){
 
@@ -125,7 +126,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 	public void onStart(){
 		super.onStart();
 	}
-
+	
 	/**
 	 * Updates action frame with instructions - boxes and arrows                 
 	 * <p>
@@ -137,17 +138,30 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 	 * @return void
 	 */
 
+	public void clearInstructions(ViewGroup vg){
+
+		int children = vg.getChildCount();
+
+		for(int i=0; i<children; i++) 
+		{
+			View currentChild = vg.getChildAt(i);
+
+			if (currentChild instanceof ImageButton) {
+				vg.removeView(currentChild);
+			}
+		}
+	}
+
+
 	@SuppressLint("NewApi")
 	public void updateDisplay(int fromInstruction){
 
 		RelativeLayout container = (RelativeLayout) findViewById(R.id.actionFrame);
-		Button button = new Button(this);
-		button.setOnClickListener(this);
-		container.addView(button);
-		
-		
+
+		//this.clearInstructions(container);
+
 		//Keep track of what instruction has been added
-		/*int currentPosition = fromInstruction;
+		int currentPosition = fromInstruction;
 
 		List<Instruction> list = game.getInstructionList(fromInstruction); //From the edited point
 
@@ -156,22 +170,17 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 			if (inst instanceof Box)
 			{
 				Box instruction = (Box) inst;
-				Button button = new Button(this);
-				button.setBackgroundColor(registerColours[instruction.register]); //The colour of the register held in this instruction
-				int instructionID = instruction.identity;  //BP in android is direct access
-				button.setId(instructionID);
+				ImageButton button = new ImageButton(this);
+				button.setBackgroundColor(Color.BLACK);
+				button.setImageResource(instructionIcons.getResourceId(instruction.register, -1));
+				//button.setScaleType(ScaleType.FIT_XY);
+				int instructionID = instruction.identity;
+				View v = findViewById(instructionID);
+				container.removeView(v);
+				button.setId(instructionID);//BP in android is direct access
 
 				//Have new layout for each button, as causes conflicts when not
 				RelativeLayout.LayoutParams instructionParameters = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-
-				//To give black border
-				LinearLayout instructionContainer = new LinearLayout(this);
-				LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT); 
-				lp.setMargins(1, 1, 1, 1); 
-				instructionContainer.setBackgroundColor(Color.BLACK);
-				instructionContainer.setLayoutParams(lp);
-				instructionContainer.setId(instructionID); //instruction container is same ID as button and instruction - treated as one object.
-
 
 				if (instruction.getType()) //If Increment
 				{
@@ -190,27 +199,24 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 
 				else
 				{
-					instructionParameters.addRule(RelativeLayout.RIGHT_OF, currentPosition); //Right of the 
+					instructionParameters.addRule(RelativeLayout.RIGHT_OF, currentPosition); //Right of the current instruction
 				}
 
 				currentPosition = instructionID;
-				button.setLayoutParams(lp);
-				button.setOnClickListener(this);
-				instructionContainer.addView(button);
-				instructionContainer.setLayoutParams(instructionParameters);
-				//instructionContainer.setOnClickListener(this);
-				container.addView(instructionContainer);
-				instructionContainer.bringToFront();
+				button.setLayoutParams(instructionParameters);
+				button.setOnTouchListener(this);
+
+				container.addView(button);
 			}
-		}*/
+		}
 	}
 
 	public void updateColour(Instruction instruction, int instructionID){
 
-		Button button = (Button) findViewById(instructionID);
+		ImageButton button = (ImageButton) findViewById(instructionID);
 		Box inst = (Box) instruction;
 
-		button.setBackgroundColor(registerColours[inst.register]);		
+		button.setImageResource(instructionIcons.getResourceId(inst.register, -1));		
 	}
 
 	/**
@@ -263,13 +269,6 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 			{
 				game.runGame();
 			}
-
-			else 
-			{
-				Instruction i = game.updateInstruction(resid);
-				Log.d("Caught instruction, id is", resid +"");
-				this.updateColour(i, resid);
-			}
 		}
 	}
 
@@ -291,7 +290,53 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 				game.zeroReg(i);
 			}
 		}
-
 		return true;
 	}
+
+	@Override
+	public boolean onTouch(View v, MotionEvent me) {
+
+		int resid = v.getId();
+		final float THRESHOLD = 13;
+
+		switch (me.getAction() & MotionEvent.ACTION_MASK) {
+		case MotionEvent.ACTION_DOWN:
+			origX = me.getX();
+			origY = me.getY();
+			clicked = true;
+			break;
+		case MotionEvent.ACTION_CANCEL:
+		case MotionEvent.ACTION_UP:
+			if (clicked) 
+			{
+				Log.d("This is click", "click");
+				Instruction i = game.updateInstruction(resid);
+				this.updateColour(i, resid);
+			}
+
+			else 
+			{
+				if (me.getY()<origY && me.getY()<theLineY)
+				{
+					int prevInstructionId = game.changeInstruction(resid);
+					this.updateDisplay(prevInstructionId);
+				}
+
+				else if (me.getY()>origY && me.getY()>theLineY)
+				{
+					int prevInstructionId = game.changeInstruction(resid);
+					this.updateDisplay(prevInstructionId);
+				}	
+			}
+			break;
+		case MotionEvent.ACTION_MOVE:
+			if (Math.abs(origX - me.getX()) > THRESHOLD || Math.abs(me.getX()) - origX > THRESHOLD || Math.abs(me.getY() - origY) > THRESHOLD || Math.abs(origY - me.getY()) > THRESHOLD) {
+				clicked = false;
+			}
+			break;
+		default:
+			break;
+		}
+		return true;
+	}		
 }

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="instruction_images">
+        <item>@drawable/blue</item>
+        <item>@drawable/brown</item>
+        <item>@drawable/green</item>
+        <item>@drawable/magenta</item>
+        <item>@drawable/orange</item>
+        <item>@drawable/pink</item>
+        <item>@drawable/purple</item>
+        <item>@drawable/red</item>
+        <item>@drawable/teal</item>
+        <item>@drawable/yellow</item>
+    </string-array>
+
+</resources>

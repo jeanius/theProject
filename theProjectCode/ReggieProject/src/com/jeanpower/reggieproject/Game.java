@@ -122,8 +122,6 @@ public class Game {
 			instruction.setId(Util.generateViewId());
 		}
 
-		Log.d("Instruction ID is", instruction.getId() +"");
-
 		return previousInstruction;
 	}
 
@@ -131,11 +129,14 @@ public class Game {
 
 		Instruction currentPosition = first;
 		int targetInstruction = instructionID;
+		boolean found = false;
 
-		while(null != currentPosition){
+		while(null != currentPosition && !found){
 
 			if (targetInstruction == currentPosition.getId())
 			{	
+				found = true;
+				
 				if (currentPosition instanceof Box)
 				{
 					currentPosition.setRegister();
@@ -150,6 +151,40 @@ public class Game {
 		return currentPosition;
 	}
 
+	public int changeInstruction(int instructionID){
+		
+		Instruction currentPosition = first;
+		int previousInstruction = 0;
+		int targetInstruction = instructionID;
+		boolean found = false;
+
+		while(null != currentPosition && !found){
+
+			if (targetInstruction == currentPosition.getId())
+			{	
+				found = true;
+				
+				if (currentPosition instanceof Box)
+				{
+					Box b = (Box) currentPosition;
+					b.setType();
+				}
+			}	
+			else
+			{
+				currentPosition = currentPosition.getSucc();	
+			}
+		}
+
+		if (targetInstruction != first.getId()){
+			
+			previousInstruction = currentPosition.getPred().getId();
+		}
+		
+		return previousInstruction;
+	}
+	
+	
 	public void delBox(Instruction delete){}
 
 	public void delArrow(Instruction delete){}

@@ -42,6 +42,19 @@ public class Box implements Instruction{
 		return inc;
 		
 	}
+	
+	public void setType(){
+		
+		if (inc)
+		{
+			inc = false;
+		}
+		
+		else 
+		{
+			inc = true;
+		}
+	}
 
 	@Override
 	public Instruction getSucc() {
@@ -61,14 +74,11 @@ public class Box implements Instruction{
 
 	@Override
 	public void setRegister() {
-
-		if (register<caller.MAXREGISTERS){
-			
-			register++;
-		}
 		
-		else
-		{
+		register++;
+
+		if (register>=caller.MAXREGISTERS){
+			
 			register = 0;
 		}
 	}

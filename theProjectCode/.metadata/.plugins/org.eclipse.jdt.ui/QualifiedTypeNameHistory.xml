@@ -12,8 +12,6 @@
 <fullyQualifiedTypeName name="android.widget.Button"/>
 <fullyQualifiedTypeName name="android.content.DialogInterface.OnClickListener"/>
 <fullyQualifiedTypeName name="android.text.Layout"/>
-<fullyQualifiedTypeName name="android.view.ViewGroup"/>
-<fullyQualifiedTypeName name="android.util.Log"/>
 <fullyQualifiedTypeName name="android.gesture.GestureOverlayView.OnGestureListener"/>
 <fullyQualifiedTypeName name="android.view.View.OnLongClickListener"/>
 <fullyQualifiedTypeName name="android.view.View.OnDragListener"/>
@@ -30,4 +28,10 @@
 <fullyQualifiedTypeName name="android.graphics.PorterDuffColorFilter"/>
 <fullyQualifiedTypeName name="android.graphics.Color"/>
 <fullyQualifiedTypeName name="com.jeanpower.reggieproject.R.id"/>
+<fullyQualifiedTypeName name="android.content.res.TypedArray"/>
+<fullyQualifiedTypeName name="android.widget.ImageButton"/>
+<fullyQualifiedTypeName name="android.widget.ImageView.ScaleType"/>
+<fullyQualifiedTypeName name="android.content.ClipData"/>
+<fullyQualifiedTypeName name="android.util.Log"/>
+<fullyQualifiedTypeName name="android.view.ViewGroup"/>
 </qualifiedTypeNameHistroy>

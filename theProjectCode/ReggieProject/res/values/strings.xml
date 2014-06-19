@@ -32,5 +32,18 @@
         <item>@string/Register8</item>
         <item>@string/Register9</item>
     </string-array> 
+      
+    <string-array name="instruction_icons">
+        <item>@drawable/teal</item>
+        <item>@drawable/red</item>
+        <item>@drawable/orange</item>
+        <item>@drawable/magenta</item>
+        <item>@drawable/green</item>    
+        <item>@drawable/blue</item>
+        <item>@drawable/yellow</item>
+        <item>@drawable/purple</item>
+        <item>@drawable/pink</item>   
+        <item>@drawable/brown</item>
+    </string-array>
     
 </resources>

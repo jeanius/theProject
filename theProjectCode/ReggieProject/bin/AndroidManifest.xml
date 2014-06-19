@@ -14,7 +14,8 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme" 
+        android:clearTaskOnLaunch="true"> <!-- Don't forget to remove this Jean! -->
         <activity
             android:name="com.jeanpower.reggieproject.MainActivity"
             android:screenOrientation="landscape" 
