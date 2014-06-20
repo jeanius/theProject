@@ -8,6 +8,7 @@ public class Box implements Instruction{
 	private Instruction pred;
 	private boolean inc;
 	int identity;
+	private DrawArrow da;
 	
 	public Box(Game g){
 		 
@@ -19,7 +20,7 @@ public class Box implements Instruction{
 	}
 
 	@Override
-	public void dowork() {
+	public void doWork() {
 		
 		if (inc)
 		{
@@ -41,6 +42,14 @@ public class Box implements Instruction{
 	public boolean getType(){
 		return inc;
 		
+	}
+	
+	public void setDA(DrawArrow d){
+		da = d;
+	}
+	
+	public DrawArrow getDA(){
+		return da;
 	}
 	
 	public void setType(){

@@ -1,0 +1,70 @@
+package com.jeanpower.reggieproject;
+
+public class Arrow implements Instruction{
+	
+	private Instruction toIns;
+	private Instruction pred;
+	private Instruction succ;
+	private Game caller;
+	private int register;
+	private int identity;
+
+	
+	public Arrow(Game g){
+		 
+		caller = g;
+		succ = null;
+		pred = null;
+	}
+	
+	
+	@Override
+	public void dowork() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setSucc(Instruction successor) {
+		succ = successor;
+		
+	}
+
+	@Override
+	public Instruction getSucc() {
+		return succ;
+	}
+
+	@Override
+	public void setPred(Instruction predecessor) {
+		pred = predecessor;
+		
+	}
+
+	@Override
+	public Instruction getPred() {
+		return pred;
+	}
+
+	@Override
+	public void setRegister() {
+		pred.getRegister();
+		
+	}
+
+	@Override
+	public int getRegister() {
+		return register;
+	}
+
+	@Override
+	public void setId(int ID) {
+		identity = ID;
+	}
+	
+	@Override
+	public int getId() {
+		return identity;
+	}
+
+}

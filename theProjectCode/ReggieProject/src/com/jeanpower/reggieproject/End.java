@@ -8,14 +8,13 @@ public class End implements Instruction{
 	public End(Game g){
 		 
 		caller = g;
-
 	}
 	
 	
 	@Override
-	public void dowork() {
-		// TODO Auto-generated method stub
-		
+	public void doWork() {
+	
+		caller.setCurrPos(null);
 	}
 
 	@Override

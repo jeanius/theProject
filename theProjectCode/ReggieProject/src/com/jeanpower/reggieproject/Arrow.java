@@ -2,12 +2,13 @@ package com.jeanpower.reggieproject;
 
 public class Arrow implements Instruction{
 	
-	private Instruction toIns;
+	private Instruction toInstruction;
 	private Instruction pred;
 	private Instruction succ;
 	private Game caller;
 	private int register;
 	private int identity;
+	private boolean loop;
 
 	
 	public Arrow(Game g){
@@ -19,33 +20,47 @@ public class Arrow implements Instruction{
 	
 	
 	@Override
-	public void dowork() {
-		// TODO Auto-generated method stub
+	public void doWork() {
 		
+		if (loop)
+		{
+			caller.setCurrPos(toInstruction);
+		}
+		
+		else
+		{
+			if (caller.getRegData(register) == 0)
+			{
+				caller.setCurrPos(toInstruction);
+			}
+			
+			else
+			{
+				caller.setCurrPos(succ);
+			}
+		}
+	
 	}
 
 	@Override
 	public void setSucc(Instruction successor) {
-		// TODO Auto-generated method stub
-		
+		succ = successor;
 	}
 
 	@Override
 	public Instruction getSucc() {
-		// TODO Auto-generated method stub
-		return null;
+		return succ;
 	}
 
 	@Override
 	public void setPred(Instruction predecessor) {
-		// TODO Auto-generated method stub
+		pred = predecessor;
 		
 	}
 
 	@Override
 	public Instruction getPred() {
-		// TODO Auto-generated method stub
-		return null;
+		return pred;
 	}
 
 	@Override
@@ -56,8 +71,7 @@ public class Arrow implements Instruction{
 
 	@Override
 	public int getRegister() {
-		// TODO Auto-generated method stub
-		return 0;
+		return register;
 	}
 
 	@Override
@@ -69,5 +83,22 @@ public class Arrow implements Instruction{
 	public int getId() {
 		return identity;
 	}
-
+	
+	public boolean getType(){
+		return loop;
+		
+	}
+	
+	public void setType(){
+		
+		if (loop)
+		{
+			loop = false;
+		}
+		
+		else 
+		{
+			loop = true;
+		}
+	}
 }

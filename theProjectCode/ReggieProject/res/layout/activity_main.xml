@@ -91,7 +91,7 @@
 	</ScrollView>	
 	
 	<LinearLayout 
-	    android:layout_width="fill_parent"
+	    android:layout_width="wrap_content"
         android:layout_height="fill_parent"
         android:orientation="vertical"
         android:layout_toRightOf="@id/ScrollVertical"
@@ -110,8 +110,8 @@
 	        	android:id="@+id/actionFrame"
 	        	android:layout_width="wrap_content"
 	        	android:layout_height="match_parent"
-	        	android:layout_gravity="center">
-		       	
+	        	android:layout_gravity="left">
+	        	
 	        	<View
 	        	    android:id="@+id/theLine"
 	        	    android:layout_width="match_parent"
@@ -119,7 +119,7 @@
 	        	    android:layout_centerInParent="true"
 	        	    android:background="@drawable/linegradient"
 	        	    android:padding="0dp">
-				</View>
+				</View> 
 	        	
 			</RelativeLayout>
 			

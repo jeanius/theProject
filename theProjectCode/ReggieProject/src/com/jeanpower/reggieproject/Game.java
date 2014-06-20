@@ -37,6 +37,12 @@ public class Game {
 	}
 
 	public void runGame(){
+		
+		currPos = first;
+		
+		while (null != currPos){
+			currPos.doWork();
+		}
 
 	}
 

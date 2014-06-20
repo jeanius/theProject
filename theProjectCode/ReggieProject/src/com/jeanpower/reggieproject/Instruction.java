@@ -4,7 +4,7 @@ public interface Instruction {
 	
 	
 
-	public void dowork();
+	public void doWork();
 	public void setSucc(Instruction successor);
 	public Instruction getSucc();
 	public void setPred(Instruction predecessor);

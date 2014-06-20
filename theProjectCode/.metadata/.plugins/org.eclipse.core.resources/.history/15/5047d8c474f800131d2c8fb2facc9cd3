@@ -1,0 +1,29 @@
+package com.jeanpower.reggieproject;
+
+import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.util.Log;
+import android.view.View;
+
+public class DrawArrow extends View {
+    Paint paint = new Paint();
+    View start;
+    View end;    
+
+    public DrawArrow(Context context, View startView, View endView) {
+        super(context);
+        paint.setColor(Color.YELLOW);        
+        start = startView;
+        end = endView;
+    }
+
+    public void onDraw(Canvas canvas) {
+    	
+    	Log.d("This is start", start + "");
+    	Log.d("This is end", end + "");
+            canvas.drawLine(start.getX(), start.getY(), end.getX(), end.getY(), paint);
+    }
+
+}
