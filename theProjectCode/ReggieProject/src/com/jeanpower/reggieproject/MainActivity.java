@@ -200,7 +200,9 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 				container.addView(button);
 
 				if (null != instruction.getPred() && instruction instanceof Box && instruction.getPred() instanceof Box){
-					DrawArrow connArr = new DrawArrow(this, findViewById(instruction.getPred().getId()), findViewById(currentPosition));
+					
+					DrawArrow connArr = new DrawArrow(this, findViewById(instruction.getPred().getId()), findViewById(currentPosition), container);
+					connArr.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 					container.addView(connArr);	
 					Box b = (Box) instruction.getPred();
 					b.setDA(connArr);
@@ -217,7 +219,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 			{
 				//TODO - End
 			}
-		}
+		}	
 	}
 
 	/**

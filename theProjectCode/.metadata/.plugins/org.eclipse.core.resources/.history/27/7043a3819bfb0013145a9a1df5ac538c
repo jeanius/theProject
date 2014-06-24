@@ -1,0 +1,57 @@
+package com.jeanpower.reggieproject;
+
+import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.util.Log;
+import android.view.View;
+
+public class DrawArrow extends View {
+    Paint paint = new Paint();
+    View start;
+    View end;  
+    double width;
+    double height = 5;
+
+    public DrawArrow(Context context, View startView, View endView) {
+        super(context);   
+        paint.setStrokeWidth(5);
+        paint.setStyle(Paint.Style.STROKE); 
+        start = startView;
+        end = endView;
+    }
+
+    public void onDraw(Canvas canvas) {
+    	
+    	 	paint.setColor(Color.BLACK);     
+    	 	width = Math.sqrt((end.getX() - start.getX())*2 + (end.getY() - start.getY())*2);
+    	 	Log.d("Width", width + "");
+            canvas.drawLine(start.getX() + (start.getWidth()/2), start.getY()+ (start.getHeight()/2), end.getX() + (end.getWidth()/2), end.getY() + (end.getHeight()/2), paint);
+    }
+    
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+
+    	int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+        int widthSize = MeasureSpec.getSize(widthMeasureSpec);
+        int heightMode = MeasureSpec.getMode(heightMeasureSpec);    
+        int heightSize = MeasureSpec.getSize(heightMeasureSpec);
+        Log.d("width size", widthSize +"");
+        
+        //Measure Width
+        if (widthMode == MeasureSpec.EXACTLY) {
+            width = widthSize;
+        } 
+        else if (widthMode == MeasureSpec.AT_MOST) {
+            width = Math.min(width, widthSize);
+        }
+        else {
+        	width = widthSize;
+        }
+
+        setMeasuredDimension((int)width, (int)height);
+       // Log.d("Width", width + "");
+        
+    }
+}

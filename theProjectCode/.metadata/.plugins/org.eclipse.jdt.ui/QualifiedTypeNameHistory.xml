@@ -19,12 +19,9 @@
 <fullyQualifiedTypeName name="android.view.View"/>
 <fullyQualifiedTypeName name="java.util.List"/>
 <fullyQualifiedTypeName name="java.util.ArrayList"/>
-<fullyQualifiedTypeName name="android.widget.RelativeLayout"/>
 <fullyQualifiedTypeName name="java.util.concurrent.atomic.AtomicInteger"/>
 <fullyQualifiedTypeName name="android.os.Build"/>
-<fullyQualifiedTypeName name="android.graphics.drawable.Drawable"/>
 <fullyQualifiedTypeName name="android.graphics.drawable.LayerDrawable"/>
-<fullyQualifiedTypeName name="android.graphics.ColorFilter"/>
 <fullyQualifiedTypeName name="android.graphics.PorterDuffColorFilter"/>
 <fullyQualifiedTypeName name="android.graphics.Color"/>
 <fullyQualifiedTypeName name="android.content.res.TypedArray"/>
@@ -38,4 +35,11 @@
 <fullyQualifiedTypeName name="com.jeanpower.reggieproject.R.string"/>
 <fullyQualifiedTypeName name="com.jeanpower.reggieproject.R.id"/>
 <fullyQualifiedTypeName name="android.util.Log"/>
+<fullyQualifiedTypeName name="android.widget.HorizontalScrollView"/>
+<fullyQualifiedTypeName name="android.widget.ImageView"/>
+<fullyQualifiedTypeName name="android.graphics.drawable.Drawable"/>
+<fullyQualifiedTypeName name="android.graphics.Canvas"/>
+<fullyQualifiedTypeName name="android.graphics.Paint"/>
+<fullyQualifiedTypeName name="android.graphics.ColorFilter"/>
+<fullyQualifiedTypeName name="android.widget.RelativeLayout"/>
 </qualifiedTypeNameHistroy>
