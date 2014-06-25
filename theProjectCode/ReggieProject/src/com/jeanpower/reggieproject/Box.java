@@ -2,13 +2,13 @@ package com.jeanpower.reggieproject;
 
 public class Box implements Instruction{
 	
-	int register;
+	private int register;
 	private Game caller;
 	private Instruction succ;
 	private Instruction pred;
 	private boolean inc;
-	int identity;
-	private DrawArrow da;
+	private int identity;
+	private ConnectLine line;
 	
 	public Box(Game g){
 		 
@@ -36,22 +36,20 @@ public class Box implements Instruction{
 	@Override
 	public void setSucc(Instruction successor) {	
 		succ = successor;
-		
 	}
 	
 	public boolean getType(){
 		return inc;
-		
 	}
 	
-	public void setDA(DrawArrow d){
-		da = d;
+	public void setConnect(ConnectLine cl){
+		line = cl;
 	}
 	
-	public DrawArrow getDA(){
-		return da;
+	public ConnectLine getConnect(){
+		return line;
 	}
-	
+
 	public void setType(){
 		
 		if (inc)
@@ -86,7 +84,7 @@ public class Box implements Instruction{
 		
 		register++;
 
-		if (register>=caller.MAXREGISTERS){
+		if (register>=caller.getMaxReg()){
 			
 			register = 0;
 		}
@@ -106,5 +104,4 @@ public class Box implements Instruction{
 	public int getId() {
 		return identity;
 	}
-
 }

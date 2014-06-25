@@ -1,0 +1,63 @@
+/**
+ * 
+ * To connect buttons on screen which represent INC/DEC instructions
+ * 
+*/
+
+package com.jeanpower.reggieproject;
+
+import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Path;
+import android.view.View;
+
+public class DrawArrow extends View {
+	Paint paint = new Paint();
+	Path path = new Path();
+	View start;
+	View end;  
+	View parentView;
+	int offset;
+	
+	public DrawArrow(Context context, View startView, View endView, View parent, int offsetNum) {
+
+		super(context);   
+		paint.setStrokeWidth(5);
+		paint.setStyle(Paint.Style.STROKE); 
+		start = startView;
+		end = endView; 
+		parentView = parent;
+		offset = offsetNum;
+	}
+
+	public void onDraw(Canvas canvas) {
+
+		float startX = start.getX();
+		float startWidth = start.getWidth();
+		float startHeight = start.getHeight();
+		float startY = start.getY();
+		float endX = end.getX();
+		float endY = end.getY();
+		
+		paint.setColor(Color.BLACK);    
+		path.moveTo((startX + (startWidth/2)), startY + (startHeight));
+		path.lineTo((startX + (startWidth/2)), (startY + startHeight + offset));
+		path.lineTo((endX + startWidth, endY + startHeight + offset);
+		
+		path.lineTo((endX + startWidth/2), (endY + startHeight + offset + startHeight/6));
+		path.lineTo(endX + ((startWidth/2 - (startWidth/5))), endY + startHeight + offset);
+		path.lineTo((endX + startWidth/2), endY + startHeight + offset - startHeight/6);
+		path.lineTo((endX + (startWidth/2)), endY + startHeight + offset);
+		
+		canvas.drawPath(path, paint);
+	}
+	
+
+	@Override
+	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+
+		setMeasuredDimension(parentView.getWidth(), parentView.getHeight());  
+	}
+}

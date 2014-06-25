@@ -16,6 +16,7 @@ public class Arrow implements Instruction{
 		caller = g;
 		succ = null;
 		pred = null;
+		loop = true;
 	}
 	
 	
@@ -55,7 +56,7 @@ public class Arrow implements Instruction{
 	@Override
 	public void setPred(Instruction predecessor) {
 		pred = predecessor;
-		
+		register = pred.getRegister();
 	}
 
 	@Override
@@ -65,8 +66,7 @@ public class Arrow implements Instruction{
 
 	@Override
 	public void setRegister() {
-		pred.getRegister();
-		
+		//?!!!
 	}
 
 	@Override
@@ -86,7 +86,6 @@ public class Arrow implements Instruction{
 	
 	public boolean getType(){
 		return loop;
-		
 	}
 	
 	public void setType(){
@@ -100,5 +99,13 @@ public class Arrow implements Instruction{
 		{
 			loop = true;
 		}
+	}
+	
+	public void setTo(Instruction to){
+		toInstruction = to;
+	}
+	
+	public Instruction getTo(){
+		return toInstruction;
 	}
 }

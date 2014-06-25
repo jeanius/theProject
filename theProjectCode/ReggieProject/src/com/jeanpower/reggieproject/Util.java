@@ -1,3 +1,9 @@
+/**
+ * 
+ * To provide unique IDs for dynamically added views.
+ * 
+*/
+
 package com.jeanpower.reggieproject;
 
 import java.util.concurrent.atomic.AtomicInteger;

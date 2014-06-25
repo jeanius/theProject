@@ -11,6 +11,7 @@ import android.app.Activity;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.graphics.LinearGradient;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MotionEvent;
@@ -26,14 +27,15 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 	private int[] registerColours;
 	private int[] registerIds;
 	private TypedArray instructionIcons;
-	private float origX = 0;
-	private float origY = 0;
+	private double origX = 0;
+	private double origY = 0;
 	private boolean clicked;
 	private Button arrowButton;
 	private Button endButton;
 	private Button runButton;
 	private boolean oneBox;
-	private float theLineY;
+	private double theLineY;
+	private int maxRegisters; //Duplication, but constant get is inefficient
 
 	/**
 	 * Called when application is opened.                  
@@ -51,33 +53,34 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 		setContentView(R.layout.activity_main); 
 		game = new Game(this);
 		instructionIcons = getResources().obtainTypedArray(R.array.instruction_icons);
-		oneBox = false;
+		oneBox = false; //To track if user has added a Box instruction, preventing arrow/run/end being called
 		theLineY = findViewById(R.id.theLine).getY();
+		maxRegisters = game.getMaxReg();
 
 		//Array of colours, from color.xml
 		registerColours = getResources().getIntArray(R.array.rainbow);
 
 		String[]registerNames = getResources().getStringArray(R.array.register_names);	
-		registerIds = new int[game.MAXREGISTERS];	
+		registerIds = new int[maxRegisters];	
 
-		for (int i = 0; i<game.MAXREGISTERS; i++){
+		for (int i = 0; i<maxRegisters; i++){
 
 			int resID = getResources().getIdentifier(registerNames[i] , "string", getPackageName());
 			registerIds[i] = resID;
 		}
 
 		LinearLayout container = (LinearLayout) findViewById(R.id.register_frame);
-		LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT); 
+		LinearLayout.LayoutParams regParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT); 
 
 		//To give black border
-		lp.setMargins(1, 1, 1, 1); 
+		regParams.setMargins(1, 1, 1, 1); 
 		container.setBackgroundColor(Color.BLACK);
 
-		for (int i = 0; i<game.MAXREGISTERS; i++){
+		for (int i = 0; i<maxRegisters; i++){
 
 			Button button = (Button) findViewById(registerIds[i]);
 			button.setText(game.getRegData(i) + ""); //Set initial text to 0			
-			button.setLayoutParams(lp); //For wrap content	
+			button.setLayoutParams(regParams); //For wrap content	
 
 			button.setBackgroundColor(registerColours[i]);	
 
@@ -148,30 +151,37 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 
 		RelativeLayout container = (RelativeLayout) findViewById(R.id.actionFrame);
 
-		//Keep track of what instruction has been added, and its previous
+		//Keep track of what instruction has been added
 		int currentPosition = fromInstruction;
+		//Offsets for arrows
+		int offsetAbove = 30; //TODO - think about this, because editing won't update all previous arrows
+		int offsetBelow = -30;
 
 		List<Instruction> list = game.getInstructionList(fromInstruction); //From the edited point
 
 		for(Instruction inst: list)
 		{			
+			
 			if (inst instanceof Box)
 			{
-				Box instruction = (Box) inst;
+				Box box = (Box) inst; //Box to be added
+				Box prevInstruction = null;
 				ImageButton button = new ImageButton(this);
 				button.setBackgroundColor(Color.BLACK);
-				button.setImageResource(instructionIcons.getResourceId(instruction.register, -1));
-				int instructionID = instruction.identity;				
+				button.setImageResource(instructionIcons.getResourceId(box.getRegister(), -1));
+				int instructionID = box.getId();				
 
 				View v = findViewById(instructionID); //If already there, remove to allow redraw
 				container.removeView(v);
 
-				button.setId(instructionID);//BP in android is direct access
+				button.setId(instructionID); //Connecting onscreen button with instruction
+				
+				//TODO - Could instruction extend Button?
 
 				//Have new layout for each button, as causes conflicts when not
 				RelativeLayout.LayoutParams instructionParameters = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 
-				if (instruction.getType()) //If Increment
+				if (box.getType()) //If Increment
 				{
 					instructionParameters.addRule(RelativeLayout.ALIGN_BOTTOM, R.id.theLine);	
 				}
@@ -181,6 +191,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 					instructionParameters.addRule(RelativeLayout.ALIGN_TOP, R.id.theLine);
 				}
 
+				
 				if (currentPosition <= 0)
 				{
 					instructionParameters.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
@@ -189,30 +200,55 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 				else
 				{
 					instructionParameters.addRule(RelativeLayout.RIGHT_OF, currentPosition); //Right of the current instruction
-					Box b = (Box) instruction.getPred();
-					container.removeView(b.getDA());
+					
+					//If previous instruction is also a box, remove the connecting arrow, to allow refresh
+					if (box.getPred() instanceof Box)
+					{
+					prevInstruction = (Box) box.getPred();
+					container.removeView(prevInstruction.getConnect());
+					}
 				}
 
 				currentPosition = instructionID;
 				button.setLayoutParams(instructionParameters);
 				button.setOnTouchListener(this);
-
 				container.addView(button);
+				
+				
+				if (null != prevInstruction){
 
-				if (null != instruction.getPred() && instruction instanceof Box && instruction.getPred() instanceof Box){
-					
-					DrawArrow connArr = new DrawArrow(this, findViewById(instruction.getPred().getId()), findViewById(currentPosition), container);
-					connArr.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-					container.addView(connArr);	
-					Box b = (Box) instruction.getPred();
-					b.setDA(connArr);
-					connArr.bringToFront();
+					ConnectLine connLine = new ConnectLine(this, findViewById(box.getPred().getId()), findViewById(currentPosition), container);
+					container.addView(connLine);	
+					prevInstruction.setConnect(connLine);
 				}
+
 			}
 
 			else if (inst instanceof Arrow)
 			{
-				//TODO - Arrow
+				Arrow arrow = (Arrow) inst;
+				int instructionID = arrow.getId();
+				//Control placement of arrows above/below the line
+
+				DrawArrow drawarrow = new DrawArrow(this, findViewById(arrow.getPred().getId()), findViewById(arrow.getPred().getPred().getId()), container);
+				drawarrow.setColours(registerColours[arrow.getPred().getRegister()], registerColours[arrow.getPred().getPred().getRegister()]);
+				drawarrow.setOffset(offsetAbove);
+				
+				if (arrow.getType() && null != arrow.getTo()){
+					drawarrow.setOffset(offsetAbove);
+					offsetAbove ++;
+				}
+				
+				else if  (arrow.getType() && null != arrow.getTo())
+				{
+					drawarrow.setOffset(offsetBelow);
+					offsetBelow --;
+				}	
+
+				View v = findViewById(instructionID); //If already there, remove to allow redraw
+				container.removeView(v);
+				drawarrow.setId(instructionID); //Needed?
+				container.addView(drawarrow);
 			}
 
 			else if (inst instanceof End)
@@ -234,7 +270,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 		ImageButton button = (ImageButton) findViewById(instructionID);
 		Box inst = (Box) instruction;
 
-		button.setImageResource(instructionIcons.getResourceId(inst.register, -1));		
+		button.setImageResource(instructionIcons.getResourceId(inst.getRegister(), -1));		
 	}
 
 	/**
@@ -244,7 +280,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 	 */
 	public void setRegisters(){
 
-		for (int i = 0; i<game.MAXREGISTERS; i++){
+		for (int i = 0; i<maxRegisters; i++){
 
 			int resID = registerIds[i];
 			Button b = (Button) findViewById(resID);
@@ -266,7 +302,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 		int resid = v.getId();
 		boolean done = false;
 
-		for (int i = 0; i<game.MAXREGISTERS; i++)
+		for (int i = 0; i<maxRegisters; i++)
 		{
 			if (resid == registerIds[i])
 			{
@@ -310,7 +346,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 
 		int resid = v.getId();
 
-		for (int i = 0; i< game.MAXREGISTERS; i++)
+		for (int i = 0; i<maxRegisters; i++)
 		{
 			if (resid == registerIds[i])
 			{
@@ -324,8 +360,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 	public boolean onTouch(View v, MotionEvent me) {
 
 		int resid = v.getId();
-		final float THRESHOLD = 13;
-
+		final int THRESHOLD = 13;
 
 		switch (me.getAction() & MotionEvent.ACTION_MASK) {
 
@@ -336,6 +371,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 			break;
 
 		case MotionEvent.ACTION_CANCEL:
+			break;
 
 		case MotionEvent.ACTION_UP:
 			if (clicked) 
@@ -345,7 +381,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 			}
 
 			else 
-			{
+			{//TODO - This changes position every time.
 				if (me.getY()<origY && me.getY()<theLineY)
 				{
 					int prevInstructionId = game.changeInstruction(resid);
@@ -359,6 +395,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 				}	
 			}
 			break;
+			
 		case MotionEvent.ACTION_MOVE:
 			if (Math.abs(origX - me.getX()) > THRESHOLD || Math.abs(me.getX()) - origX > THRESHOLD || Math.abs(me.getY() - origY) > THRESHOLD || Math.abs(origY - me.getY()) > THRESHOLD) {
 				clicked = false;

@@ -96,8 +96,7 @@
         android:orientation="vertical"
         android:layout_toRightOf="@id/ScrollVertical"
         android:weightSum="100"
-        android:baselineAligned="false"
-        android:background="@color/teal">"
+        android:baselineAligned="false">
 
 	    <HorizontalScrollView
 	    	android:id="@+id/scrollHorizontal"
@@ -105,15 +104,13 @@
 	    	android:layout_height="0dip"
 	   		android:fillViewport="true"
 	   		android:layout_weight="85"
-	   		android:layout_gravity="center"
-	   		android:background="@color/yellow">
+	   		android:layout_gravity="center">
 		       	
 			<RelativeLayout
 	        	android:id="@+id/actionFrame"
 	        	android:layout_width="wrap_content"
 	        	android:layout_height="match_parent"
-	        	android:layout_gravity="left"
-	        	android:background="@color/brown">
+	        	android:layout_gravity="left">
 	        
 	        	<View
 	        	    android:id="@+id/theLine"

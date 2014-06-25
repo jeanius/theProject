@@ -16,7 +16,7 @@ public class Game {
 	private Instruction currPos;
 	private int [] registers;
 	private MainActivity activity;
-	final int MAXREGISTERS = 10;
+	private final int MAXREGISTERS = 10;
 
 
 	/**
@@ -43,7 +43,6 @@ public class Game {
 		while (null != currPos){
 			currPos.doWork();
 		}
-
 	}
 
 	/**
@@ -92,7 +91,7 @@ public class Game {
 
 		Instruction instruction = null;
 		int previousInstruction = 0;
-
+		
 		switch (resourceID) {
 		case R.id.new_arrow_button:
 			instruction = new Arrow(this);
@@ -105,12 +104,14 @@ public class Game {
 			break;
 		}
 
-		if (null == first)
+		
+		if (null == first) //Can only be a box.
 		{
 			first = instruction;
 			last = instruction;
 			instruction.setSucc(null);
 		}
+		
 
 		else {
 			last.setSucc(instruction);
@@ -118,6 +119,8 @@ public class Game {
 			last = instruction;
 			previousInstruction = instruction.getPred().getId();
 		}
+
+
 
 		if (Build.VERSION.SDK_INT >= 17 ) {
 			instruction.setId(View.generateViewId());
@@ -127,7 +130,7 @@ public class Game {
 
 			instruction.setId(Util.generateViewId());
 		}
-
+		
 		return previousInstruction;
 	}
 

@@ -1,38 +1,78 @@
+/**
+ * 
+ * To connect buttons on screen which represent INC/DEC instructions
+ * 
+*/
+
 package com.jeanpower.reggieproject;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.LinearGradient;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.util.Log;
 import android.view.View;
-import android.widget.RelativeLayout;
+import android.graphics.Shader;
 
 public class DrawArrow extends View {
 	Paint paint = new Paint();
+	Path path = new Path();
 	View start;
 	View end;  
-	RelativeLayout rl;
-
-	public DrawArrow(Context context, View startView, View endView, RelativeLayout container) {
+	View parentView;
+	int offset;
+	int startColour;
+	int endColour;
+	LinearGradient lg;
+	
+	public DrawArrow(Context context, View startView, View endView, View parent) {
 
 		super(context);   
 		paint.setStrokeWidth(5);
 		paint.setStyle(Paint.Style.STROKE); 
 		start = startView;
 		end = endView; 
-		rl = container;
+		parentView = parent;	
 	}
 
 	public void onDraw(Canvas canvas) {
 
-		paint.setColor(Color.BLACK);     
-		canvas.drawLine(start.getX() + (start.getWidth()/2), start.getY()+ (start.getHeight()/2), end.getX() + (end.getWidth()/2), end.getY() + (end.getHeight()/2), paint);   
+		float startX = start.getX();
+		float startWidth = start.getWidth();
+		float startHeight = start.getHeight();
+		float startY = start.getY();
+		float endX = end.getX();
+		float endY = end.getY();
+		   
+		path.moveTo((startX + (startWidth/2)), startY + (startHeight));
+		path.lineTo((startX + (startWidth/2)), (startY + startHeight + offset));
+		path.lineTo(endX + startWidth, endY + startHeight + offset);
+		
+		path.lineTo((endX + startWidth), (endY + startHeight + offset + startHeight/6));
+		path.lineTo(endX + (startWidth/2), endY + startHeight + offset);
+		path.lineTo((endX + startWidth), endY + startHeight + offset - startHeight/6);
+		path.lineTo((endX + startWidth), endY + startHeight + offset);
+		
+		
+		paint.setShader(lg);
+		canvas.drawPath(path, paint);
+	}
+	
+	public void setOffset(int offsetNum){
+		offset = offsetNum;
 	}
 
+	public void setColours(int startC, int endC){
+		startColour = startC;
+		endColour = endC;
+		lg = new LinearGradient(start.getX() + start.getWidth(), start.getY(), end.getX(), end.getY(), startColour, endColour, Shader.TileMode.MIRROR);
+	}
+	
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 
-		setMeasuredDimension(rl.getWidth(), rl.getHeight());  
+		setMeasuredDimension(parentView.getWidth(), parentView.getHeight());  
 	}
 }
