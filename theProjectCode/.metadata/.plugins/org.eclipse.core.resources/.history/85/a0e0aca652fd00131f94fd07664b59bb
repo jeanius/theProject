@@ -1,0 +1,89 @@
+/**
+ * 
+ * To connect buttons on screen which represent INC/DEC instructions
+ * 
+*/
+
+package com.jeanpower.reggieproject;
+
+import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.LinearGradient;
+import android.graphics.Paint;
+import android.graphics.Path;
+import android.util.Log;
+import android.view.View;
+import android.graphics.Shader;
+
+public class DrawArrow extends View {
+	Paint paint = new Paint();
+	Path path = new Path();
+	View start;
+	View end;  
+	View parentView;
+	int offset = 0;
+	int startColour;
+	int endColour;
+	LinearGradient lg;
+	float startX;
+	float startWidth;
+	float startHeight;
+	float startY;
+	float endX;
+	float endY;
+	
+	public DrawArrow(Context context, View startView, View endView, View parent) {
+
+		super(context);   
+		paint.setStrokeWidth(5);
+		paint.setStyle(Paint.Style.STROKE); 
+		start = startView;
+		end = endView; 
+		parentView = parent;	
+	}
+
+	public void onDraw(Canvas canvas) {
+
+		startX = start.getX();
+		startWidth = start.getWidth();
+		startHeight = start.getHeight();
+		startY = start.getY();
+		endX = end.getX();
+		endY = end.getY();
+		
+		Log.d("This is x - x", startX - endX + "");   
+		
+		path.moveTo((startX + (startWidth/2)), startY + (startHeight));
+		path.lineTo((startX + (startWidth/2)), (startY + startHeight + offset));
+		path.lineTo(endX + startWidth, endY + startHeight + offset);
+		
+		path.lineTo((endX + startWidth), (endY + startHeight + offset + startHeight/6));
+		path.lineTo(endX + (startWidth/2), endY + startHeight + offset);
+		path.lineTo((endX + startWidth), endY + startHeight + offset - startHeight/6);
+		path.lineTo((endX + startWidth), endY + startHeight + offset);
+		
+		paint.setShader(lg);
+		canvas.drawPath(path, paint);
+	}
+	
+	public void setOffset(int offsetNum){
+		offset = offsetNum;
+	}
+
+	public void setColours(int startC, int endC){
+		startColour = startC;
+		endColour = endC;
+		lg = new LinearGradient(start.getX() + start.getWidth(), start.getY(), end.getX(), end.getY(), startColour, endColour, Shader.TileMode.MIRROR);
+	}
+	
+	@Override
+	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+		
+		int width = (int) startX - endX + startWidth;
+		
+		setMeasuredDimension(s, parentView.getHeight());  
+
+    Log.d("This is x - x", startX - endX + "");
+	}
+}

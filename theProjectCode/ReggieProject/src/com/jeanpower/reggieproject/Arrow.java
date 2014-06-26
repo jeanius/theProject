@@ -9,6 +9,7 @@ public class Arrow implements Instruction{
 	private int register;
 	private int identity;
 	private boolean loop;
+	private int spaces;
 
 	
 	public Arrow(Game g){
@@ -57,6 +58,37 @@ public class Arrow implements Instruction{
 	public void setPred(Instruction predecessor) {
 		pred = predecessor;
 		register = pred.getRegister();
+		this.calculateSpaces();
+	}
+	
+	public void calculateSpaces(){
+		
+		int count = 1;
+		Instruction currPos = pred;
+		
+		if (loop && toInstruction != null){
+			
+			while (currPos.getId() != toInstruction.getId() && currPos != null){
+				
+				count ++;
+				currPos = currPos.getPred();
+			}
+		}
+		
+		else if (!loop && toInstruction !=null){
+
+			while (currPos.getId() != toInstruction.getId() && currPos != null){
+				
+				count ++;
+				currPos = currPos.getSucc();
+			}
+		}
+		
+		spaces = count;
+	}
+	
+	public int getSpaces(){
+		return spaces;
 	}
 
 	@Override
@@ -103,6 +135,7 @@ public class Arrow implements Instruction{
 	
 	public void setTo(Instruction to){
 		toInstruction = to;
+		this.calculateSpaces();
 	}
 	
 	public Instruction getTo(){

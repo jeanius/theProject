@@ -111,16 +111,21 @@ public class Game {
 			last = instruction;
 			instruction.setSucc(null);
 		}
-		
-
+	
 		else {
+
 			last.setSucc(instruction);
 			instruction.setPred(last);
 			last = instruction;
+			
+			if (instruction instanceof Arrow){
+				
+				Arrow arrow = (Arrow) instruction;
+				arrow.setTo(last.getPred());
+			}
+			
 			previousInstruction = instruction.getPred().getId();
 		}
-
-
 
 		if (Build.VERSION.SDK_INT >= 17 ) {
 			instruction.setId(View.generateViewId());
@@ -177,6 +182,15 @@ public class Game {
 				{
 					Box b = (Box) currentPosition;
 					b.setType();
+				}
+				
+				else if (currentPosition instanceof Arrow)
+				{
+					Arrow a = (Arrow) currentPosition;
+					a.setType();
+					Instruction goTo = a.getTo();
+					a.setTo(a.getPred());
+					a.setPred(goTo);
 				}
 			}	
 			else

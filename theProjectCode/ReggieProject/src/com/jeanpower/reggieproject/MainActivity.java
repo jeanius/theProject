@@ -8,11 +8,19 @@ import android.os.Bundle;
 import android.annotation.SuppressLint;
 import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
+import android.content.ClipData;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.DragEvent;
+import android.view.GestureDetector.OnGestureListener;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
@@ -27,15 +35,18 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 	private int[] registerColours;
 	private int[] registerIds;
 	private TypedArray instructionIcons;
-	private double origX = 0;
-	private double origY = 0;
-	private boolean clicked;
 	private Button arrowButton;
 	private Button endButton;
 	private Button runButton;
 	private boolean oneBox;
 	private double theLineY;
 	private int maxRegisters; //Duplication, but constant get is inefficient
+	private double origX = 0; //For box movements
+	private double origY = 0;
+	private double arrowX = 0; //For arrow movements
+	private double arrowY = 0;
+	private boolean clicked;
+	private boolean arrowHead;
 
 	/**
 	 * Called when application is opened.                  
@@ -153,15 +164,16 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 
 		//Keep track of what instruction has been added
 		int currentPosition = fromInstruction;
+
 		//Offsets for arrows
 		int offsetAbove = 30; //TODO - think about this, because editing won't update all previous arrows
 		int offsetBelow = -30;
 
 		List<Instruction> list = game.getInstructionList(fromInstruction); //From the edited point
+		Log.d("This is the size of the list", list.size() + "");
 
 		for(Instruction inst: list)
 		{			
-			
 			if (inst instanceof Box)
 			{
 				Box box = (Box) inst; //Box to be added
@@ -175,7 +187,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 				container.removeView(v);
 
 				button.setId(instructionID); //Connecting onscreen button with instruction
-				
+
 				//TODO - Could instruction extend Button?
 
 				//Have new layout for each button, as causes conflicts when not
@@ -191,7 +203,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 					instructionParameters.addRule(RelativeLayout.ALIGN_TOP, R.id.theLine);
 				}
 
-				
+
 				if (currentPosition <= 0)
 				{
 					instructionParameters.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
@@ -199,56 +211,89 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 
 				else
 				{
-					instructionParameters.addRule(RelativeLayout.RIGHT_OF, currentPosition); //Right of the current instruction
-					
+					Instruction checking = box.getPred();
+
+					//To add next to previous box
+					while (checking instanceof Arrow){
+
+						checking = checking.getPred();
+					}
+
 					//If previous instruction is also a box, remove the connecting arrow, to allow refresh
 					if (box.getPred() instanceof Box)
 					{
-					prevInstruction = (Box) box.getPred();
-					container.removeView(prevInstruction.getConnect());
+						prevInstruction = (Box) box.getPred();
+						container.removeView(prevInstruction.getConnect());
 					}
+
+					instructionParameters.addRule(RelativeLayout.RIGHT_OF, checking.getId()); //Right of the current instruction
 				}
+
+				//Redraw the line
+				RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+				params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
+				Resources r = getResources();
+				float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, r.getDisplayMetrics());
+				params.width = container.getWidth();
+				params.height = (int) px;
+				View line = findViewById(R.id.theLine);
+				line.setLayoutParams(params);
+
 
 				currentPosition = instructionID;
 				button.setLayoutParams(instructionParameters);
 				button.setOnTouchListener(this);
 				container.addView(button);
-				
-				
+
 				if (null != prevInstruction){
 
 					ConnectLine connLine = new ConnectLine(this, findViewById(box.getPred().getId()), findViewById(currentPosition), container);
 					container.addView(connLine);	
 					prevInstruction.setConnect(connLine);
 				}
-
 			}
 
 			else if (inst instanceof Arrow)
-			{
+			{	
 				Arrow arrow = (Arrow) inst;
 				int instructionID = arrow.getId();
-				//Control placement of arrows above/below the line
 
-				DrawArrow drawarrow = new DrawArrow(this, findViewById(arrow.getPred().getId()), findViewById(arrow.getPred().getPred().getId()), container);
-				drawarrow.setColours(registerColours[arrow.getPred().getRegister()], registerColours[arrow.getPred().getPred().getRegister()]);
-				drawarrow.setOffset(offsetAbove);
-				
-				if (arrow.getType() && null != arrow.getTo()){
-					drawarrow.setOffset(offsetAbove);
-					offsetAbove ++;
+				//Control placement of arrows above/below the line
+				View pred = findViewById(arrow.getPred().getId());
+				View goTo = findViewById(arrow.getTo().getId());			
+
+				DrawArrow drawArrow = new DrawArrow(pred, goTo, arrow.getSpaces());
+				drawArrow.setColours(registerColours[arrow.getPred().getRegister()], registerColours[arrow.getTo().getRegister()]);
+				Bitmap arrowPicture = drawArrow.getImage();
+
+				ImageButton arrowButton = new ImageButton(this);
+				//arrowButton.setBackgroundColor(Color.TRANSPARENT);
+				arrowButton.setImageBitmap(arrowPicture);
+
+				RelativeLayout.LayoutParams arrowParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+				if (arrow.getType()){
+					arrowParams.addRule(RelativeLayout.ABOVE, arrow.getPred().getId());
+					arrowParams.addRule(RelativeLayout.ALIGN_RIGHT, arrow.getPred().getId());
 				}
-				
-				else if  (arrow.getType() && null != arrow.getTo())
+
+				else if (!arrow.getType())
 				{
-					drawarrow.setOffset(offsetBelow);
-					offsetBelow --;
+					arrowParams.addRule(RelativeLayout.BELOW, arrow.getPred().getId());
+					arrowParams.addRule(RelativeLayout.ALIGN_LEFT, arrow.getPred().getId());
 				}	
 
+
+				arrowButton.setLayoutParams(arrowParams);
+
+				currentPosition = instructionID;
 				View v = findViewById(instructionID); //If already there, remove to allow redraw
 				container.removeView(v);
-				drawarrow.setId(instructionID); //Needed?
-				container.addView(drawarrow);
+				arrowButton.setId(instructionID); //Needed?
+				//drawarrow.setOnDragListener(this);
+				//drawarrow.setOnLongClickListener(this);
+				//drawarrow.setBackgroundColor(registerColours[2]);
+				container.addView(arrowButton);
 			}
 
 			else if (inst instanceof End)
@@ -332,6 +377,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 			{
 				game.runGame();
 			}
+
 		}
 	}
 
@@ -344,6 +390,8 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 	@Override
 	public boolean onLongClick(View v) {
 
+		boolean done = false;
+
 		int resid = v.getId();
 
 		for (int i = 0; i<maxRegisters; i++)
@@ -351,8 +399,16 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 			if (resid == registerIds[i])
 			{
 				game.zeroReg(i);
+				done = true;
 			}
 		}
+
+		if (!done){
+
+			int prevInstructionId = game.changeInstruction(resid);
+			this.updateDisplay(prevInstructionId);	
+		}
+
 		return true;
 	}
 
@@ -362,48 +418,101 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 		int resid = v.getId();
 		final int THRESHOLD = 13;
 
-		switch (me.getAction() & MotionEvent.ACTION_MASK) {
+		if (v instanceof ImageButton){
+			switch (me.getAction() & MotionEvent.ACTION_MASK) {
 
-		case MotionEvent.ACTION_DOWN:
-			origX = me.getX();
-			origY = me.getY();
-			clicked = true;
-			break;
+			case MotionEvent.ACTION_DOWN:
+				origX = me.getX();
+				origY = me.getY();
+				clicked = true;
+				break;
 
-		case MotionEvent.ACTION_CANCEL:
-			break;
+			case MotionEvent.ACTION_CANCEL:
+				break;
 
-		case MotionEvent.ACTION_UP:
-			if (clicked) 
-			{
-				Instruction i = game.updateInstruction(resid);
-				this.updateColour(i, resid);
-			}
-
-			else 
-			{//TODO - This changes position every time.
-				if (me.getY()<origY && me.getY()<theLineY)
+			case MotionEvent.ACTION_UP:
+				if (clicked) 
 				{
-					int prevInstructionId = game.changeInstruction(resid);
-					this.updateDisplay(prevInstructionId);
+					Instruction i = game.updateInstruction(resid);
+					this.updateColour(i, resid);
 				}
 
-				else if (me.getY()>origY && me.getY()>theLineY)
-				{
-					int prevInstructionId = game.changeInstruction(resid);
-					this.updateDisplay(prevInstructionId);
-				}	
+				else 
+				{//TODO - This changes position every time.
+					if (me.getY()<origY && me.getY()<theLineY)
+					{
+						int prevInstructionId = game.changeInstruction(resid);
+						this.updateDisplay(prevInstructionId);
+					}
+
+					else if (me.getY()>origY && me.getY()>theLineY)
+					{
+						int prevInstructionId = game.changeInstruction(resid);
+						this.updateDisplay(prevInstructionId);
+					}	
+				}
+				break;
+
+			case MotionEvent.ACTION_MOVE:
+				if (Math.abs(origX - me.getX()) > THRESHOLD || Math.abs(me.getX()) - origX > THRESHOLD || Math.abs(me.getY() - origY) > THRESHOLD || Math.abs(origY - me.getY()) > THRESHOLD) {
+					clicked = false;
+				}
+				break;
+
+			default:
+
+				break;
 			}
-			break;
-			
-		case MotionEvent.ACTION_MOVE:
-			if (Math.abs(origX - me.getX()) > THRESHOLD || Math.abs(me.getX()) - origX > THRESHOLD || Math.abs(me.getY() - origY) > THRESHOLD || Math.abs(origY - me.getY()) > THRESHOLD) {
-				clicked = false;
-			}
-			break;
-		default:
-			break;
 		}
 		return true;
-	}		
+	}
+	/*
+	@Override
+	public boolean onDrag(View v, DragEvent de) {
+
+		switch (de.getAction()){
+
+		case DragEvent.ACTION_DRAG_STARTED:
+
+			if (v instanceof DrawArrow){
+				arrowX = de.getX();
+				arrowY = de.getY();
+
+				if (arrowX < (v.getX() + v.getWidth()/2) && v.getY()>theLineY){
+
+					arrowHead = true;
+				}
+
+				else if (arrowX > (v.getX() + v.getWidth()/2) && v.getY()<theLineY){
+					arrowHead = true;
+				}
+
+				else{
+
+					arrowHead = false;
+				}
+			}
+			break;
+
+		case DragEvent.ACTION_DRAG_ENTERED:
+
+			if (v instanceof ImageButton){
+				v.getBackground().setAlpha(128);
+			}
+
+			break;
+
+		case DragEvent.ACTION_DRAG_EXITED:
+
+			if (v instanceof ImageButton){
+				v.getBackground().setAlpha(255);
+			}
+			break;
+
+		case DragEvent.ACTION_DRAG_LOCATION:
+
+		}
+
+		return false;
+	}		*/
 }

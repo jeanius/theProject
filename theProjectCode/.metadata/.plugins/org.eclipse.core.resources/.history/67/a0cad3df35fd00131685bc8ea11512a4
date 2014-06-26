@@ -1,0 +1,7 @@
+package com.jeanpower.reggieproject;
+
+import android.view.View.DragShadowBuilder;
+
+public class DragShadow extends DragShadowBuilder {
+
+}
