@@ -6,13 +6,13 @@ import java.util.ArrayList;
 import java.util.List;
 import android.annotation.SuppressLint;
 import android.os.Build;
-import android.util.Log;
 import android.view.View;
 
 public class Game {
 
 	private Instruction first;
 	private Instruction last;
+	private Instruction lastBox;
 	private Instruction currPos;
 	private int [] registers;
 	private MainActivity activity;
@@ -86,6 +86,30 @@ public class Game {
 		return instructionList;
 	}
 
+	public Instruction getInstruction(int ID){
+
+		Instruction currentPosition = first;
+		int targetInstruction = ID;
+		boolean found = false;
+
+		while(null != currentPosition && !found){
+
+			if (targetInstruction == currentPosition.getId())
+			{
+				found = true;
+			}	
+
+			else
+			{
+				currentPosition = currentPosition.getSucc();
+			}
+		}
+
+		return currentPosition;
+	}
+	
+	
+	
 	@SuppressLint("NewApi") //Have dealt with different versions in code.
 	public int newInstruction(int resourceID){
 
@@ -98,6 +122,7 @@ public class Game {
 			break;
 		case R.id.new_box_button:
 			instruction = new Box(this);
+			lastBox = instruction;
 			break;
 		case R.id.new_end_button:
 			instruction = new End(this);
@@ -121,7 +146,7 @@ public class Game {
 			if (instruction instanceof Arrow){
 				
 				Arrow arrow = (Arrow) instruction;
-				arrow.setTo(last.getPred());
+				arrow.setTo(lastBox);
 			}
 			
 			previousInstruction = instruction.getPred().getId();

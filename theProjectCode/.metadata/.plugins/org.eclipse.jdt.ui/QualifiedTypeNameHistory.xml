@@ -39,8 +39,6 @@
 <fullyQualifiedTypeName name="android.text.Layout"/>
 <fullyQualifiedTypeName name="android.graphics.Path"/>
 <fullyQualifiedTypeName name="android.graphics.LinearGradient"/>
-<fullyQualifiedTypeName name="android.view.View.DragShadowBuilder"/>
-<fullyQualifiedTypeName name="android.content.ClipData"/>
 <fullyQualifiedTypeName name="android.view.View"/>
 <fullyQualifiedTypeName name="android.graphics.Point"/>
 <fullyQualifiedTypeName name="android.graphics.Canvas"/>
@@ -53,4 +51,10 @@
 <fullyQualifiedTypeName name="android.graphics.drawable.Drawable"/>
 <fullyQualifiedTypeName name="android.graphics.Bitmap"/>
 <fullyQualifiedTypeName name="android.util.Log"/>
+<fullyQualifiedTypeName name="android.graphics.PathEffect"/>
+<fullyQualifiedTypeName name="android.graphics.CornerPathEffect"/>
+<fullyQualifiedTypeName name="android.view.DragEvent"/>
+<fullyQualifiedTypeName name="android.content.ClipData"/>
+<fullyQualifiedTypeName name="android.content.ClipDescription"/>
+<fullyQualifiedTypeName name="android.view.View.DragShadowBuilder"/>
 </qualifiedTypeNameHistroy>

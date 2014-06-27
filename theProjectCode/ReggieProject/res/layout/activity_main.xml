@@ -105,11 +105,11 @@
 	   		android:fillViewport="true"
 	   		android:layout_weight="85"
 	   		android:layout_gravity="center">
-		       	
+	            
 			<RelativeLayout
 	        	android:id="@+id/actionFrame"
 	        	android:layout_width="wrap_content"
-	        	android:layout_height="match_parent"
+	        	android:layout_height="fill_parent"
 	        	android:layout_gravity="left">
 	        
 	        	<View
@@ -122,6 +122,7 @@
 				</View> 
 
 			</RelativeLayout>
+			
 
 		</HorizontalScrollView>			
 

@@ -6,7 +6,6 @@ import java.util.List;
 
 import android.os.Bundle;
 import android.annotation.SuppressLint;
-import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
 import android.content.ClipData;
 import android.content.res.Configuration;
@@ -14,22 +13,19 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.LinearGradient;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.DragEvent;
-import android.view.GestureDetector.OnGestureListener;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.DragShadowBuilder;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-public class MainActivity extends Activity implements View.OnClickListener, View.OnLongClickListener, View.OnTouchListener{
+public class MainActivity extends Activity implements View.OnClickListener, View.OnLongClickListener, View.OnTouchListener, View.OnDragListener{
 
 	private Game game;
 	private int[] registerColours;
@@ -43,10 +39,13 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 	private int maxRegisters; //Duplication, but constant get is inefficient
 	private double origX = 0; //For box movements
 	private double origY = 0;
-	private double arrowX = 0; //For arrow movements
-	private double arrowY = 0;
 	private boolean clicked;
+	private int buttonWidth;
+	private int buttonHeight;
+	private double arrowX;
+	private double arrowY;
 	private boolean arrowHead;
+	private Arrow currentlyDragging;
 
 	/**
 	 * Called when application is opened.                  
@@ -170,7 +169,6 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 		int offsetBelow = -30;
 
 		List<Instruction> list = game.getInstructionList(fromInstruction); //From the edited point
-		Log.d("This is the size of the list", list.size() + "");
 
 		for(Instruction inst: list)
 		{			
@@ -207,6 +205,8 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 				if (currentPosition <= 0)
 				{
 					instructionParameters.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+					//set once
+
 				}
 
 				else
@@ -239,10 +239,10 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 				View line = findViewById(R.id.theLine);
 				line.setLayoutParams(params);
 
-
 				currentPosition = instructionID;
 				button.setLayoutParams(instructionParameters);
 				button.setOnTouchListener(this);
+				button.setOnDragListener(this);
 				container.addView(button);
 
 				if (null != prevInstruction){
@@ -259,16 +259,17 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 				int instructionID = arrow.getId();
 
 				//Control placement of arrows above/below the line
-				View pred = findViewById(arrow.getPred().getId());
-				View goTo = findViewById(arrow.getTo().getId());			
-
-				DrawArrow drawArrow = new DrawArrow(pred, goTo, arrow.getSpaces());
-				drawArrow.setColours(registerColours[arrow.getPred().getRegister()], registerColours[arrow.getTo().getRegister()]);
-				Bitmap arrowPicture = drawArrow.getImage();
+				//View pred = findViewById(arrow.getPred().getId());
+				//View goTo = findViewById(arrow.getTo().getId());		
 
 				ImageButton arrowButton = new ImageButton(this);
-				//arrowButton.setBackgroundColor(Color.TRANSPARENT);
+				arrowButton.setBackgroundColor(Color.TRANSPARENT);
+				DrawArrow drawArrow = new DrawArrow(arrow, buttonWidth, buttonHeight);
+				drawArrow.setColours(registerColours[arrow.getPred().getRegister()], registerColours[arrow.getTo().getRegister()]);
+
+				Bitmap arrowPicture = drawArrow.getImage();
 				arrowButton.setImageBitmap(arrowPicture);
+
 
 				RelativeLayout.LayoutParams arrowParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 
@@ -290,9 +291,8 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 				View v = findViewById(instructionID); //If already there, remove to allow redraw
 				container.removeView(v);
 				arrowButton.setId(instructionID); //Needed?
-				//drawarrow.setOnDragListener(this);
-				//drawarrow.setOnLongClickListener(this);
-				//drawarrow.setBackgroundColor(registerColours[2]);
+				arrowButton.setOnDragListener(this);
+				arrowButton.setOnLongClickListener(this);
 				container.addView(arrowButton);
 			}
 
@@ -301,6 +301,15 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 				//TODO - End
 			}
 		}	
+	}
+
+	@Override
+	public void onWindowFocusChanged(boolean hasFocus) {
+		super.onWindowFocusChanged(hasFocus);
+
+		buttonWidth = arrowButton.getWidth();
+		buttonHeight = arrowButton.getHeight();
+
 	}
 
 	/**
@@ -404,10 +413,12 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 		}
 
 		if (!done){
+			
+			ClipData data = ClipData.newPlainText("", "");
+			DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(v); //TODO - 2 different shadow builders, one with a line down, one with an arrow.
 
-			int prevInstructionId = game.changeInstruction(resid);
-			this.updateDisplay(prevInstructionId);	
-		}
+			v.startDrag(data, shadowBuilder, v, 0);
+			}
 
 		return true;
 	}
@@ -466,15 +477,20 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 		}
 		return true;
 	}
-	/*
+
 	@Override
 	public boolean onDrag(View v, DragEvent de) {
+
+		int resid = v.getId();
+		Instruction instruction = game.getInstruction(resid);
 
 		switch (de.getAction()){
 
 		case DragEvent.ACTION_DRAG_STARTED:
 
-			if (v instanceof DrawArrow){
+			Log.d("And now I am in the action started", "started!");
+			if (instruction instanceof Arrow){
+
 				arrowX = de.getX();
 				arrowY = de.getY();
 
@@ -484,6 +500,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 				}
 
 				else if (arrowX > (v.getX() + v.getWidth()/2) && v.getY()<theLineY){
+					
 					arrowHead = true;
 				}
 
@@ -491,28 +508,51 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 
 					arrowHead = false;
 				}
+				
+				currentlyDragging = (Arrow) instruction;
 			}
 			break;
 
 		case DragEvent.ACTION_DRAG_ENTERED:
 
-			if (v instanceof ImageButton){
+			if (instruction instanceof Box){
+				
+				Instruction moved = (Box) instruction;
+				
 				v.getBackground().setAlpha(128);
+				
+				if (arrowHead){
+					
+					Log.d("I am currently in the setting things due to being entered", "entered");
+					
+					currentlyDragging.setTo(moved);
+					moved.setSucc(currentlyDragging);
+					this.updateDisplay(resid);
+				}
+				
+				else {
+					Log.d("I think arrow head is false", "entered");
+					currentlyDragging.setPred((Box) instruction);
+					moved.setSucc(currentlyDragging);
+					this.updateDisplay(v.getId());
+					//TODO - and set succ of arrow.
+				}
 			}
 
 			break;
 
 		case DragEvent.ACTION_DRAG_EXITED:
 
-			if (v instanceof ImageButton){
+			if (instruction instanceof Box){
 				v.getBackground().setAlpha(255);
 			}
 			break;
 
-		case DragEvent.ACTION_DRAG_LOCATION:
+		case DragEvent.ACTION_DRAG_ENDED:
+			
 
 		}
 
-		return false;
-	}		*/
+		return true;
+	}		
 }

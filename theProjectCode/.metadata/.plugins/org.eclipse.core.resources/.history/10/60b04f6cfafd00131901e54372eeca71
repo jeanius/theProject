@@ -1,0 +1,102 @@
+
+package com.jeanpower.reggieproject;
+
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.LinearGradient;
+import android.graphics.Paint;
+import android.graphics.Path;
+import android.util.Log;
+import android.view.View;
+import android.graphics.Shader;
+
+public class DrawArrow {
+	Paint paint = new Paint();
+	Path path = new Path();
+	int startColour;
+	int endColour;
+	LinearGradient lg;
+	int numberButtons;
+	Arrow arrow;
+	boolean loop;
+	View view;
+	int vWidth;
+	int vHeight;
+	
+	public DrawArrow(Arrow a, View v){
+
+		paint.setStrokeWidth(5);
+		paint.setStyle(Paint.Style.STROKE); 
+		numberButtons = arrow.getSpaces();
+		arrow = a;
+		loop = arrow.getType();
+		view = v;
+		vWidth = v.getWidth();
+		vHeight = v.getHeight();
+		
+	}
+
+	public void setColours(int startC, int endC){
+		startColour = startC;
+		endColour = endC;
+		
+		if (loop){
+
+		lg = new LinearGradient(vWidth*numberButtons, vHeight/2, vWidth, vHeight/2, startColour, endColour, Shader.TileMode.MIRROR);
+		
+		}
+		else{
+		lg = new LinearGradient(vWidth,  vHeight/2, vWidth*numberButtons, vHeight/2, startColour, endColour, Shader.TileMode.MIRROR);
+		}
+	}
+		
+
+	public Bitmap getImage(){
+								
+		Bitmap bitmap = Bitmap.createBitmap(((int) vWidth * numberButtons), (int) vHeight/2, Bitmap.Config.ALPHA_8);
+		Canvas canvas = new Canvas(bitmap);
+		
+		
+		if (loop){
+		path.moveTo((vWidth*numberButtons) - vWidth/2, vHeight);
+		path.lineTo((vWidth*numberButtons) - vWidth/2, vHeight/2);
+		
+		path.lineTo(vWidth, vHeight/2);
+		path.lineTo(vWidth, vHeight);
+		path.lineTo(vWidth/2, vHeight/2);
+		path.lineTo(vWidth, 0);
+		path.lineTo(vWidth, vHeight/2);
+		
+		}
+		
+		else {
+			
+			path.moveTo(vWidth/2, vHeight);
+			path.lineTo(vWidth/2, vHeight/2);
+			
+			path.lineTo(vWidth * numberButtons - vWidth, vHeight/2);
+			path.lineTo(vWidth * numberButtons - vWidth, vHeight);
+			path.lineTo(vWidth * numberButtons - vWidth/2, vHeight/2);
+			path.lineTo(vWidth * numberButtons - vWidth, 0);
+			path.lineTo(vWidth * numberButtons - vWidth, vHeight/2);
+			
+		}
+		/*
+		
+		path.moveTo((startX + (startWidth/2)), startY + (startHeight));
+		path.lineTo((startX + (startWidth/2)), (startY + startHeight/2));
+		path.lineTo(endX + startWidth, (endY + startHeight/2));
+		
+		path.lineTo((endX + startWidth), (endY + startHeight));
+		path.lineTo(endX + (startWidth/2), (endY + startHeight/2));
+		path.lineTo((endX + startWidth), endY);
+		path.lineTo((endX + startWidth), (endY + startHeight/2));*/
+		
+		paint.setShader(lg);
+
+		canvas.drawPath(path, paint);
+
+		return bitmap;
+		
+	}
+}
