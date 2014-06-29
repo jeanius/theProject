@@ -48,7 +48,6 @@
 <fullyQualifiedTypeName name="android.view.Gravity"/>
 <fullyQualifiedTypeName name="android.graphics.RectF"/>
 <fullyQualifiedTypeName name="android.graphics.PixelFormat"/>
-<fullyQualifiedTypeName name="android.graphics.drawable.Drawable"/>
 <fullyQualifiedTypeName name="android.graphics.Bitmap"/>
 <fullyQualifiedTypeName name="android.graphics.PathEffect"/>
 <fullyQualifiedTypeName name="android.graphics.CornerPathEffect"/>
@@ -57,4 +56,5 @@
 <fullyQualifiedTypeName name="android.content.ClipDescription"/>
 <fullyQualifiedTypeName name="android.view.View.DragShadowBuilder"/>
 <fullyQualifiedTypeName name="android.util.Log"/>
+<fullyQualifiedTypeName name="android.graphics.drawable.Drawable"/>
 </qualifiedTypeNameHistroy>

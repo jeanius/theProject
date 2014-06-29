@@ -237,14 +237,24 @@ public class Game {
 				}
 				
 				else if (currentPosition instanceof Arrow)
-				{
-					Arrow a = (Arrow) currentPosition;
-					a.setType();
-					Instruction goTo = a.getTo();
-					a.setTo(a.getPred());
-					a.setPred(goTo);
+				{	
+					Arrow clickArrow = (Arrow) currentPosition;
+					Instruction pred = clickArrow.getPred();
+					Instruction succ = clickArrow.getSucc();
+					Instruction goTo = clickArrow.getTo();
+					
+					clickArrow.setType();
+					
+					if (pred.getId() != goTo.getId()){
+						
+						clickArrow.setTo(pred);
+						clickArrow.setPred(goTo);
+						pred.setSucc(succ);
+						clickArrow.setSucc(goTo.getSucc());
+					}
 				}
 			}	
+			
 			else
 			{
 				currentPosition = currentPosition.getSucc();	

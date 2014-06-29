@@ -47,7 +47,7 @@ public class Box implements Instruction{
 	}
 	
 	public ConnectLine getConnect(){
-		return line;
+			return line;
 	}
 
 	public void setType(){
@@ -65,7 +65,13 @@ public class Box implements Instruction{
 
 	@Override
 	public Instruction getSucc() {
-		return succ;
+		if (null == succ){
+			return null;
+		}
+	
+		else {
+			return succ;
+		}
 	}
 
 	@Override
@@ -76,7 +82,13 @@ public class Box implements Instruction{
 
 	@Override
 	public Instruction getPred() {
-		return pred;
+		if (null == pred){
+			return null;
+		}
+	
+		else {
+			return pred;
+		}
 	}
 
 	@Override

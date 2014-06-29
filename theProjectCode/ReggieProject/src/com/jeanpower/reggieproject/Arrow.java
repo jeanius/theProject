@@ -51,7 +51,14 @@ public class Arrow implements Instruction{
 
 	@Override
 	public Instruction getSucc() {
-		return succ;
+		
+		if (null == succ){
+			return null;
+		}
+	
+		else {
+			return succ;
+		}
 	}
 
 	@Override
@@ -89,7 +96,13 @@ public class Arrow implements Instruction{
 
 	@Override
 	public Instruction getPred() {
-		return pred;
+		if (null == pred){
+			return null;
+		}
+	
+		else {
+			return pred;
+		}
 	}
 
 	@Override
