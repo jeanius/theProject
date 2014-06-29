@@ -4,8 +4,10 @@ package com.jeanpower.reggieproject;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import android.annotation.SuppressLint;
 import android.os.Build;
+import android.util.Log;
 import android.view.View;
 
 public class Game {
@@ -68,6 +70,7 @@ public class Game {
 					instructionList.add(currentPosition);
 				}
 			}	
+			
 			else if (targetInstruction == 0)
 			{
 				while(null != currentPosition)
@@ -82,10 +85,37 @@ public class Game {
 				currentPosition = currentPosition.getSucc();
 			}
 		}
-
+		
 		return instructionList;
 	}
 
+	
+	public List<Instruction> getToFrom(Instruction from, int to){
+
+		List<Instruction> instructionList = new ArrayList<Instruction>();
+
+		Instruction current = from;
+		int target = to;
+		boolean done = false;
+
+		while(null != current && !done){
+			
+			instructionList.add(current);
+			
+			if (current.getId() == target)
+			{
+				done = true;
+			}
+			
+			else {
+				
+				current = current.getSucc();
+			}
+		}
+		return instructionList;
+	}
+	
+	
 	public Instruction getInstruction(int ID){
 
 		Instruction currentPosition = first;
@@ -111,10 +141,9 @@ public class Game {
 	
 	
 	@SuppressLint("NewApi") //Have dealt with different versions in code.
-	public int newInstruction(int resourceID){
+	public Instruction newInstruction(int resourceID){
 
 		Instruction instruction = null;
-		int previousInstruction = 0;
 		
 		switch (resourceID) {
 		case R.id.new_arrow_button:
@@ -149,7 +178,6 @@ public class Game {
 				arrow.setTo(lastBox);
 			}
 			
-			previousInstruction = instruction.getPred().getId();
 		}
 
 		if (Build.VERSION.SDK_INT >= 17 ) {
@@ -161,7 +189,7 @@ public class Game {
 			instruction.setId(Util.generateViewId());
 		}
 		
-		return previousInstruction;
+		return instruction;
 	}
 
 	public Instruction updateInstruction(int instructionID){
@@ -190,10 +218,9 @@ public class Game {
 		return currentPosition;
 	}
 
-	public int changeInstruction(int instructionID){
+	public Instruction changeInstruction(int instructionID){
 		
 		Instruction currentPosition = first;
-		int previousInstruction = 0;
 		int targetInstruction = instructionID;
 		boolean found = false;
 
@@ -224,12 +251,7 @@ public class Game {
 			}
 		}
 
-		if (targetInstruction != first.getId()){
-			
-			previousInstruction = currentPosition.getPred().getId();
-		}
-		
-		return previousInstruction;
+		return currentPosition;
 	}
 	
 	
@@ -306,6 +328,10 @@ public class Game {
 
 	public int getMaxReg(){
 		return MAXREGISTERS;
+	}
+	
+	public Instruction getFirst(){
+		return first;
 	}
 	
 }

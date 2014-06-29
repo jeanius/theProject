@@ -63,24 +63,20 @@ public class Arrow implements Instruction{
 	
 	public void calculateSpaces(){
 		
-		int count = 1;
+		int count = 1; 
 		Instruction currPos = pred;
 		
-		if (loop && toInstruction != null){
+		while (currPos != null && toInstruction != null && currPos.getId() != toInstruction.getId()){
+			count ++;
 			
-			while (currPos.getId() != toInstruction.getId() && currPos != null){
-				
-				count ++;
+			if (loop)
+			{
 				currPos = currPos.getPred();
 			}
-		}
-		
-		else if (!loop && toInstruction !=null){
-
-			while (currPos.getId() != toInstruction.getId() && currPos != null){
-				
-				count ++;
-				currPos = currPos.getSucc();
+			
+			else
+			{
+				currPos = currPos.getSucc();	
 			}
 		}
 		

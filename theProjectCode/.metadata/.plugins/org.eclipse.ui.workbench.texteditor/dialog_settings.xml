@@ -13,16 +13,16 @@
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="false" key="wholeword"/>
-		<item value="entered" key="selection"/>
+		<item value="Log.d" key="selection"/>
 		<list key="findhistory">
-			<item value="entered"/>
-			<item value="log"/>
-			<item value="drawable"/>
-			<item value="button"/>
-			<item value="registerColo"/>
-			<item value="registerC"/>
-			<item value="registetr"/>
-			<item value="getMax"/>
+			<item value="log.d"/>
+			<item value="updateDisplay"/>
+			<item value="currentPos"/>
+			<item value="arrowButton"/>
+			<item value="ARROW"/>
+			<item value="COLOR.RED"/>
+			<item value="RED"/>
+			<item value="List"/>
 		</list>
 		<list key="replacehistory">
 		</list>
