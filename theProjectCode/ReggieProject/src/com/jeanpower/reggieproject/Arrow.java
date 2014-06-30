@@ -18,6 +18,7 @@ public class Arrow implements Instruction{
 		succ = null;
 		pred = null;
 		loop = true;
+		spaces = 1;
 	}
 	
 	
@@ -65,25 +66,31 @@ public class Arrow implements Instruction{
 	public void setPred(Instruction predecessor) {
 		pred = predecessor;
 		register = pred.getRegister();
-		this.calculateSpaces();
 	}
 	
 	public void calculateSpaces(){
 		
 		int count = 1; 
-		Instruction currPos = pred;
+		Instruction currPos;
 		
-		while (currPos != null && toInstruction != null && currPos.getId() != toInstruction.getId()){
-			count ++;
+		if (loop){
 			
-			if (loop)
-			{
+			currPos = pred;
+			
+			while (currPos != null && toInstruction != null && currPos.getId() != toInstruction.getId()){
+				count ++;
 				currPos = currPos.getPred();
 			}
+		}
+		
+		
+		else{
 			
-			else
-			{
-				currPos = currPos.getSucc();	
+			currPos = succ;
+			
+			while (currPos != null && toInstruction != null && currPos.getId() != toInstruction.getId()){
+				count ++;
+				currPos = currPos.getSucc();
 			}
 		}
 		
@@ -96,13 +103,9 @@ public class Arrow implements Instruction{
 
 	@Override
 	public Instruction getPred() {
-		if (null == pred){
-			return null;
-		}
-	
-		else {
+
 			return pred;
-		}
+
 	}
 
 	@Override
@@ -144,7 +147,6 @@ public class Arrow implements Instruction{
 	
 	public void setTo(Instruction to){
 		toInstruction = to;
-		this.calculateSpaces();
 	}
 	
 	public Instruction getTo(){

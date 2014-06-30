@@ -7,8 +7,8 @@
       "micro": -1,
       "qualifier": ""
     },
-    "jarFileFingerprint": "7f972d2aa0fcb741fc84a9a10c98555f6f431a7a",
-    "jarFileModificationDate": "2014-06-16T15:14:13.577+01:00",
+    "jarFileFingerprint": "e8f132406a3a24842242815287e32bb1d7ed0b97",
+    "jarFileModificationDate": "2014-02-20T13:39:21.804Z",
     "location": "C:\\local\\android-sdk\\platforms\\android-19\\android.jar",
     "javaRuntime": false
   },
@@ -21,7 +21,7 @@
       "qualifier": ""
     },
     "jarFileFingerprint": "db0f122c99ef9f90dbab3fada6d191f2880cbb8e",
-    "jarFileModificationDate": "2014-06-03T13:16:06.821+01:00",
+    "jarFileModificationDate": "2014-06-30T11:55:41.189+01:00",
     "location": "H:\\workspace\\theProject\\theProjectCode\\ReggieProject\\libs\\android-support-v4.jar",
     "javaRuntime": false
   }

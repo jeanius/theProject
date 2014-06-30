@@ -65,13 +65,8 @@ public class Box implements Instruction{
 
 	@Override
 	public Instruction getSucc() {
-		if (null == succ){
-			return null;
-		}
-	
-		else {
 			return succ;
-		}
+		
 	}
 
 	@Override
@@ -82,13 +77,8 @@ public class Box implements Instruction{
 
 	@Override
 	public Instruction getPred() {
-		if (null == pred){
-			return null;
-		}
-	
-		else {
 			return pred;
-		}
+
 	}
 
 	@Override

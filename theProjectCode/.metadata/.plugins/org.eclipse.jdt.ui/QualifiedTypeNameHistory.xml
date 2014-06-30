@@ -57,4 +57,5 @@
 <fullyQualifiedTypeName name="android.view.View.DragShadowBuilder"/>
 <fullyQualifiedTypeName name="android.util.Log"/>
 <fullyQualifiedTypeName name="android.graphics.drawable.Drawable"/>
+<fullyQualifiedTypeName name="com.jeanpower.reggieproject.Arrow"/>
 </qualifiedTypeNameHistroy>

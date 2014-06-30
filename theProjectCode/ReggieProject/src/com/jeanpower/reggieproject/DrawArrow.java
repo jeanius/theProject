@@ -39,14 +39,14 @@ public class DrawArrow {
 	public void setColours(int startC, int endC){
 		startColour = startC;
 		endColour = endC;
-		
-		Log.d(startColour + "", "start");
 
 		if (loop){
+			
 			lg = new LinearGradient( arrowWidth * numberButtons, 0,  0, 0, startColour, endColour, Shader.TileMode.CLAMP);
 
 		}
 		else{
+			
 			lg = new LinearGradient( arrowWidth * numberButtons, 0, 0, 0, startColour, endColour, Shader.TileMode.CLAMP);
 		}
 	}
@@ -71,7 +71,7 @@ public class DrawArrow {
 
 		else {
 
-			path.moveTo(arrowWidth/2, arrowHeight);
+			path.moveTo(arrowWidth/2, 0);
 			path.lineTo(arrowWidth/2, arrowHeight/2);
 
 			path.lineTo(arrowWidth * numberButtons - arrowWidth, arrowHeight/2);
@@ -88,7 +88,6 @@ public class DrawArrow {
 
 		canvas.drawPath(path, paint);
 		
-
 		return bitmap;
 	}
 }
