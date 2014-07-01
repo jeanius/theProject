@@ -545,19 +545,11 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 
 		case MotionEvent.ACTION_MOVE:
 
-
-			Log.d("new x", me.getRawX() +"");
-			Log.d("new y", me.getRawY() +"");
-
 			if (Math.abs(me.getRawX() - origX) > THRESHOLD || Math.abs(origX - me.getRawX()) > THRESHOLD){
 
-				Log.d("new x", me.getRawX() +"");
-				Log.d("new y", me.getRawY() +"");
 				clicked = false;
 
 				if (instruction instanceof Arrow){
-					Log.d("I've decided instruction is", "an arrow");
-
 					DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(v); //TODO - 2 different shadow builders, one with a line down, one with an arrow.
 					v.startDrag(null, shadowBuilder, v, 0);	
 				}
@@ -584,15 +576,14 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 
 			if (instruction instanceof Arrow){
 
-				Log.d("This is origX", origX +"");
 				Log.d("This is the view x and width", (v.getX() + v.getWidth()) + "");
 
 				currentlyDragging = (Arrow) instruction;
 				v.setBackgroundColor(glow);
 
 				if (currentlyDragging.getPred().getId() == currentlyDragging.getTo().getId()){
-
-					arrowHead = true;
+					
+					arrowHead = currentlyDragging.getType(); //If loop, the first click is always the arrow head. If branch, it's always the tail.
 				}
 
 				else {
@@ -623,7 +614,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 
 				Box moved = (Box) instruction;
 
-				if (arrowHead)
+				if (arrowHead && currentlyDragging.getTo().getId() != moved.getId())
 				{
 					currentlyDragging.setTo(moved);	
 					currentlyDragging.calculateSpaces();
@@ -639,7 +630,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 				}
 
 
-				else {
+				else if (!arrowHead && currentlyDragging.getPred().getId() != moved.getId()) {
 
 					game.updateInstruction(currentlyDragging, moved);
 					this.updateDisplay(currentlyDragging);
@@ -652,8 +643,8 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 			break;
 
 		case DragEvent.ACTION_DRAG_ENDED:
-
-			//v.setBackgroundColor(Color.TRANSPARENT);
+			View view = findViewById(currentlyDragging.getId());
+			view. setBackgroundColor(Color.TRANSPARENT);
 		}
 
 		return true;

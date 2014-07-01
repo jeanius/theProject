@@ -31,6 +31,8 @@ public class Box implements Instruction{
 		{
 			caller.decrementReg(register);
 		}
+		
+		caller.setCurrPos(succ);
 	}
 
 	@Override

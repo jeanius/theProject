@@ -43,6 +43,8 @@ public class Game {
 		currPos = first;
 
 		while (null != currPos){
+			
+			Log.d("This is the currentPos", currPos.getId() +"");
 			currPos.doWork();
 		}
 	}
@@ -214,8 +216,7 @@ public class Game {
 			Instruction arrowPred = arrow.getPred();
 			Instruction arrowSucc = arrow.getSucc();
 			Instruction boxSucc = move.getSucc();
-			
-			
+				
 			arrow.setPred(move);
 			move.setSucc(arrow);
 			arrow.setSucc(boxSucc);
@@ -254,6 +255,7 @@ public class Game {
 			Instruction pred = arrow.getPred();
 			Instruction succ = arrow.getSucc();
 			Instruction goTo = arrow.getTo();
+			Instruction goToSucc = goTo.getSucc();
 
 			arrow.setType();
 
@@ -261,9 +263,19 @@ public class Game {
 
 				arrow.setTo(pred);
 				arrow.setPred(goTo);
-				pred.setSucc(succ);
-				arrow.setSucc(goTo.getSucc());
+				
+				arrow.setSucc(goToSucc);
+				
 				goTo.setSucc(arrow);
+				pred.setSucc(succ);
+
+				if (goToSucc != null){
+					
+					goToSucc.setPred(arrow);
+				}
+				if (succ != null){
+					succ.setPred(pred);
+				}
 			}
 			
 			arrow.calculateSpaces();
