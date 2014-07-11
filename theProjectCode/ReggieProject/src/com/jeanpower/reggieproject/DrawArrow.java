@@ -41,53 +41,66 @@ public class DrawArrow {
 		endColour = endC;
 
 		if (loop){
-			
+
 			lg = new LinearGradient( arrowWidth * numberButtons, 0,  0, 0, startColour, endColour, Shader.TileMode.CLAMP);
 
 		}
 		else{
-			
+
 			lg = new LinearGradient( arrowWidth * numberButtons, 0, 0, 0, startColour, endColour, Shader.TileMode.CLAMP);
 		}
 	}
 
 
 	public Bitmap getImage(){
+		//Log.d("This is button number", numberButtons + "");
 
-		Bitmap bitmap = Bitmap.createBitmap(((int) arrowWidth * numberButtons + arrowWidth/2), (int) arrowWidth/2 + 2, Bitmap.Config.ALPHA_8);
+		Bitmap bitmap = Bitmap.createBitmap(((int) arrowWidth * numberButtons), (int) arrowHeight, Bitmap.Config.ALPHA_8);
 		Canvas canvas = new Canvas(bitmap);
 
 		if (loop){
-			
-			path.moveTo((arrowWidth*numberButtons), arrowHeight);
-			path.lineTo((arrowWidth*numberButtons), arrowHeight/2);
 
-			path.lineTo(arrowWidth, arrowHeight/2);
+			path.moveTo(arrowWidth, arrowHeight/2);
 			path.lineTo(arrowWidth, arrowHeight);
 			path.lineTo(arrowWidth/2, arrowHeight/2);
 			path.lineTo(arrowWidth, 0);
 			path.lineTo(arrowWidth, arrowHeight/2);
+
+			if (numberButtons > 1){
+
+				path.lineTo((arrowWidth*numberButtons), arrowHeight/2);
+				path.lineTo((arrowWidth*numberButtons), arrowHeight);
+			}
+
 		}
 
 		else {
 
 			path.moveTo(0, 0);
-			path.lineTo(0, arrowHeight/2);
 
-			path.lineTo(arrowWidth * numberButtons, arrowHeight/2);
-			path.lineTo(arrowWidth * numberButtons, arrowHeight);
-			path.lineTo(arrowWidth * numberButtons + arrowWidth/2, arrowHeight/2);
-			path.lineTo(arrowWidth * numberButtons, 0);
-			path.lineTo(arrowWidth * numberButtons, arrowHeight/2);
-
+			if (numberButtons <= 1){
+				
+				path.lineTo(0, arrowHeight);
+				path.lineTo(arrowWidth/2, arrowHeight/2);
+				path.lineTo(0, 0);
+			}
+			
+			else {
+				path.lineTo(0, arrowHeight/2);
+				path.lineTo((arrowWidth * numberButtons) - arrowWidth, arrowHeight/2);
+				path.lineTo((arrowWidth * numberButtons) - arrowWidth, arrowHeight);
+				path.lineTo((arrowWidth * numberButtons) - arrowWidth/2, arrowHeight/2);
+				path.lineTo((arrowWidth * numberButtons) - arrowWidth, 0);
+				path.lineTo((arrowWidth * numberButtons) - arrowWidth, arrowHeight/2);
+			}
 		}
-		
+
 		PathEffect effect = new CornerPathEffect(3.0f);
 		paint.setPathEffect(effect);
 		paint.setShader(lg);
 
 		canvas.drawPath(path, paint);
-		
+
 		return bitmap;
 	}
 }

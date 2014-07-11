@@ -33,20 +33,21 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 	private Button arrowButton;
 	private Button endButton;
 	private Button runButton;
-	private boolean oneBox;
+	private boolean oneBox; 
 	private double theLineX;
 	private int maxRegisters; //Duplication, but constant get is inefficient
 	private double origX;
 	private double origY;
-	private float viewX;
-	private float viewY;
 	private boolean clicked;
 	private int buttonWidth; //For arrow sizes, set when window gets focus
 	private int buttonHeight;
 	private boolean arrowHead; //If user dragged head, or tail of arrow
 	private Arrow currentlyDragging; //The arrow that is currently being dragged
+	private Box currentlyIn;
 	final int THRESHOLD = 8; //Sensitivity of drag operation
 	private static int glow;
+	private View boxAbove =  null;
+	private View boxBelow = null;
 
 	/**
 	 * Called when application is opened.                  
@@ -145,6 +146,49 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 		super.onStart();
 	}
 
+
+	public void setLayoutConstants(List<Instruction> list){
+
+		Instruction curr = list.get(0);
+
+		boolean doneAbove = false;
+		boolean doneBelow = false;
+
+		while (null != curr && !doneAbove){
+
+			if (curr instanceof Box){
+
+				Box b = (Box) curr;
+
+				if (b.getType()){
+
+					boxAbove = findViewById(b.getId());
+					doneAbove = true;
+				}
+			}
+
+			curr = curr.getSucc();
+		}
+
+
+		curr = list.get(0);
+
+		while (null != curr && !doneBelow){
+
+			if (curr instanceof Box){
+
+				Box b = (Box) curr;
+
+				if (!b.getType()){
+
+					boxBelow = findViewById(b.getId());
+					doneBelow = true;
+				}
+			}
+			curr = curr.getSucc();
+		}
+	}
+
 	/**
 	 * Updates action frame with instructions - boxes and arrows                 
 	 * <p>
@@ -157,25 +201,24 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 	 */
 
 	@SuppressLint("NewApi")
-	public void updateDisplay(Instruction i){
+	public void updateDisplay(){
 
 		RelativeLayout container = (RelativeLayout) findViewById(R.id.actionFrame);
 
-		//Keep track of what instruction has been added
-		Instruction currentInstruction = i;
-		int previousInstructionID = 0;
+		List<Instruction> instructionList = game.getInstructionList();
 
-		//Find the previous instruction ID, 
-		if (currentInstruction.getPred() != null){
+		this.setLayoutConstants(instructionList);
 
-			previousInstructionID = currentInstruction.getPred().getId();
-		}
-
-		List<Instruction> list = game.getInstructionList(previousInstructionID); //From the edited point
-		List<Instruction> allInstructions = game.getInstructionList(game.getFirst().getId()); //All instructions
-
-		for(Instruction inst: list)
+		for(Instruction inst: instructionList)
 		{			
+			ImageButton button = new ImageButton(this);
+			button.setOnTouchListener(this);
+			button.setOnDragListener(this);
+			int instructionID = inst.getId();		
+			button.setId(instructionID);
+			View v = findViewById(instructionID); //If already there, remove to allow redraw
+			container.removeView(v);
+
 			if (inst instanceof Box)
 			{
 				Box box = (Box) inst;
@@ -186,16 +229,8 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 					prevInstruction = box.getPred();
 				}
 
-				ImageButton button = new ImageButton(this);
-
 				button.setBackgroundResource(R.drawable.curvededge);
 				button.setImageResource(instructionIcons.getResourceId(box.getRegister(), -1));
-				int instructionID = box.getId();				
-
-				View v = findViewById(instructionID); //If already there, remove to allow redraw
-				container.removeView(v);
-
-				button.setId(instructionID); //Connecting onscreen button with instruction
 
 				//TODO - Could instruction extend Button?
 
@@ -236,19 +271,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 					instructionParameters.addRule(RelativeLayout.RIGHT_OF, prevBox.getId()); //Right of the current instruction
 				}
 
-				//Redraw the line
-				RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-				params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
-				Resources r = getResources();
-				float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, r.getDisplayMetrics());
-				params.width = container.getWidth();
-				params.height = (int) px;
-				View line = findViewById(R.id.theLine);
-				line.setLayoutParams(params);
-
 				button.setLayoutParams(instructionParameters);
-				button.setOnTouchListener(this);
-				button.setOnDragListener(this);
 				container.addView(button);
 
 				//Redraw the connecting lines
@@ -263,20 +286,14 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 			else if (inst instanceof Arrow)
 			{	
 				Arrow arrow = (Arrow) inst;
-				int instructionID = arrow.getId();
 
-				View v = findViewById(instructionID); //If already there, remove to allow redraw
-				container.removeView(v);
-
-				ImageButton arrowButton = new ImageButton(this);
-				arrowButton.setId(instructionID);
-				arrowButton.setBackgroundColor(Color.TRANSPARENT);
+				button.setBackgroundColor(Color.TRANSPARENT);
 				DrawArrow drawArrow = new DrawArrow(arrow, buttonWidth, buttonHeight);
 				drawArrow.setColours(registerColours[arrow.getPred().getRegister()], registerColours[arrow.getTo().getRegister()]);
 
 				Bitmap arrowPicture = drawArrow.getImage();
-				arrowButton.setImageBitmap(arrowPicture);
-
+				button.setImageBitmap(arrowPicture);
+				button.setBackgroundColor(glow);
 				RelativeLayout.LayoutParams arrowParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 
 				//Arrow left or right matches its predecessor box
@@ -293,32 +310,48 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 				}
 
 				else{
+					
+					if (arrow.getSpaces() == 1){
 
 					arrowParams.addRule(RelativeLayout.ALIGN_LEFT, prevBox.getId());
+					Log.d("Spaces", 1 + "");
+					}
+					
+					else {
+						arrowParams.addRule(RelativeLayout.RIGHT_OF, prevBox.getId());
+					}
 				}
 
 
 				//To work out offset above/below the line
 				List<Instruction> instructionBetween = null;
 				double maxminX = theLineX;
-				View maxminArrow = findViewById(prevBox.getId()); //Start above previous box.
+				View maxminArrow;
 
 				if (arrow.getType()){
 
+					if (boxAbove != null){
+						maxminArrow = boxAbove;
+					}
+
+					else {
+						maxminArrow = boxBelow;
+					}
+
 					instructionBetween = game.getToFrom(arrow.getTo(), arrow.getPred().getId());
 
-					for (Instruction ins : allInstructions){
+					for (Instruction ins : instructionList){
 
 						if (ins instanceof Arrow && arrow.getType() && ins.getId() != arrow.getId()){
 
 							Arrow check = (Arrow) ins;
 
-							List<Instruction> instructionList = game.getToFrom(check.getTo(), check.getPred().getId());
-							int sizeList = instructionList.size();
+							List<Instruction> instructList = game.getToFrom(check.getTo(), check.getPred().getId());
+							int sizeList = instructList.size();
 
-							instructionList.removeAll(instructionBetween);
+							instructList.removeAll(instructionBetween);
 
-							int newSizeList = instructionList.size();
+							int newSizeList = instructList.size();
 
 							//If there is any overlap in the lists
 							if (sizeList != newSizeList){
@@ -333,26 +366,34 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 							}
 						}
 					}	
-
 					arrowParams.addRule(RelativeLayout.ABOVE, maxminArrow.getId());
 				}
 
 				else
 				{
+
+					if (boxBelow != null){
+						maxminArrow = boxBelow;
+					}
+
+					else {
+						maxminArrow = boxAbove;
+					}
+
 					instructionBetween = game.getToFrom(arrow.getSucc(), arrow.getTo().getId());
 
-					for (Instruction ins : allInstructions){
+					for (Instruction ins : instructionList){
 
 						if (ins instanceof Arrow && !arrow.getType() && ins.getId() != arrow.getId()){
 
 							Arrow check = (Arrow) ins;
 
-							List<Instruction> instructionList = game.getToFrom(check.getSucc(), check.getTo().getId());
-							int sizeList = instructionList.size();
+							List<Instruction> instructList = game.getToFrom(check.getSucc(), check.getTo().getId());
+							int sizeList = instructList.size();
 
-							instructionList.removeAll(instructionBetween);
+							instructList.removeAll(instructionBetween);
 
-							int newSizeList = instructionList.size();
+							int newSizeList = instructList.size();
 
 							//If there is any overlap in the lists
 							if (sizeList != newSizeList){
@@ -371,17 +412,27 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 				}	
 
 
-				arrowButton.setLayoutParams(arrowParams);
-				arrowButton.setOnTouchListener(this);
-				arrowButton.setOnDragListener(this);
-				container.addView(arrowButton);
+				button.setLayoutParams(arrowParams);
+				container.addView(button);
 			}
 
 			else if (inst instanceof End)
 			{
 				//TODO - End
 			}
-		}	
+		}
+
+
+
+		//Redraw the line
+		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+		params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
+		Resources r = getResources();
+		float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, r.getDisplayMetrics());
+		params.width = container.getWidth();
+		params.height = (int) px;
+		View line = findViewById(R.id.theLine);
+		line.setLayoutParams(params);
 	}
 
 	@Override
@@ -413,7 +464,6 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 
 		ImageButton button = (ImageButton) findViewById(instruction.getId());
 		Box inst = (Box) instruction;
-
 		button.setImageResource(instructionIcons.getResourceId(inst.getRegister(), -1));		
 	}
 
@@ -459,8 +509,8 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 		{
 			if (resid == R.id.new_arrow_button || resid == R.id.new_box_button || resid == R.id.new_end_button)
 			{
-				Instruction instruction = game.newInstruction(resid);
-				this.updateDisplay(instruction);
+				game.newInstruction(resid);
+				this.updateDisplay();
 
 				//Can only run game, add arrows/ends, when there is already a box.
 				if (!oneBox)
@@ -513,8 +563,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 			origX = me.getRawX();
 			origY = me.getRawY();
 			clicked = true;
-			Log.d("OrigX", origX +"");
-			Log.d("OrigY", origY +"");
+
 			break;
 
 		case MotionEvent.ACTION_CANCEL:
@@ -523,22 +572,20 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 		case MotionEvent.ACTION_UP:
 			if (clicked){
 
-				Log.d("I'm in the clicked", "yes");
-
 				if (instruction instanceof Box){
-					game.updateInstruction(instruction, null);
+					game.updateInstruction(instruction);
 					this.updateColour(instruction);
 				}
 
 				else if (instruction instanceof Arrow){
 					game.changeInstruction(instruction);
-					this.updateDisplay(instruction);
+					this.updateDisplay();
 				}
 			}
 
 			else if (!clicked && instruction instanceof Box){
 				game.changeInstruction(instruction);
-				this.updateDisplay(instruction);
+				this.updateDisplay();
 			}
 
 			break;
@@ -560,6 +607,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 
 			break;
 		}
+
 		return true;
 	}
 
@@ -576,26 +624,18 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 
 			if (instruction instanceof Arrow){
 
-				Log.d("This is the view x and width", (v.getX() + v.getWidth()) + "");
-
 				currentlyDragging = (Arrow) instruction;
 				v.setBackgroundColor(glow);
 
-				if (currentlyDragging.getPred().getId() == currentlyDragging.getTo().getId()){
-					
+				if (currentlyDragging.getPred().getId() == currentlyDragging.getTo().getId()){ //Only if the arrow is single
+
 					arrowHead = currentlyDragging.getType(); //If loop, the first click is always the arrow head. If branch, it's always the tail.
 				}
 
 				else {
 
-					if (origX < (v.getX() + v.getWidth()) && v.getY()<theLineX){
+					if ((origX < (v.getX() + v.getWidth()) && v.getY()<theLineX) || (origX > (v.getX() + v.getWidth()) && v.getY()>theLineX)){
 
-						arrowHead = true;
-						Log.d("Arrowhead above", "true");
-					}
-
-					else if (origX > (v.getX() + v.getWidth()) && v.getY()>theLineX){
-						Log.d("Arrowhead below", "true");
 						arrowHead = true;
 					}
 
@@ -611,40 +651,26 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 		case DragEvent.ACTION_DRAG_ENTERED:
 
 			if (instruction instanceof Box){
-
-				Box moved = (Box) instruction;
-
-				if (arrowHead && currentlyDragging.getTo().getId() != moved.getId())
-				{
-					currentlyDragging.setTo(moved);	
-					currentlyDragging.calculateSpaces();
-
-					if (currentlyDragging.getType()){	
-						this.updateDisplay(moved);
-					}
-					
-					else if (!currentlyDragging.getType()){
-
-						this.updateDisplay(currentlyDragging);
-					}
-				}
-
-
-				else if (!arrowHead && currentlyDragging.getPred().getId() != moved.getId()) {
-
-					game.updateInstruction(currentlyDragging, moved);
-					this.updateDisplay(currentlyDragging);
-				}
+				currentlyIn = (Box) instruction;
 			}
-
 			break;
 
 		case DragEvent.ACTION_DRAG_EXITED:
 			break;
 
 		case DragEvent.ACTION_DRAG_ENDED:
-			View view = findViewById(currentlyDragging.getId());
-			view. setBackgroundColor(Color.TRANSPARENT);
+			
+			if (arrowHead){
+				
+				game.updateHead(currentlyDragging, currentlyIn);
+			}
+			
+			else if (!arrowHead){
+				
+				game.updateTail(currentlyDragging, currentlyIn);
+			}
+			
+			this.updateDisplay();
 		}
 
 		return true;

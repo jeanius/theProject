@@ -20,7 +20,6 @@ public class Game {
 	private MainActivity activity;
 	private final int MAXREGISTERS = 10;
 
-
 	/**
 	 * Constructor. Zeros all registers, instantiates instance variables.                
 	 * <p>
@@ -41,11 +40,23 @@ public class Game {
 	public void runGame(){
 
 		currPos = first;
+		int check  = 1;
 
 		while (null != currPos){
-			
-			Log.d("This is the currentPos", currPos.getId() +"");
-			currPos.doWork();
+
+			//currPos.doWork();
+			Log.d("This is the number instruction", check + "");
+			Log.d("This is the pred of the current instruction", currPos.getPred() + "");
+			Log.d("This is the current instruction", currPos +"");
+			Log.d("This is the succ of current instruction", currPos.getSucc() + "");
+
+			if (currPos instanceof Arrow){
+				Arrow a = (Arrow) currPos;
+				Log.d("This is where the arrow is going", a.getTo() + "");
+			}
+
+			currPos = currPos.getSucc();
+			check ++ ;
 		}
 	}
 
@@ -55,42 +66,60 @@ public class Game {
 	 * @param int. Targeted point of instruction
 	 * @return List<Instruction>
 	 */	
-	public List<Instruction> getInstructionList(int fromInst){
+	public List<Instruction> getInstructionList(){
 
 		List<Instruction> instructionList = new ArrayList<Instruction>();
 
 		Instruction currentPosition = first;
-		int targetInstruction = fromInst;
 
 		while(null != currentPosition){
 
-			if (targetInstruction == currentPosition.getId())
-			{
-				while(null != currentPosition)
-				{
-					currentPosition = currentPosition.getSucc();
-					instructionList.add(currentPosition);
-				}
-			}	
-
-			else if (targetInstruction == 0)
-			{
-				while(null != currentPosition)
-				{
-					instructionList.add(currentPosition);
-					currentPosition = currentPosition.getSucc();	
-				}
-			}
-
-			else
-			{
-				currentPosition = currentPosition.getSucc();
-			}
+			instructionList.add(currentPosition);
+			currentPosition = currentPosition.getSucc();	
 		}
 
 		return instructionList;
 	}
 
+
+	public boolean isSuccOfPred(Instruction from, int to){
+
+		boolean isSucc = false;
+		Instruction currentPosition = from;
+
+		while(null != currentPosition && !isSucc){
+
+			if (currentPosition.getId() == to){
+				isSucc = true;
+			}
+
+			else {
+				currentPosition = currentPosition.getSucc();
+			}
+		}
+
+		return isSucc;
+	}
+
+	public boolean isPredOfTo(Instruction from, int to){
+
+		boolean isPred = false;
+		Arrow arrow = (Arrow) from;
+		Instruction currentPosition = arrow.getTo();
+
+		while(null != currentPosition && !isPred){
+
+			if (currentPosition.getId() == to){
+				isPred = true;
+			}
+
+			else {
+				currentPosition = currentPosition.getPred();
+			}
+		}
+
+		return isPred;
+	}
 
 	public List<Instruction> getToFrom(Instruction from, int to){
 
@@ -143,7 +172,7 @@ public class Game {
 
 
 	@SuppressLint("NewApi") //Have dealt with different versions in code.
-	public Instruction newInstruction(int resourceID){
+	public void newInstruction(int resourceID){
 
 		Instruction instruction = null;
 
@@ -190,50 +219,66 @@ public class Game {
 
 			instruction.setId(Util.generateViewId());
 		}
-
-		return instruction;
 	}
 
-	
+
 	/**
 	 * Updates Box instruction to new register. Updates Arrow instruction with new pred/succ when Arrow tail moved     
 	 * <p>
 	 * @param Instruction, Box. The instruction to be updated, and the Box the tail moved to
 	 * @return void
 	 */
-	
-	public void updateInstruction(Instruction i, Box move){
+
+	public void updateInstruction(Instruction i){
 
 		if (i instanceof Box)
 		{
 			Box box = (Box) i;
 			box.setRegister();
 		}
+	}
 
-		else if (i instanceof Arrow){
+	public void updateHead(Arrow arrow, Box move){
 
-			Arrow arrow = (Arrow) i;
+		boolean succOfPred = this.isSuccOfPred(arrow, move.getId()); //Is the box after the tail of arrow?
+
+		Log.d(succOfPred + "", "boo");
+		if ((arrow.getType() && !succOfPred) || (!arrow.getType() && succOfPred)){
+
+			arrow.setTo(move);
+			arrow.calculateSpaces();
+		}
+	}
+
+
+	public void updateTail(Arrow arrow, Box move){
+
+		boolean predOfTo = this.isPredOfTo(arrow, move.getId()); //Is the box before the head of arrow?
+		Log.d(predOfTo + "", "boo2");
+		
+		if ((arrow.getType() && !predOfTo) || (!arrow.getType() && predOfTo)){
+
 			Instruction arrowPred = arrow.getPred();
 			Instruction arrowSucc = arrow.getSucc();
 			Instruction boxSucc = move.getSucc();
-				
+
 			arrow.setPred(move);
 			move.setSucc(arrow);
 			arrow.setSucc(boxSucc);
 			arrowPred.setSucc(arrowSucc);
-			
-			
+
 			if (arrowSucc != null){
 				arrowSucc.setPred(arrowPred);
 			}
-			
+
 			if (boxSucc != null){
 				boxSucc.setPred(arrow);
 			}
-			
+
 			arrow.calculateSpaces();
-		}
+		}	
 	}
+
 
 	/**
 	 * Updates Box instruction to inc or dec. Updates Arrow instruction to loop or break                 
@@ -262,103 +307,105 @@ public class Game {
 			if (pred.getId() != goTo.getId()){
 
 				arrow.setTo(pred);
+				Log.d("I have just set my to to", pred + "");
 				arrow.setPred(goTo);
-				
+				Log.d("I have just set my pred to", goTo + "");
+
 				arrow.setSucc(goToSucc);
-				
+
 				goTo.setSucc(arrow);
 				pred.setSucc(succ);
 
 				if (goToSucc != null){
-					
+
 					goToSucc.setPred(arrow);
 				}
 				if (succ != null){
 					succ.setPred(pred);
 				}
+
+				arrow.calculateSpaces();
 			}
-			
-			arrow.calculateSpaces();
 		}
 	}
 
-public void delBox(Instruction delete){}
+	public void delBox(Instruction delete){}
 
-public void delArrow(Instruction delete){}
+	public void delArrow(Instruction delete){}
 
-public void delEnd(Instruction delete){}
+	public void delEnd(Instruction delete){}
 
-/**
- * Sets current position within running game              
- * <p>
- * @param Instruction. New current instruction
- * @return void
- */	
-public void setCurrPos(Instruction newPos){
+	/**
+	 * Sets current position within running game              
+	 * <p>
+	 * @param Instruction. New current instruction
+	 * @return void
+	 */	
+	public void setCurrPos(Instruction newPos){
 
-	currPos = newPos;
-}
+		currPos = newPos;
+	}
 
-/**
- * Returns data held in specific register            
- * <p>
- * @param int. Index/number of register.
- * @return int
- */	
-public int getRegData(int registerNum){
+	/**
+	 * Returns data held in specific register            
+	 * <p>
+	 * @param int. Index/number of register.
+	 * @return int
+	 */	
+	public int getRegData(int registerNum){
 
-	return registers[registerNum];
-}
+		return registers[registerNum];
+	}
 
-/**
- * Increments data held in specific register        
- * <p>
- * Increments, then calls method in activity to pull data and update UI
- * <p>
- * @param int. Index/number of register.
- * @return void
- */	
-public void incrementReg(int registerNum){
+	/**
+	 * Increments data held in specific register        
+	 * <p>
+	 * Increments, then calls method in activity to pull data and update UI
+	 * <p>
+	 * @param int. Index/number of register.
+	 * @return void
+	 */	
+	public void incrementReg(int registerNum){
 
-	int newNum = registers[registerNum]+1;
-	registers[registerNum] = newNum;
-	activity.setRegisters();
-}
+		int newNum = registers[registerNum]+1;
+		registers[registerNum] = newNum;
+		activity.setRegisters();
+	}
 
-/**
- * Decrements data held in specific register        
- * <p>
- * Decrements, then calls method in activity to pull data and update UI
- * <p>
- * @param int. Index/number of register.
- * @return void
- */	
-public void decrementReg(int registerNum){
+	/**
+	 * Decrements data held in specific register        
+	 * <p>
+	 * Decrements, then calls method in activity to pull data and update UI
+	 * <p>
+	 * @param int. Index/number of register.
+	 * @return void
+	 */	
+	public void decrementReg(int registerNum){
 
-	registers[registerNum] = registers[registerNum]--;
-	activity.setRegisters();
-}
+		registers[registerNum] = registers[registerNum]--;
+		activity.setRegisters();
+	}
 
-/**
- * Zeros a specific register        
- * <p>
- * Zeros, then calls method in activity to pull data and update UI
- * <p>
- * @param int. Index/number of register.
- * @return void
- */	
-public void zeroReg(int registerNum){
+	/**
+	 * Zeros a specific register        
+	 * <p>
+	 * Zeros, then calls method in activity to pull data and update UI
+	 * <p>
+	 * @param int. Index/number of register.
+	 * @return void
+	 */	
+	public void zeroReg(int registerNum){
 
-	registers[registerNum] = 0;;
-	activity.setRegisters();
-}
+		registers[registerNum] = 0;;
+		activity.setRegisters();
+	}
 
-public int getMaxReg(){
-	return MAXREGISTERS;
-}
+	public int getMaxReg(){
+		return MAXREGISTERS;
+	}
 
-public Instruction getFirst(){
-	return first;
-}
+	public Instruction getFirst(){
+		return first;
+	}
 
 }

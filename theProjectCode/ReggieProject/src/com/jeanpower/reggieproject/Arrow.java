@@ -1,7 +1,5 @@
 package com.jeanpower.reggieproject;
 
-import android.util.Log;
-
 public class Arrow implements Instruction{
 	
 	private Instruction toInstruction;
@@ -99,7 +97,6 @@ public class Arrow implements Instruction{
 		}
 		
 		spaces = count;
-		Log.d("tHIS IS THE SPACES", spaces + "");
 	}
 	
 	public int getSpaces(){
