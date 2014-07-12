@@ -76,17 +76,16 @@ public class DrawArrow {
 
 		else {
 
-			path.moveTo(0, 0);
-
 			if (numberButtons <= 1){
-				
+				path.moveTo(0, 0);
 				path.lineTo(0, arrowHeight);
 				path.lineTo(arrowWidth/2, arrowHeight/2);
 				path.lineTo(0, 0);
 			}
 			
 			else {
-				path.lineTo(0, arrowHeight/2);
+				path.moveTo(arrowWidth/3, 0);
+				path.lineTo(arrowWidth/3, arrowHeight/2);
 				path.lineTo((arrowWidth * numberButtons) - arrowWidth, arrowHeight/2);
 				path.lineTo((arrowWidth * numberButtons) - arrowWidth, arrowHeight);
 				path.lineTo((arrowWidth * numberButtons) - arrowWidth/2, arrowHeight/2);

@@ -89,10 +89,10 @@
    			</LinearLayout>
    			
 	</ScrollView>	
-
+	
 	<LinearLayout 
-	    android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+	    android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:orientation="vertical"
         android:layout_toRightOf="@id/ScrollVertical"
         android:weightSum="100"
@@ -100,18 +100,18 @@
 
 	    <HorizontalScrollView
 	    	android:id="@+id/scrollHorizontal"
-	    	android:layout_width="fill_parent"
+	    	android:layout_width="match_parent"
 	    	android:layout_height="0dip"
 	   		android:fillViewport="true"
 	   		android:layout_weight="85"
 	   		android:layout_gravity="center">
-	            
+
 			<RelativeLayout
 	        	android:id="@+id/actionFrame"
 	        	android:layout_width="wrap_content"
-	        	android:layout_height="fill_parent"
+	        	android:layout_height="match_parent"
 	        	android:layout_gravity="left">
-	        
+
 	        	<View
 	        	    android:id="@+id/theLine"
 	        	    android:layout_width="match_parent"
@@ -122,10 +122,10 @@
 				</View> 
 
 			</RelativeLayout>
-			
 
-		</HorizontalScrollView>			
 
+		</HorizontalScrollView>	
+		
 	    <RelativeLayout
 	   		android:id="@+id/bottom_frame"
 	   		android:orientation="vertical"

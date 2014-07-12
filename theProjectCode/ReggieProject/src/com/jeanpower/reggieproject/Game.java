@@ -77,48 +77,7 @@ public class Game {
 			instructionList.add(currentPosition);
 			currentPosition = currentPosition.getSucc();	
 		}
-
 		return instructionList;
-	}
-
-
-	public boolean isSuccOfPred(Instruction from, int to){
-
-		boolean isSucc = false;
-		Instruction currentPosition = from;
-
-		while(null != currentPosition && !isSucc){
-
-			if (currentPosition.getId() == to){
-				isSucc = true;
-			}
-
-			else {
-				currentPosition = currentPosition.getSucc();
-			}
-		}
-
-		return isSucc;
-	}
-
-	public boolean isPredOfTo(Instruction from, int to){
-
-		boolean isPred = false;
-		Arrow arrow = (Arrow) from;
-		Instruction currentPosition = arrow.getTo();
-
-		while(null != currentPosition && !isPred){
-
-			if (currentPosition.getId() == to){
-				isPred = true;
-			}
-
-			else {
-				currentPosition = currentPosition.getPred();
-			}
-		}
-
-		return isPred;
 	}
 
 	public List<Instruction> getToFrom(Instruction from, int to){
@@ -238,11 +197,29 @@ public class Game {
 		}
 	}
 
+	public boolean isSuccOfPred(Instruction from, int to){
+
+		boolean isSucc = false;
+		Instruction currentPosition = from;
+
+		while(null != currentPosition && !isSucc){
+
+			if (currentPosition.getId() == to){ //Allows for pred/goto to be the same
+				isSucc = true;
+			}
+
+			else {
+				currentPosition = currentPosition.getSucc();
+			}
+		}
+
+		return isSucc;
+	}
+	
 	public void updateHead(Arrow arrow, Box move){
 
 		boolean succOfPred = this.isSuccOfPred(arrow, move.getId()); //Is the box after the tail of arrow?
 
-		Log.d(succOfPred + "", "boo");
 		if ((arrow.getType() && !succOfPred) || (!arrow.getType() && succOfPred)){
 
 			arrow.setTo(move);
@@ -250,31 +227,52 @@ public class Game {
 		}
 	}
 
+	public boolean isPredOfTo(Instruction from, int to){
 
+		boolean isPred = false;
+		Arrow arrow = (Arrow) from;
+		Instruction currentPosition = arrow.getTo();
+
+		while(null != currentPosition && !isPred){
+
+			if (currentPosition.getId() == to){ //Allows for pred/goto to be the same
+				isPred = true;
+			}
+
+			else {
+				currentPosition = currentPosition.getPred();
+			}
+		}
+
+		return isPred;
+	}
+	
 	public void updateTail(Arrow arrow, Box move){
 
 		boolean predOfTo = this.isPredOfTo(arrow, move.getId()); //Is the box before the head of arrow?
-		Log.d(predOfTo + "", "boo2");
-		
-		if ((arrow.getType() && !predOfTo) || (!arrow.getType() && predOfTo)){
 
+		if ((arrow.getType() && !predOfTo) || (!arrow.getType() && predOfTo)){
+			
 			Instruction arrowPred = arrow.getPred();
 			Instruction arrowSucc = arrow.getSucc();
 			Instruction boxSucc = move.getSucc();
-
+			
 			arrow.setPred(move);
 			move.setSucc(arrow);
-			arrow.setSucc(boxSucc);
 			arrowPred.setSucc(arrowSucc);
+			arrow.setSucc(boxSucc);
 
 			if (arrowSucc != null){
 				arrowSucc.setPred(arrowPred);
+			}
+			
+			else{
+				last = arrowPred;
 			}
 
 			if (boxSucc != null){
 				boxSucc.setPred(arrow);
 			}
-
 			arrow.calculateSpaces();
 		}	
 	}
@@ -307,9 +305,7 @@ public class Game {
 			if (pred.getId() != goTo.getId()){
 
 				arrow.setTo(pred);
-				Log.d("I have just set my to to", pred + "");
 				arrow.setPred(goTo);
-				Log.d("I have just set my pred to", goTo + "");
 
 				arrow.setSucc(goToSucc);
 
