@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <qualifiedTypeNameHistroy>
-<fullyQualifiedTypeName name="android.content.res.Configuration"/>
-<fullyQualifiedTypeName name="android.os.Bundle"/>
 <fullyQualifiedTypeName name="android.widget.ScrollView"/>
-<fullyQualifiedTypeName name="android.view.LayoutInflater"/>
 <fullyQualifiedTypeName name="android.support.v4.app.FragmentTransaction"/>
 <fullyQualifiedTypeName name="android.support.v4.app.FragmentManager"/>
 <fullyQualifiedTypeName name="android.app.Fragment"/>
@@ -25,7 +22,6 @@
 <fullyQualifiedTypeName name="android.content.res.TypedArray"/>
 <fullyQualifiedTypeName name="android.widget.ImageButton"/>
 <fullyQualifiedTypeName name="android.widget.ImageView.ScaleType"/>
-<fullyQualifiedTypeName name="android.view.ViewGroup"/>
 <fullyQualifiedTypeName name="android.graphics.PorterDuff"/>
 <fullyQualifiedTypeName name="android.graphics.AvoidXfermode.Mode"/>
 <fullyQualifiedTypeName name="android.app.ActionBar.LayoutParams"/>
@@ -58,4 +54,10 @@
 <fullyQualifiedTypeName name="android.graphics.drawable.Drawable"/>
 <fullyQualifiedTypeName name="com.jeanpower.reggieproject.Arrow"/>
 <fullyQualifiedTypeName name="android.util.Log"/>
+<fullyQualifiedTypeName name="android.view.MenuInflater"/>
+<fullyQualifiedTypeName name="android.view.LayoutInflater"/>
+<fullyQualifiedTypeName name="android.app.ActionBar"/>
+<fullyQualifiedTypeName name="android.view.ViewGroup"/>
+<fullyQualifiedTypeName name="android.view.MenuItem"/>
+<fullyQualifiedTypeName name="android.R.menu"/>
 </qualifiedTypeNameHistroy>

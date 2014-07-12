@@ -1,0 +1,38 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    
+    <!-- Search, should appear as action button -->
+
+			<Button
+		        android:text="@string/box" 
+				android:id="@+id/new_box_button"
+           		android:layout_width="wrap_content" 
+           		android:layout_height="wrap_content"
+         		android:layout_gravity="center">
+      		</Button>
+      		
+		    <Button 
+		        android:text="@string/arrow"
+				android:id="@+id/new_arrow_button"
+           		android:layout_width="wrap_content" 
+           		android:layout_height="wrap_content"
+         		android:layout_gravity="center">
+      		</Button>
+      		
+		    <Button 
+		        android:text="@string/end"
+				android:id="@+id/new_end_button"
+           		android:layout_width="wrap_content" 
+           		android:layout_height="wrap_content"
+         		android:layout_gravity="center">
+      		</Button>
+      		
+		    <Button 
+		        android:text="@string/run"
+				android:id="@+id/run_button"
+           		android:layout_width="wrap_content" 
+           		android:layout_height="wrap_content"
+         		android:layout_gravity="center">
+      		</Button>
+
+
+</menu>

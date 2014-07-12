@@ -4,8 +4,10 @@ package com.jeanpower.reggieproject;
 
 import java.util.List;
 
+import android.R.menu;
 import android.os.Bundle;
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -15,14 +17,20 @@ import android.graphics.Color;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.DragEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.DragShadowBuilder;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.HorizontalScrollView;
+import android.widget.ScrollView;
 
 public class MainActivity extends Activity implements View.OnClickListener, View.OnLongClickListener, View.OnTouchListener, View.OnDragListener{
 
@@ -30,24 +38,25 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 	private int[] registerColours;
 	private int[] registerIds;
 	private TypedArray instructionIcons;
-	private Button arrowButton;
-	private Button endButton;
-	private Button runButton;
+	private MenuItem arrowButton;
+	private MenuItem endButton;
+	private MenuItem runButton;
 	private boolean oneBox; 
 	private double theLineX;
 	private int maxRegisters; //Duplication, but constant get is inefficient
 	private double origX;
-	//private double origY;
+	private double origY;
 	private boolean clicked;
 	private int buttonWidth; //For arrow sizes, set when window gets focus
 	private int buttonHeight;
 	private boolean arrowHead; //If user dragged head, or tail of arrow
 	private Arrow currentlyDragging; //The arrow that is currently being dragged
 	private Box currentlyIn;
-	final int THRESHOLD = 8; //Sensitivity of drag operation
+	final int THRESHOLD = 6; //Sensitivity of drag operation
 	private static int glow;
 	private View boxAbove =  null;
 	private View boxBelow = null;
+	private Button regButton;
 
 	/**
 	 * Called when application is opened.                  
@@ -63,6 +72,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main); 
+
 		game = new Game(this);
 		instructionIcons = getResources().obtainTypedArray(R.array.instruction_icons);
 		oneBox = false; //To track if user has added a Box instruction, preventing arrow/run/end being called
@@ -79,6 +89,9 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 
 			int resID = getResources().getIdentifier(registerNames[i] , "string", getPackageName());
 			registerIds[i] = resID;
+
+			regButton = (Button) findViewById(resID);
+
 		}
 
 		LinearLayout container = (LinearLayout) findViewById(R.id.register_frame);
@@ -100,7 +113,9 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 			button.setOnLongClickListener(this);
 		}
 
-		//Add listeners to activity buttons.
+
+
+		/*//Add listeners to activity buttons.
 		arrowButton = (Button) findViewById(R.id.new_arrow_button);
 		arrowButton.setOnClickListener(this);	
 		arrowButton.setClickable(false);
@@ -114,7 +129,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 
 		endButton = (Button) findViewById(R.id.new_end_button);
 		endButton.setOnClickListener(this);
-		endButton.setClickable(false);
+		endButton.setClickable(false);*/
 	}
 
 	/**
@@ -126,8 +141,16 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.main_activity_actions, menu);
 
-		getMenuInflater().inflate(R.menu.main, menu);
+		arrowButton = menu.findItem(R.id.new_arrow_button);
+		runButton = menu.findItem(R.id.run_button);
+		endButton = menu.findItem(R.id.new_end_button);
+		arrowButton.setEnabled(false);
+		runButton.setEnabled(false);
+		endButton.setEnabled(false);
+
 		return true;
 	}
 
@@ -218,7 +241,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 			container.removeView(v);
 
 			RelativeLayout.LayoutParams instructionParameters = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-			
+
 			if (inst instanceof Box)
 			{
 				Box box = (Box) inst;
@@ -271,13 +294,13 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 				button.setLayoutParams(instructionParameters);
 				container.addView(button);
 
-			//Redraw the connecting lines
-				if (null != prevBox){
+							//Redraw the connecting lines
+			/*	if (null != prevBox){
 
 					ConnectLine connLine = new ConnectLine(this, findViewById(prevBox.getId()), findViewById(instructionID), container);
 					container.addView(connLine);	
 					prevBox.setConnect(connLine);
-				}
+				}*/
 			}
 
 			else if (inst instanceof Arrow)
@@ -326,7 +349,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 					instructionBetween = game.getToFrom(arrow.getTo(), arrow.getPred().getId());
 					int pointer = 0;
 					Instruction currentPosition = instructionList.get(pointer);
-					
+
 					while (currentPosition !=null && currentPosition.getId() != arrow.getId()){
 
 						if (currentPosition instanceof Arrow && arrow.getType()){
@@ -345,9 +368,9 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 
 								maxminArrow = check.getId();
 							}
-							
+
 						}
-						
+
 						pointer++;
 						currentPosition = instructionList.get(pointer);
 					}
@@ -367,7 +390,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 					instructionBetween = game.getToFrom(arrow.getSucc(), arrow.getTo().getId());
 					int pointer = 0;
 					Instruction currentPosition = instructionList.get(pointer);
-					
+
 					while (currentPosition !=null && currentPosition.getId() != arrow.getId()){
 
 						if (currentPosition instanceof Arrow && !arrow.getType()){
@@ -418,11 +441,11 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 		super.onWindowFocusChanged(hasFocus);
 
 		if (buttonWidth <= 0){
-			buttonWidth = arrowButton.getWidth();
+			buttonWidth = regButton.getWidth();
 		}
 
 		if (buttonHeight <= 0){
-			buttonHeight = arrowButton.getHeight();
+			buttonHeight = regButton.getHeight();
 		}
 
 		if (theLineX <= 0){
@@ -471,37 +494,12 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 	public void onClick(View v) {
 
 		int resid = v.getId();
-		boolean done = false;
 
 		for (int i = 0; i<maxRegisters; i++)
 		{
 			if (resid == registerIds[i])
 			{
 				game.incrementReg(i);
-				done = true;
-			}
-		}
-
-		if (!done)
-		{
-			if (resid == R.id.new_arrow_button || resid == R.id.new_box_button || resid == R.id.new_end_button)
-			{
-				game.newInstruction(resid);
-				this.updateDisplay();
-
-				//Can only run game, add arrows/ends, when there is already a box.
-				if (!oneBox)
-				{
-					arrowButton.setClickable(true);
-					endButton.setClickable(true);
-					runButton.setClickable(true);
-					oneBox = true;
-				}
-			}
-
-			else if(resid == R.id.run_button)
-			{
-				game.runGame();
 			}
 		}
 
@@ -531,6 +529,8 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 	@Override
 	public boolean onTouch(View v, MotionEvent me) {
 
+		float curY, curX;
+
 		int resid = v.getId();
 		Instruction instruction = game.getInstruction(resid);
 
@@ -538,7 +538,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 
 		case MotionEvent.ACTION_DOWN:
 			origX = me.getRawX();
-			//origY = me.getRawY();
+			origY = me.getRawY();
 			clicked = true;
 			break;
 
@@ -546,6 +546,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 			break;
 
 		case MotionEvent.ACTION_UP:
+
 			if (clicked){
 
 				if (instruction instanceof Box){
@@ -563,6 +564,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 				game.changeInstruction(instruction);
 				this.updateDisplay();
 			}
+
 			break;
 
 		case MotionEvent.ACTION_MOVE:
@@ -575,10 +577,10 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 					v.startDrag(null, shadowBuilder, v, 0);	
 				}
 			}
+
 			break;
 
 		default:
-
 			break;
 		}
 
@@ -610,13 +612,11 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 					if ((origX < (v.getX() + v.getWidth()) && v.getY()<theLineX) || (origX > (v.getX() + v.getWidth()) && v.getY()>theLineX)){
 
 						arrowHead = true;
-						Log.d("Knows is", "arrow head");
 					}
 
 					else {
 
 						arrowHead = false;
-						Log.d("Knows is", "arrow tail");
 					}
 				}
 			}
@@ -626,9 +626,8 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 		case DragEvent.ACTION_DRAG_ENTERED:
 			if (instruction instanceof Box){
 				currentlyIn = (Box) instruction;
-				
+
 				if (arrowHead && currentlyIn.getId() != currentlyDragging.getTo().getId()){
-					Log.d("Caught arrow", currentlyDragging + "");
 					game.updateHead(currentlyDragging, currentlyIn);
 				}
 
@@ -636,7 +635,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 
 					game.updateTail(currentlyDragging, currentlyIn);
 				}
-				
+
 				this.updateDisplay();	
 			}
 			break;
@@ -650,6 +649,34 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 		case DragEvent.ACTION_DRAG_ENDED:
 			break;
 		}
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+
+		int resid = item.getItemId();
+
+		if (resid == R.id.new_arrow_button || resid == R.id.new_box_button || resid == R.id.new_end_button)
+		{
+			game.newInstruction(resid);
+			this.updateDisplay();
+
+			//Can only run game, add arrows/ends, when there is already a box.
+			if (!oneBox)
+			{
+				arrowButton.setEnabled(true);
+				runButton.setEnabled(true);
+				endButton.setEnabled(true);
+				oneBox = true;
+			}
+		}
+
+		else if(resid == R.id.run_button)
+		{
+			game.runGame();
+		}
+
 		return true;
 	}
 
