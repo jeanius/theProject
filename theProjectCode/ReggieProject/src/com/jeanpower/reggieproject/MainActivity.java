@@ -2,6 +2,7 @@
 
 package com.jeanpower.reggieproject;
 
+import java.util.Calendar;
 import java.util.List;
 
 import android.R.menu;
@@ -14,6 +15,7 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.DragEvent;
@@ -57,6 +59,9 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 	private View boxAbove =  null;
 	private View boxBelow = null;
 	private Button regButton;
+	int MAX_CLICK_DURATION = 200;
+	long startClickTime;
+	Button currentlyInButton;
 
 	/**
 	 * Called when application is opened.                  
@@ -78,7 +83,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 		oneBox = false; //To track if user has added a Box instruction, preventing arrow/run/end being called
 		maxRegisters = game.getMaxReg();
 		glow = Color.argb(120, 255, 255, 0);
-
+	
 		//Array of colours, from color.xml
 		registerColours = getResources().getIntArray(R.array.rainbow);
 
@@ -91,7 +96,6 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 			registerIds[i] = resID;
 
 			regButton = (Button) findViewById(resID);
-
 		}
 
 		LinearLayout container = (LinearLayout) findViewById(R.id.register_frame);
@@ -112,24 +116,6 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 			button.setOnClickListener(this);
 			button.setOnLongClickListener(this);
 		}
-
-
-
-		/*//Add listeners to activity buttons.
-		arrowButton = (Button) findViewById(R.id.new_arrow_button);
-		arrowButton.setOnClickListener(this);	
-		arrowButton.setClickable(false);
-
-		runButton = (Button) findViewById(R.id.run_button);
-		runButton.setOnClickListener(this);
-		runButton.setClickable(false);
-
-		Button boxButton = (Button) findViewById(R.id.new_box_button);
-		boxButton.setOnClickListener(this);
-
-		endButton = (Button) findViewById(R.id.new_end_button);
-		endButton.setOnClickListener(this);
-		endButton.setClickable(false);*/
 	}
 
 	/**
@@ -223,7 +209,6 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 	 * @return void
 	 */
 
-	@SuppressLint("NewApi")
 	public void updateDisplay(){
 
 		RelativeLayout container = (RelativeLayout) findViewById(R.id.actionFrame);
@@ -251,22 +236,19 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 				if (box.getPred() != null){
 					prevInstruction = box.getPred();
 				}
-
+				
 				button.setBackgroundResource(R.drawable.curvededge);
 				button.setImageResource(instructionIcons.getResourceId(box.getRegister(), -1));
 
-				//TODO - Could instruction extend Button?
-
 				if (box.getType()) //If Increment
 				{
-					instructionParameters.addRule(RelativeLayout.ALIGN_BOTTOM, R.id.theLine);	
+					instructionParameters.addRule(RelativeLayout.ABOVE, R.id.theLine);	
 				}
 
 				else
 				{
-					instructionParameters.addRule(RelativeLayout.ALIGN_TOP, R.id.theLine);
+					instructionParameters.addRule(RelativeLayout.BELOW, R.id.theLine);
 				}
-
 
 				if (prevInstruction == null)
 				{
@@ -294,8 +276,9 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 				button.setLayoutParams(instructionParameters);
 				container.addView(button);
 
-							//Redraw the connecting lines
-			/*	if (null != prevBox){
+
+/*				//Redraw the connecting lines
+				if (null != prevBox){
 
 					ConnectLine connLine = new ConnectLine(this, findViewById(prevBox.getId()), findViewById(instructionID), container);
 					container.addView(connLine);	
@@ -313,7 +296,6 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 
 				Bitmap arrowPicture = drawArrow.getImage();
 				button.setImageBitmap(arrowPicture);
-				button.setBackgroundColor(glow);
 
 				//Arrow left or right matches its predecessor box
 				Instruction prevBox = arrow.getPred();
@@ -425,15 +407,16 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 			}
 		}
 
-		//Redraw the line
+		/*//Redraw the line
 		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-		params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
+		//params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
 		Resources r = getResources();
 		float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, r.getDisplayMetrics());
 		params.width = container.getWidth();
+		Log.d("This is the container width", container.getWidth() + "");
 		params.height = (int) px;
 		View line = findViewById(R.id.theLine);
-		line.setLayoutParams(params);
+		line.setLayoutParams(params);*/
 	}
 
 	@Override
@@ -502,7 +485,6 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 				game.incrementReg(i);
 			}
 		}
-
 	}
 
 	/**
@@ -529,61 +511,53 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 	@Override
 	public boolean onTouch(View v, MotionEvent me) {
 
-		float curY, curX;
-
 		int resid = v.getId();
 		Instruction instruction = game.getInstruction(resid);
 
-		switch (me.getAction() & MotionEvent.ACTION_MASK) { //Motionevent contains pointerdata too - bitwise and to leave just action
+		if (instruction instanceof Arrow || instruction instanceof Box){
 
-		case MotionEvent.ACTION_DOWN:
-			origX = me.getRawX();
-			origY = me.getRawY();
-			clicked = true;
-			break;
+			switch (me.getAction() & MotionEvent.ACTION_MASK) { //Motionevent contains pointerdata too - bitwise and to leave just action
 
-		case MotionEvent.ACTION_CANCEL:
-			break;
+			case MotionEvent.ACTION_DOWN:
+				origX = me.getRawX();
+				origY = me.getRawY();
+				startClickTime = Calendar.getInstance().getTimeInMillis();
 
-		case MotionEvent.ACTION_UP:
+				break;
 
-			if (clicked){
+			case MotionEvent.ACTION_CANCEL:
+				break;
 
-				if (instruction instanceof Box){
-					game.updateInstruction(instruction);
-					this.updateColour(instruction);
+			case MotionEvent.ACTION_UP:
+				long clickDuration = Calendar.getInstance().getTimeInMillis() - startClickTime;
+				
+				if (instruction instanceof Box && clickDuration < MAX_CLICK_DURATION) {
+					{
+						game.updateInstruction(instruction);
+						this.updateColour(instruction);
+					}
 				}
 
-				else if (instruction instanceof Arrow){
+				else {
 					game.changeInstruction(instruction);
 					this.updateDisplay();
 				}
-			}
+				break;
 
-			else if (!clicked && instruction instanceof Box){
-				game.changeInstruction(instruction);
-				this.updateDisplay();
-			}
-
-			break;
-
-		case MotionEvent.ACTION_MOVE:
-			if (Math.abs(me.getRawX() - origX) > THRESHOLD || Math.abs(origX - me.getRawX()) > THRESHOLD){
-
-				clicked = false;
+			case MotionEvent.ACTION_MOVE:
 
 				if (instruction instanceof Arrow){
+
 					DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(v); //TODO - 2 different shadow builders, one with a line down, one with an arrow.
 					v.startDrag(null, shadowBuilder, v, 0);	
 				}
+
+				break;
+
+			default:
+				break;
 			}
-
-			break;
-
-		default:
-			break;
 		}
-
 		return true;
 	}
 
@@ -597,6 +571,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 		switch (de.getAction()){
 
 		case DragEvent.ACTION_DRAG_STARTED:
+
 			if (instruction instanceof Arrow){
 
 				currentlyDragging = (Arrow) instruction;
@@ -606,26 +581,24 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 
 					arrowHead = currentlyDragging.getType(); //If loop, the first click is always the arrow head. If branch, it's always the tail.
 				}
-
 				else {
 
 					if ((origX < (v.getX() + v.getWidth()) && v.getY()<theLineX) || (origX > (v.getX() + v.getWidth()) && v.getY()>theLineX)){
-
 						arrowHead = true;
 					}
 
 					else {
-
 						arrowHead = false;
 					}
 				}
 			}
-
 			break;
 
 		case DragEvent.ACTION_DRAG_ENTERED:
-			if (instruction instanceof Box){
+			if (instruction instanceof Box && currentlyDragging != null){
 				currentlyIn = (Box) instruction;
+				currentlyInButton = (Button) findViewById(currentlyIn.getId());
+				currentlyInButton.setBackgroundResource(R.drawable.curvededgecolor);
 
 				if (arrowHead && currentlyIn.getId() != currentlyDragging.getTo().getId()){
 					game.updateHead(currentlyDragging, currentlyIn);
@@ -641,12 +614,19 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 			break;
 
 		case DragEvent.ACTION_DRAG_EXITED:
-			if (instruction instanceof Box){
+			if (instruction instanceof Box && currentlyDragging != null){
 				currentlyIn = null;
+				currentlyInButton.setBackgroundResource(R.drawable.curvededge);
 			}
 			break;
 
 		case DragEvent.ACTION_DRAG_ENDED:
+
+			currentlyDragging = null;
+			
+			if (instruction instanceof Arrow){
+				v.setBackgroundColor(Color.TRANSPARENT);
+			}
 			break;
 		}
 		return true;

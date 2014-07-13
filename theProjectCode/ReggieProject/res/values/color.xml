@@ -12,6 +12,7 @@
      <color name="purple">#6600CC</color>
      <color name="pink">#E68AE6</color>
      <color name="brown">#993300</color>
+     <color name="black">#000000</color>
         
      <array name="rainbow">
         <item>@color/teal</item>

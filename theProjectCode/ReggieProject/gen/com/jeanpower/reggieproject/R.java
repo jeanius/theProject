@@ -16,6 +16,7 @@ public final class R {
     public static final class attr {
     }
     public static final class color {
+        public static final int black=0x7f04000a;
         public static final int blue=0x7f040005;
         public static final int brown=0x7f040009;
         public static final int green=0x7f040004;
@@ -41,29 +42,31 @@ public final class R {
         public static final int blue=0x7f020000;
         public static final int brown=0x7f020001;
         public static final int curvededge=0x7f020002;
-        public static final int gradient=0x7f020003;
-        public static final int green=0x7f020004;
-        public static final int ic_launcher=0x7f020005;
-        public static final int linegradient=0x7f020006;
-        public static final int magenta=0x7f020007;
-        public static final int orange=0x7f020008;
-        public static final int pink=0x7f020009;
-        public static final int purple=0x7f02000a;
-        public static final int red=0x7f02000b;
-        public static final int teal=0x7f02000c;
-        public static final int yellow=0x7f02000d;
+        public static final int curvededgecolor=0x7f020003;
+        public static final int gradient=0x7f020004;
+        public static final int green=0x7f020005;
+        public static final int ic_launcher=0x7f020006;
+        public static final int linegradient=0x7f020007;
+        public static final int magenta=0x7f020008;
+        public static final int orange=0x7f020009;
+        public static final int pink=0x7f02000a;
+        public static final int purple=0x7f02000b;
+        public static final int red=0x7f02000c;
+        public static final int teal=0x7f02000d;
+        public static final int yellow=0x7f02000e;
     }
     public static final class id {
-        public static final int ScrollActionVertical=0x7f0a0003;
         public static final int ScrollVertical=0x7f0a0000;
-        public static final int actionFrame=0x7f0a0004;
-        public static final int new_arrow_button=0x7f0a0007;
-        public static final int new_box_button=0x7f0a0006;
-        public static final int new_end_button=0x7f0a0008;
+        public static final int actionFrame=0x7f0a0003;
+        public static final int actionFrameScroll=0x7f0a0002;
+        public static final int b1=0x7f0a0005;
+        public static final int b2=0x7f0a0006;
+        public static final int new_arrow_button=0x7f0a0008;
+        public static final int new_box_button=0x7f0a0007;
+        public static final int new_end_button=0x7f0a0009;
         public static final int register_frame=0x7f0a0001;
-        public static final int run_button=0x7f0a0009;
-        public static final int scrollHorizontal=0x7f0a0002;
-        public static final int theLine=0x7f0a0005;
+        public static final int run_button=0x7f0a000a;
+        public static final int theLine=0x7f0a0004;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;

@@ -1,0 +1,129 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity" >
+    
+	<ScrollView  
+    	android:id="@+id/ScrollVertical"
+    	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:layout_alignParentLeft="true">
+    
+			<LinearLayout
+	   			android:id="@+id/register_frame"
+	   			android:orientation="vertical"
+	   			android:layout_width="match_parent"
+        		android:layout_height="wrap_content">    
+        		
+			    <Button 	         	
+		         	android:id="@string/Register0"
+           		 	android:layout_width="wrap_content" 
+           		 	android:layout_height="wrap_content"
+         		 	android:layout_gravity="center">
+      		   	</Button>
+      		  
+		       	<Button 
+		       	  	android:id="@string/Register1"
+           		  	android:layout_width="wrap_content" 
+           		  	android:layout_height="wrap_content"
+         		  	android:layout_gravity="center">
+      		   	</Button>
+      		  
+		       	<Button 
+		          	android:id="@string/Register2"
+           		  	android:layout_width="wrap_content" 
+           		  	android:layout_height="wrap_content"
+         		  	android:layout_gravity="center">
+      		   	</Button>
+      		  
+		       	<Button 
+		          	android:id="@string/Register3"
+           		  	android:layout_width="wrap_content" 
+           		  	android:layout_height="wrap_content"
+         		  	android:layout_gravity="center">
+      		   	</Button>
+      		  
+		       	<Button 
+		          	android:id="@string/Register4"
+           		  	android:layout_width="wrap_content" 
+           		  	android:layout_height="wrap_content"
+         		  	android:layout_gravity="center">
+      		   	</Button>
+      		  
+		       	<Button 
+		          	android:id="@string/Register5"
+           		  	android:layout_width="wrap_content" 
+           		  	android:layout_height="wrap_content"
+         		  	android:layout_gravity="center">
+      		   	</Button>
+      		  
+		       	<Button 
+		          	android:id="@string/Register6"
+           		  	android:layout_width="wrap_content" 
+           		  	android:layout_height="wrap_content"
+         		  	android:layout_gravity="center">
+      		   	</Button>
+      		  
+		       	<Button 
+		          	android:id="@string/Register7"
+           		  	android:layout_width="wrap_content" 
+           		  	android:layout_height="wrap_content"
+         		  	android:layout_gravity="center">
+      		   	</Button>
+      		  
+		       	<Button 
+		          	android:id="@string/Register8"
+           		  	android:layout_width="wrap_content" 
+           		  	android:layout_height="wrap_content"
+         		  	android:layout_gravity="center">
+      		   	</Button>
+      		  
+		       	<Button 
+		          	android:id="@string/Register9"
+           		  	android:layout_width="wrap_content" 
+           		  	android:layout_height="wrap_content"
+         		  	android:layout_gravity="center">
+      		   	</Button>			    
+   			</LinearLayout>
+   			
+	</ScrollView>	
+
+	<com.jeanpower.reggieproject.TwoDScrollView
+	    android:layout_width="fill_parent" 
+	    android:layout_height="fill_parent"
+	    android:layout_toRightOf="@id/ScrollVertical">
+			
+	    <RelativeLayout
+		    android:id="@+id/actionFrame"
+		    android:layout_width="2000dip"
+		    android:layout_height="300dip">
+		       	
+		    <View
+		    	android:id="@+id/theLine"
+		    	android:layout_width="match_parent"
+		    	android:layout_height="2dip"
+		    	android:layout_centerInParent="true"
+		    	android:background="#000000"
+		    	android:padding="0dp">
+		    </View> 
+						
+		</RelativeLayout>
+
+	</com.jeanpower.reggieproject.TwoDScrollView>
+
+</RelativeLayout>
+
+
+<!-- 	
+	<HorizontalScrollView
+    android:id="@+id/scrollHorizontal2"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_toRightOf="@id/ScrollVertical">
+
+    	<ScrollView 
+        	android:id="@+id/scrollVertical2"
+       	 	android:layout_width="wrap_content"
+        	android:layout_height="wrap_content"> -->

@@ -90,39 +90,48 @@
    			
 	</ScrollView>	
 
-	    <HorizontalScrollView
-	    	android:id="@+id/scrollHorizontal"
-	    	android:layout_width="match_parent"
-	    	android:layout_height="match_parent"
-	   		android:fillViewport="true"
-	   		android:layout_toRightOf="@id/ScrollVertical">
+	<com.jeanpower.reggieproject.TwoDScrollView
+	    android:id="@+id/actionFrameScroll"
+	    android:layout_width="match_parent" 
+	    android:layout_height="match_parent"
+	    android:layout_toRightOf="@id/ScrollVertical"
+	    android:fillViewport="true">
 			
-	        	<ScrollView
-	        	    android:id="@+id/ScrollActionVertical"
-	        	    android:layout_width="wrap_content"
-	        	    android:layout_height="match_parent"
-	        	    android:fillViewport="true"
-	        	    android:scrollbarAlwaysDrawVerticalTrack="true" >
+	    <RelativeLayout
+		    android:id="@+id/actionFrame"
+		    android:layout_width="2000dip"
+		    android:layout_height="300dip"
+		    android:layout_gravity="left"
+		    android:gravity="center">
+		       	
+		    <View
+		        android:id="@+id/theLine"
+		        android:layout_width="match_parent"
+		        android:layout_height="2dip"
+		        android:background="#000000">
+		    </View>
+		    
+		    		       	<Button 
+		          	android:id="@+id/b1"
+           		  	android:layout_width="wrap_content" 
+           		  	android:layout_height="wrap_content"
+         		    android:layout_gravity="center"
+         		  	android:layout_alignBottom="@id/theLine"
+         		  	android:layout_alignParentLeft="true"
+         		  	 android:background="@color/teal">
+      		   	</Button>	
+      		   		    
+		    		       	<Button 
+		          	android:id="@+id/b2"
+           		  	android:layout_width="wrap_content" 
+           		  	android:layout_height="wrap_content"
+         		  	android:layout_gravity="center"
+         		  	android:layout_above="@id/theLine"
+         		  	android:layout_toRightOf="@id/b1">
+      		   	</Button>	
+						
+		</RelativeLayout>
 
-					<RelativeLayout
-	        			android:id="@+id/actionFrame"
-	        			android:layout_width="match_parent"
-	        			android:layout_height="wrap_content"
-	        			android:layout_gravity="left">
-
-	        			<View
-	        	   		 	android:id="@+id/theLine"
-	        	    		android:layout_width="match_parent"
-	        	    		android:layout_height="2dip"
-	        	    		android:layout_centerInParent="true"
-	        	    		android:background="#000000"
-	        	    		android:padding="0dp">
-						</View> 
-
-			</RelativeLayout>
-			
-					</ScrollView>
-
-		</HorizontalScrollView>	
+	</com.jeanpower.reggieproject.TwoDScrollView>
 
 </RelativeLayout>
