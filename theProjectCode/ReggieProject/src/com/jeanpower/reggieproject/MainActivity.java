@@ -354,8 +354,7 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 
 					//Log.d("MarginTop", marginTop + "");
 
-					instructionBetween = game.getToFrom(arrow.getTo(), arrow
-							.getPred().getId());
+					instructionBetween = game.getToFrom(arrow.getTo(), arrow.getPred().getId());
 					int pointer = 0;
 					Instruction currentPosition = instructionList.get(pointer);
 
@@ -404,7 +403,7 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 						marginTop = 0;
 					}
 
-					instructionBetween = game.getToFrom(arrow, arrow.getTo().getId());
+					instructionBetween = game.getToFrom(arrow.getPred(), arrow.getTo().getId());
 					int pointer = 0;
 					Instruction currentPosition = instructionList.get(pointer);
 
@@ -417,18 +416,18 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 
 							if (!check.getType()) {
 
-								List<Instruction> instructList = game.getToFrom(check.getSucc(), check.getTo().getId());
+								List<Instruction> instructList = game.getToFrom(check.getPred(), check.getTo().getId());
 								int sizeList = instructList.size();
 
 								instructList.removeAll(instructionBetween);
 
 								int newSizeList = instructList.size();
-								
-							//	Log.d("I am on arrow ", arrow + "");
-							//	Log.d("This is arrow's list", instructionBetween + "");
-							//	Log.d("I am checking arrow against", check + "");
-								//Log.d("This is the instruction list", instructList + "");
-								//Log.d("I am check arrow and I am", check.getType() + "");
+
+								Log.d("I am on arrow ", arrow + "");
+								Log.d("This is arrow's list", instructionBetween + "");
+								Log.d("I am checking arrow against", check + "");
+								Log.d("This is the instruction list", instructList + "");
+								Log.d("I am check arrow and I am", check.getType() + "");
 
 								// If there is any overlap in the lists
 								if (sizeList != newSizeList) {
@@ -544,8 +543,7 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 	 * Takes long click on register button and zeros register
 	 * <p>
 	 * 
-	 * @param View
-	 *            . Button which has been clicked
+	 * @param View. Button which has been clicked
 	 * @return boolean
 	 */
 	@Override
@@ -586,14 +584,14 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 				long clickDuration = Calendar.getInstance().getTimeInMillis()- startClickTime;
 
 				if (clickDuration < MAX_DURATION){
-					
+
 					if (instruction instanceof Box){
-						
+
 						game.updateInstruction(instruction);
 						this.updateColour(instruction);
 					}
 				}
-				
+
 				else {
 					game.changeInstruction(instruction);
 					this.updateDisplay();
@@ -603,11 +601,11 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 
 			case MotionEvent.ACTION_MOVE:
 				float newX = me.getRawX();
-				
+
 				if (instruction instanceof Arrow && ((newX - origX > THRESHOLD) || (origX - newX > THRESHOLD)) && !draggingArrow) {
 					draggingArrow = true;
 					currentlyDragging = (Arrow) instruction;
-					v.setBackgroundColor(glow);
+					v.setBackgroundColor(glow);					
 					DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(v); // TODO - 2 different shadow builders, one with a line down, one with an arrow.
 					v.startDrag(null, shadowBuilder, v, 0);
 				}
@@ -625,22 +623,35 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 
 		int resid = v.getId();
 		Instruction instruction = game.getInstruction(resid);
-		Log.d("Instruction", instruction +"");
 
 		switch (de.getAction()) {
 
 		case DragEvent.ACTION_DRAG_STARTED:
 
-			if (instruction instanceof Arrow) {
+			if (instruction instanceof Arrow) {		
 
-				if (currentlyDragging.getPred().getId() == currentlyDragging.getTo().getId()) { // Only if the arrow is single //TODO - Issue with arrows added on first box
+				if (currentlyDragging.getPred().getId() == currentlyDragging.getTo().getId()) { // Only if the arrow is single 
 
-					arrowHead = currentlyDragging.getType(); // If loop, the first click is always the arrow head. If branch, it's always the tail.
+					if (currentlyDragging.getPred().getPred() == null){ //If it is pred/goto the first box
+						
+						if(!currentlyDragging.getType())
+						{
+						arrowHead = true;
+						}
+						else {
+							arrowHead = false;
+							}
+					}
+					
+					else {
+						arrowHead = true;
+					}
 				} 
-				
-				else {
 
-					if ((origX < (v.getX() + v.getWidth()) && v.getY() < theLineX) || (origX > (v.getX() + v.getWidth()) && v.getY() > theLineX)) {
+				else {
+					
+					if ((origX < (v.getX() + v.getWidth()) && v.getY() < theLineX) || (origX > (v.getX() + v.getWidth()) && v.getY() >= theLineX)) {
+
 						arrowHead = true;
 					}
 
@@ -652,9 +663,10 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 			break;
 
 		case DragEvent.ACTION_DRAG_ENTERED:
+
 			if (instruction instanceof Box && currentlyDragging != null) {
 				currentlyIn = (Box) instruction;
-				currentlyInButton = (ImageButton) findViewById(currentlyIn.getId());
+				currentlyInButton = (ImageButton) findViewById(currentlyIn.getId()); //TODO why is this nor working
 				currentlyInButton.setBackgroundResource(R.drawable.curvededgecolor);
 
 				if (arrowHead && currentlyIn.getId() != currentlyDragging.getTo().getId()) {
