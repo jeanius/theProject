@@ -16,9 +16,11 @@ public class End implements Instruction{
 	
 	@Override
 	public void doWork() {
-
-				caller.setCurrPos(null);
-
+		
+		if (pred.getType()){
+	
+		caller.setCurrPos(null);
+		}
 	}
 
 	@Override

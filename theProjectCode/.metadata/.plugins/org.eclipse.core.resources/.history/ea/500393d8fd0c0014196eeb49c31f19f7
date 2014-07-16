@@ -81,8 +81,10 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 		setContentView(R.layout.activity_main);
 
 		game = new Game(this);
-		instructionIcons = getResources().obtainTypedArray(R.array.instruction_icons);
-		oneBox = false; // To track if user has added a Box instruction, preventing arrow/run/end being called
+		instructionIcons = getResources().obtainTypedArray(
+				R.array.instruction_icons);
+		oneBox = false; // To track if user has added a Box instruction,
+		// preventing arrow/run/end being called
 		maxRegisters = game.getMaxReg();
 		glow = Color.argb(120, 255, 255, 0);
 		screenDensity = this.getResources().getDisplayMetrics().density;
@@ -279,12 +281,13 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 				}
 
 				if (prevInstruction == null) {
-					instructionParameters.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+					instructionParameters
+					.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
 				}
 
 				else {
 					// To add next to previous box
-					while (prevInstruction instanceof Arrow|| prevInstruction instanceof End) {
+					while (prevInstruction instanceof Arrow) {
 
 						prevInstruction = prevInstruction.getPred();
 					}
@@ -296,7 +299,8 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 						container.removeView(prevBox.getConnect());
 					}
 
-					instructionParameters.addRule(RelativeLayout.RIGHT_OF,prevBox.getId()); // Right of the current
+					instructionParameters.addRule(RelativeLayout.RIGHT_OF,
+							prevBox.getId()); // Right of the current
 					// instruction
 				}
 
@@ -331,7 +335,7 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 				// Arrow left or right matches its predecessor box
 				Instruction prevBox = arrow.getPred();
 
-				while (prevBox instanceof Arrow || prevBox instanceof End) {
+				while (prevBox instanceof Arrow) {
 
 					prevBox = prevBox.getPred();
 				}
@@ -475,7 +479,7 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 				
 				Instruction prev = end.getPred();
 				
-				while (prev instanceof Arrow || prev instanceof End){
+				while (prev instanceof Arrow){
 					prev = prev.getPred();
 				}
 				

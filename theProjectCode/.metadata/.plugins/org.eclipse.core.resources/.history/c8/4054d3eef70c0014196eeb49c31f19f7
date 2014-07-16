@@ -6,7 +6,6 @@ public class End implements Instruction{
 	private int identity;
 	private Instruction succ;
 	private Instruction pred;
-	private int register;
 	
 	public End(Game g){
 		 
@@ -16,9 +15,8 @@ public class End implements Instruction{
 	
 	@Override
 	public void doWork() {
-
-				caller.setCurrPos(null);
-
+	
+		caller.setCurrPos(null);
 	}
 
 	@Override
@@ -29,19 +27,19 @@ public class End implements Instruction{
 
 	@Override
 	public Instruction getSucc() {
-		return succ;
+		return null;
 	}
 
 	@Override
 	public void setPred(Instruction predecessor) {
-		pred = predecessor;
-		register = pred.getRegister();
+		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public Instruction getPred() {
-		return pred;
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
@@ -52,7 +50,8 @@ public class End implements Instruction{
 
 	@Override
 	public int getRegister() {
-		return register;
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 

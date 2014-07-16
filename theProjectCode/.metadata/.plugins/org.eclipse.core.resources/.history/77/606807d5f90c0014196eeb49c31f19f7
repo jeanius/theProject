@@ -162,6 +162,7 @@ public class Game {
 
 				Arrow arrow = (Arrow) instruction;
 				arrow.setTo(lastBox);
+				Log.d("This is where i set my to to", arrow.getTo() + "");
 			}
 		}
 

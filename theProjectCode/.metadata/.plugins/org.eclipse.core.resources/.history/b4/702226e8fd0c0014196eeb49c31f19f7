@@ -81,8 +81,10 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 		setContentView(R.layout.activity_main);
 
 		game = new Game(this);
-		instructionIcons = getResources().obtainTypedArray(R.array.instruction_icons);
-		oneBox = false; // To track if user has added a Box instruction, preventing arrow/run/end being called
+		instructionIcons = getResources().obtainTypedArray(
+				R.array.instruction_icons);
+		oneBox = false; // To track if user has added a Box instruction,
+		// preventing arrow/run/end being called
 		maxRegisters = game.getMaxReg();
 		glow = Color.argb(120, 255, 255, 0);
 		screenDensity = this.getResources().getDisplayMetrics().density;
@@ -331,7 +333,7 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 				// Arrow left or right matches its predecessor box
 				Instruction prevBox = arrow.getPred();
 
-				while (prevBox instanceof Arrow || prevBox instanceof End) {
+				while (prevBox instanceof Arrow || prev instanceof End) {
 
 					prevBox = prevBox.getPred();
 				}

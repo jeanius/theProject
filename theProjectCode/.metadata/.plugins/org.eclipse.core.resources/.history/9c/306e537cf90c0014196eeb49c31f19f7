@@ -89,19 +89,23 @@
    			</LinearLayout>
    			
 	</ScrollView>
+
+
 	
 	<LinearLayout 
 	    android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:layout_toRightOf="@id/ScrollVertical"
-        android:weightSum="100">
+        android:weightSum="100"
+        android:baselineAligned="false"
+        android:layout_toRightOf="@id/ScrollVertical">
 
 		<com.jeanpower.reggieproject.TwoDScrollView
 	    	android:id="@+id/actionFrameScroll"
 	    	android:layout_width="match_parent" 
-	    	android:layout_height="0dip"
-	    	android:layout_weight="85">
+	    	android:layout_height="match_parent"
+	    	>
 			
 	    	<RelativeLayout
 		    	android:id="@+id/actionFrame"

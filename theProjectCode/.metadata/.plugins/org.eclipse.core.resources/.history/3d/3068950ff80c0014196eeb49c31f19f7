@@ -16,9 +16,8 @@ public class End implements Instruction{
 	
 	@Override
 	public void doWork() {
-
-				caller.setCurrPos(null);
-
+	
+		caller.setCurrPos(null);
 	}
 
 	@Override
