@@ -1,0 +1,41 @@
+This week:
+1)	Gridlayout, redraw layout constantly updating column nums – inefficient. Issues with setting indexes of views.
+2)	Arrows – heads/tails separately draggable, box lights up as hit, correct positioning and correct changing of instruction
+3)	Vertical + horizontal scrolling
+4)	Placement of instructions broken.
+5)	Didn’t expend button – kept instruction separate from display, allowing for a new “update display” to be written
+6)	Re did all drag/touch/click listeners, as was affected by the 2d scrolling
+
+Errors
+1)	Deb with no branch/end
+2)	Branch to itself
+3)	Branch as successor of inc
+4)	No end instruction
+5)	Inc, loop, end in that order – incorrect, as end will never be reached
+6)	Loop as no end/deb instruction within pred-goto (infinite loop)
+
+ID INSTRUCTION PRED SUCC REG/GO TO
+0, DEB NULL, 1, 4
+1, BRA, 0, 2, 3
+2, INC, 1, 3, 1
+3, DEB, 2, 4, 2
+4, LOOP, 3, 5, 2
+5, END, 4, NULL, NULL
+
+- Read in line by line. 
+- Create instruction, place in array at ID number
+- Can easily set pred/succ/goto – index the array.
+- Then iterate through and reset IDs to ensure unique for this instance of game/or set static counter within Utils.
+
+
+John – 
+1)	Try another 2D scroller
+2)	Absolute layout (dip) – is actually good practice in this case, as creating a visual representation of the program each time the program is being opened/edited. In relation to parent, which makes sense.
+3)	Next time, custom view, with all own implementation
+4)	Would like to see mark box as stop, program runs up towards that, then stops
+5)	Would like to see mark reg as certain value, program runs up towards that, then stops.
+Simon/Joe
+1)	Daryl Weir thesis.
+2)	Get headings/bullet points by next week
+3)	Redo instruction set so it is like Dennetts
+4)	Future – best visualisation of the program, as few arrows as possible
