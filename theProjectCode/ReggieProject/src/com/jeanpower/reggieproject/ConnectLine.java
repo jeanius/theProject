@@ -20,7 +20,7 @@ public class ConnectLine extends View {
 
 	public ConnectLine(Context context, View startView, View endView, View parent) {
 
-		super(context);   
+		super(context); 
 		paint.setStrokeWidth(5);
 		paint.setStyle(Paint.Style.STROKE); 
 		start = startView;
@@ -40,5 +40,6 @@ public class ConnectLine extends View {
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 
 		setMeasuredDimension(parentView.getWidth(), parentView.getHeight());  
-	}
+}
+	
 }

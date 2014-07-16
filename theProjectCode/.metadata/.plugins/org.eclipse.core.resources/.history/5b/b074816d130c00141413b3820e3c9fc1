@@ -1,0 +1,57 @@
+/**
+ * 
+ * To connect buttons on screen which represent INC/DEC instructions
+ * 
+*/
+
+package com.jeanpower.reggieproject;
+
+import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.view.View;
+
+public class ConnectLine extends View {
+	Paint paint = new Paint();
+	View start;
+	View end;  
+	View parentView;
+
+	public ConnectLine(Context context, View startView, View endView, View parent) {
+
+		super(context); 
+		paint.setStrokeWidth(5);
+		paint.setStyle(Paint.Style.STROKE); 
+		start = startView;
+		end = endView; 
+		parentView = parent;
+	}
+
+	public void onDraw(Canvas canvas) {
+
+		paint.setColor(Color.BLACK);     
+		canvas.drawLine(start.getX() + (start.getWidth()/2), start.getY()+ (start.getHeight()/2), end.getX() + (end.getWidth()/2), end.getY() + (end.getHeight()/2), paint);   
+	}
+	
+	//TODO - Need to update this so it's parentView + width of button
+
+	@Override
+	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+
+		setMeasuredDimension(parentView.getWidth(), parentView.getHeight());  
+}
+	
+	 @Override
+	    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+	        
+	    }
+	 
+	 @Override
+	    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+	        super.onSizeChanged(w, h, oldw, oldh);
+	        }
+
+
+
+}
