@@ -23,7 +23,7 @@ public class Arrow implements Instruction{
 
 	@Override
 	public void doWork() {
-		/*
+		
 		if (loop)
 		{
 			caller.setCurrPos(toInstruction);
@@ -40,10 +40,7 @@ public class Arrow implements Instruction{
 			{
 				caller.setCurrPos(succ);
 			}
-		}*/
-
-		caller.setCurrPos(succ);
-
+		}
 	}
 
 	@Override

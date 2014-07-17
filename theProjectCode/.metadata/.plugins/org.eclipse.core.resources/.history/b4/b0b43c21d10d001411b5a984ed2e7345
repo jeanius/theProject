@@ -1,0 +1,57 @@
+package com.jeanpower.reggieproject;
+
+import android.util.Log;
+import android.widget.ImageButton;
+
+public class animateInstruction implements Runnable{
+	
+	Instruction instruction;
+	MainActivity caller;
+	
+	
+	public animateInstruction(Instruction i, MainActivity ma){
+		caller = ma;
+		instruction = i;
+		
+	}
+
+	@Override
+	public void run() {
+		
+		ImageButton button = (ImageButton) caller.findViewById(instruction.getId());
+		
+		if (instruction instanceof Box){
+			
+			Box box = (Box) instruction;
+			ImageButton register = (ImageButton) findViewById (registerIds[box.getRegister()]);
+			
+			try {
+			
+			register.getBackground().setAlpha(100);
+			button.getBackground().setAlpha(100);
+			}
+			catch (Exception e){
+				Log.d("This was interrupted", "interrupted");
+			}
+		}
+		
+		else if (instruction instanceof Arrow){
+			
+			Arrow arrow = (Arrow) instruction;
+			
+			ImageButton goToButton = (ImageButton) caller.findViewById(arrow.getTo().getId());
+			
+			goToButton.getBackground().setAlpha(100);
+			button.getBackground().setAlpha(100);
+			
+		}
+		
+		else if (instruction instanceof End){
+			
+			button.getBackground().setAlpha(100);
+			
+		}
+		
+	}
+
+}

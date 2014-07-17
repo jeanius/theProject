@@ -1,0 +1,45 @@
+package com.jeanpower.reggieproject;
+
+import android.widget.ImageButton;
+
+public class animateInstruction implements Runnable{
+	
+	
+	public animateInstruction(){
+		
+	}
+
+	@Override
+	public void run() {
+		
+		ImageButton button = (ImageButton) findViewById(i.getId());
+		
+		if (i instanceof Box){
+			
+			Box box = (Box) i;
+			ImageButton register = (ImageButton) findViewById (registerIds[box.getRegister()]);
+			
+			register.getBackground().setAlpha(100);
+			button.getBackground().setAlpha(100);
+		}
+		
+		else if (i instanceof Arrow){
+			
+			Arrow arrow = (Arrow) i;
+			
+			ImageButton goToButton = (ImageButton) findViewById(arrow.getTo().getId());
+			
+			goToButton.getBackground().setAlpha(100);
+			button.getBackground().setAlpha(100);
+			
+		}
+		
+		else if (i instanceof End){
+			
+			button.getBackground().setAlpha(100);
+			
+		}
+		
+	}
+
+}

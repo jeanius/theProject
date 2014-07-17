@@ -1,0 +1,68 @@
+package com.jeanpower.reggieproject;
+
+import android.os.AsyncTask;
+import android.util.Log;
+import android.widget.ImageButton;
+
+public class RunInstruction extends AsyncTask{
+	
+	Game caller;
+	MainActivity window;
+	Instruction instruction;
+	
+	public RunInstruction(Instruction i, Game g, MainActivity ma){
+		caller = g;
+		window = ma;
+		instruction = i;
+	}
+
+	@Override
+	public void run() {
+		
+		ImageButton button = (ImageButton) window.findViewById(instruction.getId());
+		
+		if (instruction instanceof Box){
+			
+			Box box = (Box) instruction;
+			ImageButton register = (ImageButton) findViewById (registerIds[box.getRegister()]);
+			
+			try {
+			
+			register.getBackground().setAlpha(100);
+			button.getBackground().setAlpha(100);
+			this.sleep(1000);
+			}
+			
+			catch (Exception e){
+				Log.d("This was interrupted", "interrupted");
+			}
+		}
+		
+		else if (instruction instanceof Arrow){
+			
+			Arrow arrow = (Arrow) instruction;
+			
+			ImageButton goToButton = (ImageButton) caller.findViewById(arrow.getTo().getId());
+			
+			goToButton.getBackground().setAlpha(100);
+			button.getBackground().setAlpha(100);
+			
+		}
+		
+		else if (instruction instanceof End){
+			
+			button.getBackground().setAlpha(100);
+			
+		}
+		
+	}
+
+	@Override
+	protected Object doInBackground(Object... arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+		
+	}
+
+}

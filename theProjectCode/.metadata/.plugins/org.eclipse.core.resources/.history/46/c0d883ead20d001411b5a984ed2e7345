@@ -1,0 +1,60 @@
+package com.jeanpower.reggieproject;
+
+import android.util.Log;
+import android.widget.ImageButton;
+
+public class RunGame implements Runnable{
+	
+	Game caller;
+	MainActivity window;
+	
+	public RunGame (Game g, MainActivity ma){
+		caller = g;
+		window = ma;
+		
+	}
+
+	@Override
+	public void run() {
+		
+		ImageButton button = (ImageButton) window.findViewById(instruction.getId());
+		
+		if (instruction instanceof Box){
+			
+			Box box = (Box) instruction;
+			ImageButton register = (ImageButton) findViewById (registerIds[box.getRegister()]);
+			
+			try {
+			
+			register.getBackground().setAlpha(100);
+			button.getBackground().setAlpha(100);
+			this.sleep(1000);
+			}
+			
+			catch (Exception e){
+				Log.d("This was interrupted", "interrupted");
+			}
+		}
+		
+		else if (instruction instanceof Arrow){
+			
+			Arrow arrow = (Arrow) instruction;
+			
+			ImageButton goToButton = (ImageButton) caller.findViewById(arrow.getTo().getId());
+			
+			goToButton.getBackground().setAlpha(100);
+			button.getBackground().setAlpha(100);
+			
+		}
+		
+		else if (instruction instanceof End){
+			
+			button.getBackground().setAlpha(100);
+			
+		}
+		
+	}
+		
+	}
+
+}

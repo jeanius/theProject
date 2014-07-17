@@ -32,6 +32,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.HorizontalScrollView;
+import android.widget.RelativeLayout.LayoutParams;
 import android.widget.ScrollView;
 
 public class MainActivity extends Activity implements View.OnClickListener,
@@ -55,7 +56,7 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 	private Arrow currentlyDragging; // The arrow that is currently being dragged
 	private boolean draggingArrow;
 	private Box currentlyIn;
-	private final int THRESHOLD = 8; // Sensitivity of drag operation
+	private final int THRESHOLD = buttonHeight * 2; // Sensitivity of drag operation
 	private static int glow;
 	private View boxAbove;
 	private View boxBelow;
@@ -86,44 +87,56 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 		maxRegisters = game.getMaxReg();
 		glow = Color.argb(120, 255, 255, 0);
 		screenDensity = this.getResources().getDisplayMetrics().density;
-
-		// Array of colours, from color.xml
-		registerColours = getResources().getIntArray(R.array.rainbow);
-
-		String[] registerNames = getResources().getStringArray(
-				R.array.register_names);
-		registerIds = new int[maxRegisters];
-
-		for (int i = 0; i < maxRegisters; i++) {
-
-			int resID = getResources().getIdentifier(registerNames[i],
-					"string", getPackageName());
-			registerIds[i] = resID;
-
-			regButton = (Button) findViewById(resID);
-		}
-
+		
 		LinearLayout container = (LinearLayout) findViewById(R.id.register_frame);
-		LinearLayout.LayoutParams regParams = new LinearLayout.LayoutParams(
-				LinearLayout.LayoutParams.WRAP_CONTENT,
-				LinearLayout.LayoutParams.WRAP_CONTENT);
+		LinearLayout.LayoutParams regParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
 		// To give black border
 		regParams.setMargins(1, 1, 1, 1);
 		container.setBackgroundColor(Color.BLACK);
 
+		// Array of colours, from color.xml
+		registerColours = getResources().getIntArray(R.array.rainbow);
+		
+		//Array of the register names
+		String[] registerNames = getResources().getStringArray(R.array.register_names);
+		
+		//Setting up array to hold register IDs
+		registerIds = new int[maxRegisters];
+
+		for (int i = 0; i < maxRegisters; i++) {
+
+			int resID = getResources().getIdentifier(registerNames[i], "string", getPackageName());
+			registerIds[i] = resID; //At position 0 is first register, etc
+			
+			//Adding to screen, setting colour
+			regButton = (Button) findViewById(resID);
+			regButton.setLayoutParams(regParams); // For wrap content
+			regButton.setBackgroundColor(registerColours[i]);
+			regButton.setOnClickListener(this);
+			regButton.setOnLongClickListener(this);
+		}
+
+		this.setRegisters();
+		
+		/*LinearLayout container = (LinearLayout) findViewById(R.id.register_frame);
+		LinearLayout.LayoutParams regParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+
+		// To give black border
+		regParams.setMargins(1, 1, 1, 1);
+		container.setBackgroundColor(Color.BLACK);
+		
+		this.setRegisters();
+/*
 		for (int i = 0; i < maxRegisters; i++) {
 
 			Button button = (Button) findViewById(registerIds[i]);
-			button.setText(game.getRegData(i) + ""); // Set initial text to 0
 			button.setLayoutParams(regParams); // For wrap content
-
 			button.setBackgroundColor(registerColours[i]);
-
 			button.setOnClickListener(this);
 			button.setOnLongClickListener(this);
-		}
-		
+		}*/
+
 		//Add listeners to activity buttons.
 		arrowButton = (Button) findViewById(R.id.new_arrow_button);
 		arrowButton.setOnClickListener(this);	
@@ -161,7 +174,7 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 		arrowButton.setEnabled(false);
 		runButton.setEnabled(false);
 		endButton.setEnabled(false);
-*/
+		 */
 		return true;
 	}
 
@@ -244,7 +257,7 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 		this.setLayoutConstants(instructionList);
 
 		for (Instruction inst : instructionList) {
-			
+
 			ImageButton button = new ImageButton(this);
 			button.setOnTouchListener(this);
 			button.setOnDragListener(this);
@@ -265,17 +278,16 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 				}
 
 				button.setBackgroundResource(R.drawable.curvededge);
+
 				button.setImageResource(instructionIcons.getResourceId(box.getRegister(), -1));
 
 				if (box.getType()) // If Increment
 				{
-					instructionParameters.addRule(RelativeLayout.ABOVE,
-							R.id.theLine);
+					instructionParameters.addRule(RelativeLayout.ABOVE, R.id.theLine);
 				}
 
-				else {
-					instructionParameters.addRule(RelativeLayout.BELOW,
-							R.id.theLine);
+				else { 
+					instructionParameters.addRule(RelativeLayout.BELOW, R.id.theLine);
 				}
 
 				if (prevInstruction == null) {
@@ -454,39 +466,41 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 
 				button.setLayoutParams(instructionParameters);
 				container.addView(button);
+				button.bringToFront();
 
 			}
 
 			else if (inst instanceof End) {
-				
-				End end = (End) inst;
-				button.setBackgroundResource(R.drawable.end);
-				instructionParameters.width = buttonWidth/2;
-				instructionParameters.width = buttonHeight/2;
-				int marginTop;
-				
-				if (boxAbove != null) {
-					marginTop = 0;
-				}
 
-				else {
-					marginTop = buttonHeight;
-				}
-				
+				End end = (End) inst;
+				button.setBackgroundResource(R.drawable.end);				
+				int topMargin;
 				Instruction prev = end.getPred();
-				
+
 				while (prev instanceof Arrow || prev instanceof End){
 					prev = prev.getPred();
 				}
-				
+
 				Box prevBox = (Box) prev;
-				instructionParameters.topMargin = marginTop;
-				instructionParameters.addRule(RelativeLayout.ALIGN_RIGHT, prevBox.getId());
-				
-				
+
+				if (prevBox.getType())
+				{						
+					topMargin = -(int) (buttonHeight/1.5);
+
+				}
+				else
+				{
+					topMargin = 1;
+
+				}
+				instructionParameters.width = buttonWidth/2;
+				instructionParameters.height = buttonHeight/2;
+				instructionParameters.addRule(RelativeLayout.ALIGN_TOP, prev.getId());
+				instructionParameters.addRule(RelativeLayout.ALIGN_RIGHT, prev.getId());
+				instructionParameters.topMargin = topMargin;
 				button.setLayoutParams(instructionParameters);
-				container.addView(button);
-				
+				container.addView(button);	
+				button.bringToFront();
 			}
 		}
 
@@ -573,7 +587,7 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 				done = true;
 			}
 		}
-		
+
 		if (!done)
 		{
 			if (resid == R.id.new_arrow_button || resid == R.id.new_box_button || resid == R.id.new_end_button)
@@ -624,56 +638,76 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 		int resid = v.getId();
 		Instruction instruction = game.getInstruction(resid);
 
-		if (instruction instanceof Arrow || instruction instanceof Box) {
 
-			switch (me.getAction() & MotionEvent.ACTION_MASK) { // Motionevent containspointerdatatoo - bitwise and to leave just action
+		switch (me.getAction() & MotionEvent.ACTION_MASK) { // Motionevent containspointerdatatoo - bitwise and to leave just action
 
-			case MotionEvent.ACTION_DOWN:
-				draggingArrow = false;
-				origX = me.getRawX();
-				origY = me.getRawY();
-				startClickTime = Calendar.getInstance().getTimeInMillis();
+		case MotionEvent.ACTION_DOWN:
+			draggingArrow = false;
+			origX = me.getRawX();
+			origY = me.getRawY();
+			startClickTime = Calendar.getInstance().getTimeInMillis();
+			break;
 
-				break;
+		case MotionEvent.ACTION_CANCEL:
+			break;
 
-			case MotionEvent.ACTION_CANCEL:
-				break;
+		case MotionEvent.ACTION_UP:
+			long clickDuration = Calendar.getInstance().getTimeInMillis()- startClickTime;
 
-			case MotionEvent.ACTION_UP:
-				long clickDuration = Calendar.getInstance().getTimeInMillis()- startClickTime;
+			Log.d("clickDuration", clickDuration + "");
+			if (clickDuration < MAX_DURATION){
 
-				if (clickDuration < MAX_DURATION){
+				Log.d("Click is less than..", "less");
 
-					if (instruction instanceof Box){
+				if (instruction instanceof Box){
 
-						game.updateInstruction(instruction);
-						this.updateColour(instruction);
-					}
+					game.updateInstruction(instruction);
+					this.updateColour(instruction);
 				}
 
-				else {
+				else if (instruction instanceof End){
+					Log.d("Knows it's an end", "end");
+					game.updateInstruction(instruction);
+					this.updateDisplay();
+				}
+			}
+
+			else {
+
+				if (instruction instanceof Arrow){
 					game.changeInstruction(instruction);
 					this.updateDisplay();
 				}
 
-				break;
-
-			case MotionEvent.ACTION_MOVE:
-				float newX = me.getRawX();
-
-				if (instruction instanceof Arrow && ((newX - origX > THRESHOLD) || (origX - newX > THRESHOLD)) && !draggingArrow) {
-					draggingArrow = true;
-					currentlyDragging = (Arrow) instruction;
-					v.setBackgroundColor(glow);					
-					DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(v); // TODO - 2 different shadow builders, one with a line down, one with an arrow.
-					v.startDrag(null, shadowBuilder, v, 0);
+				else if (instruction instanceof End || instruction instanceof Box){
+					Log.d("THIS IS WHERE DELETION ", "HAPPENS");
 				}
-				break;
-
-			default:
-				break;
 			}
+
+			break;
+
+		case MotionEvent.ACTION_MOVE:
+			float newX = me.getRawX();
+
+			if (instruction instanceof Box && ((newX - origX > THRESHOLD) || (origX - newX > THRESHOLD))){
+				game.changeInstruction(instruction);
+				this.updateDisplay();
+			}
+
+			else if (instruction instanceof Arrow && ((newX - origX > THRESHOLD) || (origX - newX > THRESHOLD)) && !draggingArrow) {
+				draggingArrow = true;
+				currentlyDragging = (Arrow) instruction;
+				v.setBackgroundColor(glow);					
+				DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(v); // TODO - 2 different shadow builders, one with a line down, one with an arrow.
+				v.startDrag(null, shadowBuilder, v, 0);
+			}
+
+			break;
+
+		default:
+			break;
 		}
+
 		return true;
 	}
 
@@ -688,14 +722,14 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 		case DragEvent.ACTION_DRAG_STARTED:
 
 			if (instruction instanceof Arrow) {		
-					if ((origX < (v.getX() + v.getWidth()) && v.getY() < theLineX) || (origX > (v.getX() + v.getWidth()) && v.getY() >= theLineX)) {
+				if ((origX < (v.getX() + v.getWidth()) && v.getY() < theLineX) || (origX > (v.getX() + v.getWidth()) && v.getY() >= theLineX)) {
 
-						arrowHead = true;
-					}
+					arrowHead = true;
+				}
 
-					else {
-						arrowHead = false;
-					}
+				else {
+					arrowHead = false;
+				}
 			}
 			break;
 
@@ -703,7 +737,7 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 
 			if (instruction instanceof Box && currentlyDragging != null) {
 				currentlyIn = (Box) instruction;
-				currentlyInButton = (ImageButton) findViewById(currentlyIn.getId()); //TODO why is this nor working
+				currentlyInButton = (ImageButton) findViewById(currentlyIn.getId());
 				currentlyInButton.setBackgroundResource(R.drawable.curvededgecolor);
 
 				if (arrowHead && currentlyIn.getId() != currentlyDragging.getTo().getId()) {
@@ -716,6 +750,10 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 				}
 
 				this.updateDisplay();
+				
+				currentlyInButton = (ImageButton) findViewById(currentlyIn.getId());
+				currentlyInButton.setBackgroundResource(R.drawable.curvededgecolor);
+				
 			}
 			break;
 
@@ -739,10 +777,11 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 		return true;
 	}
 
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 
-		int resid = item.getItemId();
+		/*int resid = item.getItemId();
 
 		if (resid == R.id.new_arrow_button || resid == R.id.new_box_button
 				|| resid == R.id.new_end_button) {
@@ -760,9 +799,12 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 
 		else if (resid == R.id.run_button) {
 			game.runGame();
-		}
+		}*/
 
 		return true;
 	}
-
+	
+	public int getRegisterID(int register){
+		return registerIds[register];
+	}
 }

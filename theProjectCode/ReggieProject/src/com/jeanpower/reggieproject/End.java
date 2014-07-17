@@ -17,7 +17,7 @@ public class End implements Instruction{
 	@Override
 	public void doWork() {
 
-				caller.setCurrPos(null);
+		caller.setCurrPos(null);
 
 	}
 
@@ -36,7 +36,6 @@ public class End implements Instruction{
 	public void setPred(Instruction predecessor) {
 		pred = predecessor;
 		register = pred.getRegister();
-		
 	}
 
 	@Override
