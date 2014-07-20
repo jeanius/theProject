@@ -15,6 +15,7 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.LightingColorFilter;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.util.TypedValue;
@@ -56,7 +57,7 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 	private Arrow currentlyDragging; // The arrow that is currently being dragged
 	private boolean draggingArrow;
 	private Box currentlyIn;
-	private final int THRESHOLD = buttonHeight * 2; // Sensitivity of drag operation
+	private final int THRESHOLD = buttonWidth; // Sensitivity of drag operation
 	private static int glow;
 	private View boxAbove;
 	private View boxBelow;
@@ -87,7 +88,7 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 		maxRegisters = game.getMaxReg();
 		glow = Color.argb(120, 255, 255, 0);
 		screenDensity = this.getResources().getDisplayMetrics().density;
-		
+
 		LinearLayout container = (LinearLayout) findViewById(R.id.register_frame);
 		LinearLayout.LayoutParams regParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
@@ -97,10 +98,10 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 
 		// Array of colours, from color.xml
 		registerColours = getResources().getIntArray(R.array.rainbow);
-		
+
 		//Array of the register names
 		String[] registerNames = getResources().getStringArray(R.array.register_names);
-		
+
 		//Setting up array to hold register IDs
 		registerIds = new int[maxRegisters];
 
@@ -108,7 +109,7 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 
 			int resID = getResources().getIdentifier(registerNames[i], "string", getPackageName());
 			registerIds[i] = resID; //At position 0 is first register, etc
-			
+
 			//Adding to screen, setting colour
 			regButton = (Button) findViewById(resID);
 			regButton.setLayoutParams(regParams); // For wrap content
@@ -118,24 +119,6 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 		}
 
 		this.setRegisters();
-		
-		/*LinearLayout container = (LinearLayout) findViewById(R.id.register_frame);
-		LinearLayout.LayoutParams regParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-
-		// To give black border
-		regParams.setMargins(1, 1, 1, 1);
-		container.setBackgroundColor(Color.BLACK);
-		
-		this.setRegisters();
-/*
-		for (int i = 0; i < maxRegisters; i++) {
-
-			Button button = (Button) findViewById(registerIds[i]);
-			button.setLayoutParams(regParams); // For wrap content
-			button.setBackgroundColor(registerColours[i]);
-			button.setOnClickListener(this);
-			button.setOnLongClickListener(this);
-		}*/
 
 		//Add listeners to activity buttons.
 		arrowButton = (Button) findViewById(R.id.new_arrow_button);
@@ -504,6 +487,8 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 			}
 		}
 
+		
+		Log.d("I am here to stop", "stop");
 		/*
 		 * //Redraw the line RelativeLayout.LayoutParams params = new
 		 * RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
@@ -750,10 +735,10 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 				}
 
 				this.updateDisplay();
-				
+
 				currentlyInButton = (ImageButton) findViewById(currentlyIn.getId());
 				currentlyInButton.setBackgroundResource(R.drawable.curvededgecolor);
-				
+
 			}
 			break;
 
@@ -781,7 +766,7 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 
-		/*int resid = item.getItemId();
+		/*int resaid = item.getItemId();
 
 		if (resid == R.id.new_arrow_button || resid == R.id.new_box_button
 				|| resid == R.id.new_end_button) {
@@ -803,8 +788,52 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 
 		return true;
 	}
-	
-	public int getRegisterID(int register){
-		return registerIds[register];
+
+	public void updateInstructionDisplay(Instruction i){
+
+		final Instruction ins = i;
+
+		Button toChange = null;
+		ImageButton button = (ImageButton) findViewById(ins.getId());
+
+		//RelativeLayout container = (RelativeLayout) findViewById(R.id.);
+
+		if (ins instanceof Box){
+			Box box = (Box) ins;
+			setRegisters();
+			toChange = (Button) findViewById (registerIds[box.getRegister()]);
+			button.setBackgroundResource(R.drawable.curvededgecolor);
+			Log.d("Know it's a box", "iT WAS A BOX");
+		}
+
+		else if (ins instanceof Arrow){
+
+			Arrow arrow = (Arrow) ins;
+			toChange = (Button) findViewById(arrow.getTo().getId());
+			button.setBackgroundColor(glow);			
+			Log.d("Know it's a arrow", "iT WAS AN ARROW");
+		}
+
+		if (null != toChange){
+			toChange.getBackground().setColorFilter(new LightingColorFilter(0xFFFFFFFF, 0xFFAA0000));
+		}
+
+		//container.invalidate();
+
+		if (ins instanceof Box){
+
+			//button.setBackgroundResource(R.drawable.curvededge);
+		}
+
+		else if (ins instanceof Arrow){
+
+			button.setBackgroundColor(Color.TRANSPARENT);	
+		}
+
+
+		if (null != toChange){
+			toChange.getBackground().clearColorFilter();
+		}
+
 	}
 }

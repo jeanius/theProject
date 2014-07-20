@@ -1,0 +1,31 @@
+package com.jeanpower.reggieproject;
+
+import android.os.AsyncTask;
+import android.util.Log;
+import android.widget.ImageButton;
+
+public class RunInstruction extends AsyncTask<Void, Void, Void>{
+	
+	Game caller;
+	MainActivity window;
+	Instruction instruction;
+	ImageButton button;
+	ImageButton toChange;
+	
+
+	@Override
+	protected Void doInBackground(Void... arg0) {
+		
+		try {
+		Thread.sleep(1000);
+
+		}
+		catch (Exception e){
+			Log.d("This was interrupted", "interrupted");
+		}
+		
+			return null;
+	}
+	
+
+}

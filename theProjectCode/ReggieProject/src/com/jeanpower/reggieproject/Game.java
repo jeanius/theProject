@@ -19,6 +19,7 @@ public class Game {
 	private int[] registers;
 	private MainActivity activity;
 	private final int MAXREGISTERS = 10;
+	private boolean flag = false;
 
 	/**
 	 * Constructor. Zeros all registers, instantiates instance variables.
@@ -37,14 +38,18 @@ public class Game {
 		}
 	}
 
-	public void runGame() {
+	
+	public void setFlag(){
+		flag = true;	
 		
+	}
+	public void runGame() {
+		Instruction prevPos = null;
 		currPos = first;
 		
 		while (null != currPos){
-
-		RunInstruction rg = new RunInstruction(currPos, this, activity);
-		
+		prevPos = currPos;	
+		currPos.doWork();		
 		}
 		
 		/*int check = 1;
