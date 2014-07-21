@@ -217,7 +217,7 @@ public class Game {
 				Instruction endSucc = end.getSucc();
 
 				if (boxSucc instanceof End){
-					this.delEnd((End) i);
+					this.deleteInstruction(boxSucc);
 				}
 
 				else {
@@ -426,13 +426,9 @@ public class Game {
 		}
 	}
 
-	public void delBox(Box delete) {
-	}
-
-	public void delArrow(Arrow delete) {
-	}
-
-	public void delEnd(End delete) {
+	public void deleteInstruction(Instruction instruction){
+		Log.d("Gotten here with", instruction + "");
+		
 	}
 
 	/**
