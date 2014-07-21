@@ -7,6 +7,7 @@ import java.util.List;
 
 import android.R.menu;
 import android.os.Bundle;
+import android.os.Handler;
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
@@ -57,7 +58,6 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 	private Arrow currentlyDragging; // The arrow that is currently being dragged
 	private boolean draggingArrow;
 	private Box currentlyIn;
-	private final int THRESHOLD = buttonWidth; // Sensitivity of drag operation
 	private static int glow;
 	private View boxAbove;
 	private View boxBelow;
@@ -66,6 +66,8 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 	private long startClickTime;
 	private ImageButton currentlyInButton;
 	private float screenDensity;
+	private boolean changingButton = false;
+	private final int THRESHOLD = (int) (buttonWidth * screenDensity);
 
 	/**
 	 * Called when application is opened.
@@ -108,6 +110,7 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 		for (int i = 0; i < maxRegisters; i++) {
 
 			int resID = getResources().getIdentifier(registerNames[i], "string", getPackageName());
+			Log.d("resID", resID +"");
 			registerIds[i] = resID; //At position 0 is first register, etc
 
 			//Adding to screen, setting colour
@@ -486,9 +489,6 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 				button.bringToFront();
 			}
 		}
-
-		
-		Log.d("I am here to stop", "stop");
 		/*
 		 * //Redraw the line RelativeLayout.LayoutParams params = new
 		 * RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
@@ -570,6 +570,7 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 			if (resid == registerIds[i]) {
 				game.incrementReg(i);
 				done = true;
+				setRegisters();
 			}
 		}
 
@@ -624,7 +625,7 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 		Instruction instruction = game.getInstruction(resid);
 
 
-		switch (me.getAction() & MotionEvent.ACTION_MASK) { // Motionevent containspointerdatatoo - bitwise and to leave just action
+		switch (me.getAction() & MotionEvent.ACTION_MASK) { // Motionevent contains pointer data too - bitwise and to leave just action
 
 		case MotionEvent.ACTION_DOWN:
 			draggingArrow = false;
@@ -642,8 +643,6 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 			Log.d("clickDuration", clickDuration + "");
 			if (clickDuration < MAX_DURATION){
 
-				Log.d("Click is less than..", "less");
-
 				if (instruction instanceof Box){
 
 					game.updateInstruction(instruction);
@@ -651,35 +650,32 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 				}
 
 				else if (instruction instanceof End){
-					Log.d("Knows it's an end", "end");
 					game.updateInstruction(instruction);
 					this.updateDisplay();
 				}
+				
+				else if (instruction instanceof Arrow){
+						game.changeInstruction(instruction);
+						this.updateDisplay();
+					}
 			}
 
 			else {
 
-				if (instruction instanceof Arrow){
-					game.changeInstruction(instruction);
-					this.updateDisplay();
-				}
 
-				else if (instruction instanceof End || instruction instanceof Box){
-					Log.d("THIS IS WHERE DELETION ", "HAPPENS");
-				}
 			}
 
 			break;
 
 		case MotionEvent.ACTION_MOVE:
-			float newX = me.getRawX();
+			float newY = me.getRawY();
 
-			if (instruction instanceof Box && ((newX - origX > THRESHOLD) || (origX - newX > THRESHOLD))){
+			if (instruction instanceof Box && ((newY - origY > THRESHOLD) || (origY - newY > THRESHOLD))){
 				game.changeInstruction(instruction);
 				this.updateDisplay();
 			}
 
-			else if (instruction instanceof Arrow && ((newX - origX > THRESHOLD) || (origX - newX > THRESHOLD)) && !draggingArrow) {
+			else if (instruction instanceof Arrow && ((newY - origY > THRESHOLD) || (origY - newY > THRESHOLD)) && !draggingArrow) {
 				draggingArrow = true;
 				currentlyDragging = (Arrow) instruction;
 				v.setBackgroundColor(glow);					
@@ -789,51 +785,57 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 		return true;
 	}
 
-	public void updateInstructionDisplay(Instruction i){
+	public synchronized void updateInstructionDisplay(Instruction ins){
 
-		final Instruction ins = i;
-
-		Button toChange = null;
-		ImageButton button = (ImageButton) findViewById(ins.getId());
-
-		//RelativeLayout container = (RelativeLayout) findViewById(R.id.);
-
-		if (ins instanceof Box){
-			Box box = (Box) ins;
-			setRegisters();
-			toChange = (Button) findViewById (registerIds[box.getRegister()]);
-			button.setBackgroundResource(R.drawable.curvededgecolor);
-			Log.d("Know it's a box", "iT WAS A BOX");
-		}
-
-		else if (ins instanceof Arrow){
-
-			Arrow arrow = (Arrow) ins;
-			toChange = (Button) findViewById(arrow.getTo().getId());
-			button.setBackgroundColor(glow);			
-			Log.d("Know it's a arrow", "iT WAS AN ARROW");
-		}
-
-		if (null != toChange){
-			toChange.getBackground().setColorFilter(new LightingColorFilter(0xFFFFFFFF, 0xFFAA0000));
-		}
-
-		//container.invalidate();
-
-		if (ins instanceof Box){
-
-			//button.setBackgroundResource(R.drawable.curvededge);
-		}
-
-		else if (ins instanceof Arrow){
-
-			button.setBackgroundColor(Color.TRANSPARENT);	
-		}
-
-
-		if (null != toChange){
-			toChange.getBackground().clearColorFilter();
-		}
-
+		final Instruction i = ins;
+		
+		runOnUiThread(new Runnable() {
+		     @Override
+		     public void run() {
+		    	 
+		    	 setRegisters();
+		    	 ImageButton currentlyChanging = (ImageButton) findViewById(i.getId());
+		    	 
+		    	 if (!changingButton){
+		    		 
+						if (i instanceof Box){
+							Box box = (Box) i;
+							currentlyChanging.setBackgroundResource(R.drawable.curvededgecolor);
+			
+							Button register = (Button) findViewById (registerIds[box.getRegister()]);
+							register.getBackground().setAlpha(128);
+						}
+						
+						else if (i instanceof Arrow){
+							Arrow arrow = (Arrow) i;
+							currentlyChanging.setBackgroundColor(glow);	
+							ImageButton goTo = (ImageButton) findViewById(arrow.getTo().getId());
+							goTo.getBackground().setAlpha(128);
+						}
+						
+						changingButton = true;
+		    	 }
+		    	 
+		    	 else if (changingButton){
+		    		 
+						if (i instanceof Box){
+							Box box = (Box) i;
+							currentlyChanging.setBackgroundResource(R.drawable.curvededge);
+							Button register = (Button) findViewById (registerIds[box.getRegister()]);
+							register.getBackground().setAlpha(255);
+						}
+						
+						else if (i instanceof Arrow){
+							Arrow arrow = (Arrow) i;
+							currentlyChanging.setBackgroundColor(Color.TRANSPARENT);	
+							ImageButton goTo = (ImageButton) findViewById(arrow.getTo().getId());
+							goTo.getBackground().setAlpha(255);
+						}
+						
+						changingButton = false;
+		    	 }
+		    }
+		});
+		
 	}
 }

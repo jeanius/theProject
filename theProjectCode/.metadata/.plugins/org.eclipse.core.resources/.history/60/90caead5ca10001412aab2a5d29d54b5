@@ -1,0 +1,24 @@
+package com.jeanpower.reggieproject;
+
+
+import android.util.Log;
+
+public class PauseInstruction extends ASyncTask<Void, Void, Void>{
+	
+	
+	@Override
+	public void run() {
+		
+		Log.d("I am in the doinbackground", "yes");
+		
+		try {
+		Thread.sleep(1000);
+
+		}
+		catch (Exception e){
+			Log.d("This was interrupted", "interrupted");
+		}		
+		
+		
+	}
+}

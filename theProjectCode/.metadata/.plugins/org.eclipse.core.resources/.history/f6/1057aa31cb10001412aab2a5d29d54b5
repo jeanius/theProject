@@ -1,0 +1,28 @@
+package com.jeanpower.reggieproject;
+
+
+import android.os.AsyncTask;
+import android.util.Log;
+
+public class PauseInstruction extends AsyncTask<Void, Void, Void>{
+	
+	
+	MainActivity main;
+	
+	public PauseInstruction(MainActivity ma){
+		main = ma;		
+	}
+
+	@Override
+	protected Void doInBackground(Void... params) {
+		
+		try {
+		Thread.sleep(1000);
+
+		}
+		catch (Exception e){
+			Log.d("This was interrupted", "interrupted");
+		}	
+		return null;
+	}
+}

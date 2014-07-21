@@ -25,14 +25,27 @@ public class Box implements Instruction{
 		if (inc)
 		{
 			caller.incrementReg(register);
+			caller.setCurrPos(succ);
 		}
 		
 		else 
 		{
-			caller.decrementReg(register);
+			boolean done = caller.decrementReg(register);
+			
+			if (!done){
+				
+				caller.setCurrPos(succ);
+			}
+			
+			else {
+				Instruction boxSucc = succ;
+				
+				while (boxSucc instanceof Arrow || boxSucc instanceof End){
+					boxSucc = succ.getSucc();
+				}
+				caller.setCurrPos(boxSucc);
+			}
 		}
-		
-		caller.setCurrPos(succ);
 	}
 
 	@Override

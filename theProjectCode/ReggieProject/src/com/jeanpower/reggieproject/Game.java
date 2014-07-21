@@ -6,7 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.annotation.SuppressLint;
+import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 
@@ -17,9 +20,9 @@ public class Game {
 	private Instruction lastBox;
 	private Instruction currPos;
 	private int[] registers;
-	private MainActivity activity;
+	private final MainActivity activity;
 	private final int MAXREGISTERS = 10;
-	private boolean flag = false;
+	private Instruction prevPos = null;
 
 	/**
 	 * Constructor. Zeros all registers, instantiates instance variables.
@@ -38,21 +41,19 @@ public class Game {
 		}
 	}
 
-	
-	public void setFlag(){
-		flag = true;	
-		
+	public Instruction getPrevPos(){
+		return prevPos;
 	}
+
 	public void runGame() {
-		Instruction prevPos = null;
+
 		currPos = first;
-		
-		while (null != currPos){
-		prevPos = currPos;	
-		currPos.doWork();		
-		}
-		
-		/*int check = 1;
+		RunGame rungame = new RunGame();
+		rungame.execute();
+	}
+
+
+	/*int check = 1;
 
 		while (null != currPos) {
 
@@ -70,7 +71,7 @@ public class Game {
 			currPos = currPos.getSucc();
 			check++;
 		}*/
-	}
+
 
 	/**
 	 * Iterates through linked list of instructions, returns list of
@@ -206,54 +207,54 @@ public class Game {
 			End end = (End) i;
 
 			if (null != prev){
-			while (null!= prev && (prev instanceof Arrow || prev instanceof End)){
-				prev = prev.getPred();
-			}
-
-			Box prevBox = (Box) prev;
-			Instruction boxSucc = prevBox.getSucc();
-			Instruction endPred = end.getPred();
-			Instruction endSucc = end.getSucc();
-
-			if (boxSucc instanceof End){
-				this.delEnd((End) i);
-			}
-
-			else {
-				endPred.setSucc(endSucc);
-				prevBox.setSucc(end);
-
-				if (null != endSucc){
-					endSucc.setPred(endPred);
+				while (null!= prev && (prev instanceof Arrow || prev instanceof End)){
+					prev = prev.getPred();
 				}
+
+				Box prevBox = (Box) prev;
+				Instruction boxSucc = prevBox.getSucc();
+				Instruction endPred = end.getPred();
+				Instruction endSucc = end.getSucc();
+
+				if (boxSucc instanceof End){
+					this.delEnd((End) i);
+				}
+
 				else {
-					last = endPred;
-				}
+					endPred.setSucc(endSucc);
+					prevBox.setSucc(end);
 
-				if (boxSucc instanceof Arrow){
-
-					Instruction arrowSucc = boxSucc.getSucc();
-
-					end.setSucc(arrowSucc);
-					end.setPred(boxSucc);
-
-					if (null != arrowSucc)
-					{
-						arrowSucc.setPred(end);
+					if (null != endSucc){
+						endSucc.setPred(endPred);
 					}
-				}
+					else {
+						last = endPred;
+					}
 
-				else if (boxSucc instanceof Box || null == boxSucc){
+					if (boxSucc instanceof Arrow){
 
-					end.setSucc(boxSucc);
-					end.setPred(prevBox);
+						Instruction arrowSucc = boxSucc.getSucc();
 
-					if (null != boxSucc){
-						boxSucc.setPred(end);
+						end.setSucc(arrowSucc);
+						end.setPred(boxSucc);
+
+						if (null != arrowSucc)
+						{
+							arrowSucc.setPred(end);
+						}
+					}
+
+					else if (boxSucc instanceof Box || null == boxSucc){
+
+						end.setSucc(boxSucc);
+						end.setPred(prevBox);
+
+						if (null != boxSucc){
+							boxSucc.setPred(end);
+						}
 					}
 				}
 			}
-		}
 		}
 	}
 
@@ -360,7 +361,7 @@ public class Game {
 			arrow.setPred(move);
 			move.setSucc(arrow);
 			arrowPred.setSucc(arrowSucc);
-			arrow.setSucc(boxSucc);
+			arrow.setSucc(boxSucc); //Instruction inserts before successor - correct position at all times - no movement of tail after end.
 
 			if (arrowSucc != null) {
 				arrowSucc.setPred(arrowPred);
@@ -371,7 +372,7 @@ public class Game {
 			}
 
 			if (boxSucc != null) {
-				boxSucc.setPred(arrow);
+				boxSucc.setPred(arrow); //
 			}
 
 			arrow.calculateSpaces();
@@ -472,7 +473,7 @@ public class Game {
 
 		int newNum = registers[registerNum] + 1;
 		registers[registerNum] = newNum;
-		activity.setRegisters();
+
 	}
 
 	/**
@@ -484,10 +485,17 @@ public class Game {
 	 * @param int. Index/number of register.
 	 * @return void
 	 */
-	public void decrementReg(int registerNum) {
+	public boolean decrementReg(int registerNum) {
 
-		registers[registerNum] = registers[registerNum]--;
-		activity.setRegisters();
+		if (registers[registerNum] >=1){
+			int newNum = registers[registerNum] - 1;
+			registers[registerNum] = newNum;
+			return true;
+		}
+
+		else {
+			return false;
+		}
 	}
 
 	/**
@@ -512,6 +520,31 @@ public class Game {
 
 	public Instruction getFirst() {
 		return first;
+	}
+
+
+	private class RunGame extends AsyncTask<Void, Void, Void>{
+
+		@Override
+		protected Void doInBackground(Void... params) {
+
+			while (null != currPos){
+
+				prevPos = currPos;
+				currPos.doWork();
+				activity.updateInstructionDisplay(prevPos);
+
+				try {
+					Thread.sleep(1000);
+					activity.updateInstructionDisplay(prevPos);
+				}
+				catch (Exception e){
+					Log.d("This was interrupted", "interrupted");
+				}	
+			}
+			return null;
+		}
+
 	}
 
 }

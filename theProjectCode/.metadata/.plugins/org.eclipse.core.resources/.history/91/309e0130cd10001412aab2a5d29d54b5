@@ -1,0 +1,55 @@
+package com.jeanpower.reggieproject;
+
+
+import android.os.AsyncTask;
+import android.util.Log;
+
+public class PauseInstruction extends AsyncTask<Void, Void, Void>{
+
+	MainActivity main;
+	Instruction prevPos;
+	Instruction currPos;
+
+	public PauseInstruction(MainActivity ma, Instruction i){
+		super();
+		main = ma;
+		currPos = i;
+		prevPos = null;
+		Log.d("Finished setting up pi", "yes");
+	}
+
+
+	@Override
+	protected Void doInBackground(Void... params) {
+
+		while (null != currPos){
+
+			prevPos = currPos;
+			currPos.doWork();
+			
+			runOnUiThread(new Runnable() {
+			     @Override
+			     public void run() {
+
+			    	 main.updateInstructionDisplay(prevPos);
+
+			    }
+			});
+
+
+			try {
+				Thread.sleep(1000);
+				main.updateInstructionDisplay(prevPos);
+			}
+			catch (Exception e){
+				Log.d("This was interrupted", "interrupted");
+			}	
+		}
+		return null;
+	}
+
+	@Override
+	protected void onPostExecute(Void result) {
+
+	}
+}
