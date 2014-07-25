@@ -60,7 +60,7 @@ public final class R {
         public static final int ScrollVertical=0x7f0a0001;
         public static final int actionFrame=0x7f0a0004;
         public static final int actionFrameScroll=0x7f0a0003;
-        public static final int bin_button=0x7f0a000b;
+        public static final int bin_clear_button=0x7f0a000b;
         public static final int bottom_frame=0x7f0a0006;
         public static final int new_arrow_button=0x7f0a0008;
         public static final int new_box_button=0x7f0a0007;

@@ -13,16 +13,16 @@
 		<item value="true" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="false" key="wholeword"/>
-		<item value="changingButt" key="selection"/>
+		<item value="removeIn" key="selection"/>
 		<list key="findhistory">
-			<item value="changingButt"/>
-			<item value="R.id"/>
-			<item value="R.ID"/>
-			<item value="arrowButton"/>
-			<item value="click"/>
-			<item value="onclick"/>
-			<item value="onClick"/>
-			<item value="caller"/>
+			<item value="removeIn"/>
+			<item value="removein"/>
+			<item value="lastBox"/>
+			<item value="remove"/>
+			<item value="instructionIcons"/>
+			<item value="instruction"/>
+			<item value="clear"/>
+			<item value="actionFrame"/>
 		</list>
 		<list key="replacehistory">
 			<item value="match_parent"/>

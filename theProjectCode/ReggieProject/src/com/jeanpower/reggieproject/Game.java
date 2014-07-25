@@ -48,10 +48,38 @@ public class Game {
 	public void runGame() {
 
 		currPos = first;
+
+		int check = 1;
+
+		while (null != currPos) {
+
+			// currPos.doWork();
+			Log.d("This is the number instruction", check + "");
+			Log.d("This is the pred of the current instruction", currPos.getPred() + "");
+			Log.d("This is the current instruction", currPos + "");
+			Log.d("This is the succ of current instruction", currPos.getSucc() + "");
+
+			if (currPos instanceof Arrow) {
+				Arrow a = (Arrow) currPos;
+				Log.d("This is where the arrow is going", a.getTo() + "");
+			}
+
+			currPos = currPos.getSucc();
+			check++;
+		}
+		/*
+
 		RunGame rungame = new RunGame();
-		rungame.execute();
+		rungame.execute();*/
 	}
 
+	public void clearAll(){
+		first = null;
+		last = null;
+		lastBox = null;
+		currPos = null;
+		prevPos = null;
+	}
 
 	/*int check = 1;
 
@@ -167,14 +195,43 @@ public class Game {
 
 		else {
 
-			last.setSucc(instruction);
-			instruction.setPred(last);
-			last = instruction;
+			if (instruction instanceof Box){ //No instruction before a box impacts box
 
-			if (instruction instanceof Arrow) {
+				last.setSucc(instruction);
+				instruction.setPred(last);
+				last = instruction;
+			}
+
+			else if (instruction instanceof Arrow){
 
 				Arrow arrow = (Arrow) instruction;
 				arrow.setTo(lastBox);
+
+				if (last instanceof Arrow || last instanceof Box){
+
+					last.setSucc(instruction);
+					instruction.setPred(last);
+					last = instruction;
+				}
+
+				else if (last instanceof End){
+
+					Instruction endPred = last.getPred();
+
+					endPred.setSucc(instruction);
+					instruction.setPred(endPred);
+					last.setPred(instruction);
+					instruction.setSucc(last);	
+				}
+			}
+
+			else if (instruction instanceof End){
+
+				if (last instanceof Arrow || last instanceof Box){
+					last.setSucc(instruction);
+					instruction.setPred(last);
+					last = instruction;
+				}
 			}
 		}
 
@@ -187,7 +244,6 @@ public class Game {
 			instruction.setId(Util.generateViewId());
 		}
 	}
-
 	/**
 	 * Updates Box instruction to new register. Updates End instruction to a new Box.
 	 * <p>
@@ -217,7 +273,7 @@ public class Game {
 				Instruction endSucc = end.getSucc();
 
 				if (boxSucc instanceof End){
-					this.deleteInstruction(boxSucc);
+					//this.deleteInstruction(boxSucc); //No overlapping end instruction
 				}
 
 				else {
@@ -225,7 +281,7 @@ public class Game {
 					prevBox.setSucc(end);
 
 					if (null != endSucc){
-						endSucc.setPred(endPred);
+						endSucc.setPred(endPred); 
 					}
 					else {
 						last = endPred;
@@ -235,7 +291,7 @@ public class Game {
 
 						Instruction arrowSucc = boxSucc.getSucc();
 
-						end.setSucc(arrowSucc);
+						end.setSucc(arrowSucc); //End moves between arrow and arrow succ, not between box and arrow
 						end.setPred(boxSucc);
 
 						if (null != arrowSucc)
@@ -246,7 +302,7 @@ public class Game {
 
 					else if (boxSucc instanceof Box || null == boxSucc){
 
-						end.setSucc(boxSucc);
+						end.setSucc(boxSucc); //Else end moves between two boxes
 						end.setPred(prevBox);
 
 						if (null != boxSucc){
@@ -298,9 +354,10 @@ public class Game {
 	}
 
 	public void updateHead(Arrow arrow, Box move) {
+		Log.d("Gotten to update head", "yes");
 
 		boolean canMove = this.headMove(arrow, move.getId());
-
+		Log.d("Can I move?", canMove +"");
 		if (canMove) {
 
 			arrow.setTo(move);
@@ -350,8 +407,11 @@ public class Game {
 
 	public void updateTail(Arrow arrow, Box move) {
 
+		Log.d("Gotten to update tail", "yes");
+
 		boolean canMove = this.tailMove(arrow, move.getId()); // Is the box before the head of arrow?
 
+		Log.d("Can I move?", canMove +"");
 		if (canMove) {
 
 			Instruction arrowPred = arrow.getPred();
@@ -427,10 +487,90 @@ public class Game {
 	}
 
 	public void deleteInstruction(Instruction instruction){
-		Log.d("Gotten here with", instruction + "");
-		
-	}
 
+		Instruction succ = instruction.getSucc();
+		Instruction pred = instruction.getPred();
+		List<Instruction> instructionList = this.getInstructionList();
+		int countBox = 0;
+		Log.d("This is the size of list", instructionList.size() + "");
+		Log.d("This is countBox", countBox +"");
+		
+		for (Instruction i: instructionList){
+
+			if (i instanceof Box){
+				countBox ++;
+				Log.d("Boo", "Yes I am counting");
+			}
+
+			if (i instanceof Arrow){
+				Arrow arrow = (Arrow) i;
+
+				arrow.calculateSpaces();
+			}
+
+			if (countBox == 1 && instruction instanceof Box){
+				this.clearAll();
+				activity.clearScreen();
+			}
+
+
+			else {
+				if (instruction instanceof Box){
+					
+					
+					if (instruction.getId() == lastBox.getId()){
+
+						Instruction previousBox = pred;
+
+						while (previousBox instanceof Arrow || previousBox instanceof End){
+							previousBox = previousBox.getPred();
+						}
+
+						lastBox = (Box) previousBox;
+					}
+					
+
+					if (succ instanceof Box){
+
+						succ.setPred(pred);
+
+						if (null !=pred){
+
+							pred.setSucc(succ);
+						}
+
+						else {
+							first = succ;
+						}
+
+						activity.removeInstruction(instruction.getId());
+					}
+
+					else if (succ instanceof Arrow || succ instanceof End){
+						this.deleteInstruction(succ);
+					}
+
+					else if (null == succ){
+						pred.setSucc(succ);
+						last = pred;
+					}
+
+
+				}
+
+				else if (instruction instanceof Arrow || instruction instanceof End){
+
+					activity.removeInstruction(instruction.getId());
+
+					pred.setSucc(succ);
+
+					if (null != succ){
+						succ.setPred(pred);
+					}
+				}
+			}
+		}
+	}
 	/**
 	 * Sets current position within running game
 	 * <p>

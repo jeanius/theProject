@@ -11,6 +11,8 @@ public class End implements Instruction{
 	public End(Game g){
 		 
 		caller = g;
+		succ = null;
+		pred = null;
 	}
 	
 	

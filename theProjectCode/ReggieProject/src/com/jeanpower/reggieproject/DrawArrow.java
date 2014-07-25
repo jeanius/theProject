@@ -55,7 +55,7 @@ public class DrawArrow {
 	public Bitmap getImage(){
 		//Log.d("This is button number", numberButtons + "");
 
-		Bitmap bitmap = Bitmap.createBitmap(((int) arrowWidth * numberButtons), (int) arrowHeight, Bitmap.Config.ALPHA_8);
+		Bitmap bitmap = Bitmap.createBitmap(((int) arrowWidth * numberButtons) + numberButtons, (int) arrowHeight, Bitmap.Config.ALPHA_8);
 		Canvas canvas = new Canvas(bitmap);
 
 		if (loop){
