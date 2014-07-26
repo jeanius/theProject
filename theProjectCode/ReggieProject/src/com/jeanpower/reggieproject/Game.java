@@ -8,8 +8,6 @@ import java.util.List;
 import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 import android.view.View;
 
@@ -49,23 +47,32 @@ public class Game {
 
 		currPos = first;
 
-		int check = 1;
-
 		while (null != currPos) {
+			Log.d("This is the current instruction", currPos.getId() + "");
+			
+			if (currPos instanceof End){
+				Log.d("This is an", "end");
+			}
 
-			// currPos.doWork();
-			Log.d("This is the number instruction", check + "");
-			Log.d("This is the pred of the current instruction", currPos.getPred() + "");
-			Log.d("This is the current instruction", currPos + "");
-			Log.d("This is the succ of current instruction", currPos.getSucc() + "");
+			else if (currPos instanceof Arrow){
+				Log.d("This is an", "arrow");
+			}
+
+			else if (currPos instanceof Box){
+				Log.d("This is an", "box");
+			}
+
+			if (currPos.getPred() != null){
+
+				Log.d("This is the pred of the current instruction", currPos.getPred().getId() + "");
+			}
 
 			if (currPos instanceof Arrow) {
 				Arrow a = (Arrow) currPos;
-				Log.d("This is where the arrow is going", a.getTo() + "");
+				Log.d("This is where the arrow is going", a.getTo().getId() + "");
 			}
 
 			currPos = currPos.getSucc();
-			check++;
 		}
 		/*
 
@@ -227,7 +234,7 @@ public class Game {
 
 			else if (instruction instanceof End){
 
-				if (last instanceof Arrow || last instanceof Box){
+				if (last instanceof Arrow || last instanceof Box){ //If there is already an end, will not be added
 					last.setSucc(instruction);
 					instruction.setPred(last);
 					last = instruction;
@@ -259,38 +266,58 @@ public class Game {
 		}
 
 		else if (i instanceof End){
-			Instruction prev = i.getPred().getPred();
+
+			Instruction prev = i.getPred();
 			End end = (End) i;
 
-			if (null != prev){
-				while (null!= prev && (prev instanceof Arrow || prev instanceof End)){
-					prev = prev.getPred();
-				}
+			while (prev instanceof Arrow || prev instanceof End){
+				
+				prev = prev.getPred(); //Found currentBox 
+			}
+			
+			prev = prev.getPred(); //To find next previous box
+			
+			while (prev instanceof Arrow || prev instanceof End){
+				
+				prev = prev.getPred();
+			}
+			
+			if (null == prev){
+
+				this.deleteInstruction(end); //If it's already at the first Box, delete - an arrow cannot be in first place
+			}
+
+			else {
 
 				Box prevBox = (Box) prev;
 				Instruction boxSucc = prevBox.getSucc();
 				Instruction endPred = end.getPred();
 				Instruction endSucc = end.getSucc();
 
-				if (boxSucc instanceof End){
-					//this.deleteInstruction(boxSucc); //No overlapping end instruction
+				if (boxSucc instanceof End){//If there is already an end instruction, delete.
+					Log.d("I am here", "here2");
+					this.deleteInstruction(end);
 				}
 
 				else {
+
 					endPred.setSucc(endSucc);
-					prevBox.setSucc(end);
 
 					if (null != endSucc){
+
 						endSucc.setPred(endPred); 
 					}
+
 					else {
+
 						last = endPred;
 					}
 
 					if (boxSucc instanceof Arrow){
+						Log.d("I got into the boxSucc arrow", "here");
 
 						Instruction arrowSucc = boxSucc.getSucc();
-
+						boxSucc.setSucc(end);
 						end.setSucc(arrowSucc); //End moves between arrow and arrow succ, not between box and arrow
 						end.setPred(boxSucc);
 
@@ -301,7 +328,9 @@ public class Game {
 					}
 
 					else if (boxSucc instanceof Box || null == boxSucc){
+						Log.d("I got into the boxSucc", "here");
 
+						prevBox.setSucc(end);
 						end.setSucc(boxSucc); //Else end moves between two boxes
 						end.setPred(prevBox);
 
@@ -508,14 +537,14 @@ public class Game {
 			}
 		}
 
-		
+
 		if (countBox == 1 && instruction instanceof Box){ //If this is the last box on screen, clear screen
 			this.clearAll();
 			activity.clearScreen();
 		}
 
 		else {
-			
+
 			if (instruction instanceof Box){
 
 
@@ -679,6 +708,7 @@ public class Game {
 					Log.d("This was interrupted", "interrupted");
 				}	
 			}
+			activity.resetRunButton();
 			return null;
 		}
 

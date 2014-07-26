@@ -408,8 +408,7 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 						marginTop = 0;
 					}
 
-					instructionBetween = game.getToFrom(arrow.getPred(), arrow
-							.getTo().getId());
+					instructionBetween = game.getToFrom(arrow.getPred(), arrow.getTo().getId());
 					int pointer = 0;
 					Instruction currentPosition = instructionList.get(pointer);
 
@@ -422,9 +421,7 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 
 							if (!check.getType()) {
 
-								List<Instruction> instructList = game
-										.getToFrom(check.getPred(), check
-												.getTo().getId());
+								List<Instruction> instructList = game.getToFrom(check.getPred(), check.getTo().getId());
 								int sizeList = instructList.size();
 
 								instructList.removeAll(instructionBetween);
@@ -463,7 +460,7 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 			else if (inst instanceof End) {
 
 				End end = (End) inst;
-				button.setBackgroundResource(R.drawable.end);
+				button.setImageResource(R.drawable.end);
 				int topMargin;
 				Instruction prev = end.getPred();
 
@@ -607,13 +604,13 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 
 				if (!running) {
 					running = true;
-					runButton.setBackgroundResource(R.drawable.ic_stop);
+					runButton.setImageResource(R.drawable.ic_stop);
 					game.runGame();
 				}
 
 				else {
 					running = false;
-					runButton.setBackgroundResource(R.drawable.ic_run);
+					runButton.setImageResource(R.drawable.ic_run);
 					game.setCurrPos(null);
 				}
 
@@ -731,7 +728,9 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 					this.updateDisplay();
 				}
 			}
-
+			
+			binButton.setImageResource(R.drawable.ic_clear);
+			
 			break;
 
 		case MotionEvent.ACTION_MOVE:
@@ -741,7 +740,7 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 			if (Math.abs(newY - origY) > THRESHOLD && !draggingArrow
 					&& !draggingBox) {
 
-				binButton.setBackgroundResource(R.drawable.ic_bin);
+				binButton.setImageResource(R.drawable.ic_bin);
 
 				if (instruction instanceof Arrow) {
 					draggingArrow = true;
@@ -881,7 +880,7 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 				}
 			}
 			
-			binButton.setBackgroundResource(R.drawable.ic_clear);
+			binButton.setImageResource(R.drawable.ic_clear);
 			currentlyDragging = null;
 			draggingArrow = false;
 			draggingBox = false;
@@ -915,6 +914,10 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 		return true;
 	}
 
+	public void resetRunButton(){
+		runButton.setImageResource(R.drawable.ic_run);
+	}
+	
 	public synchronized void updateInstructionDisplay(Instruction ins) {
 
 		final Instruction i = ins;
