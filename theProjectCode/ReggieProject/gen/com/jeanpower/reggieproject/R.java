@@ -46,15 +46,22 @@ public final class R {
         public static final int end=0x7f020004;
         public static final int gradient=0x7f020005;
         public static final int green=0x7f020006;
-        public static final int ic_launcher=0x7f020007;
-        public static final int linegradient=0x7f020008;
-        public static final int magenta=0x7f020009;
-        public static final int orange=0x7f02000a;
-        public static final int pink=0x7f02000b;
-        public static final int purple=0x7f02000c;
-        public static final int red=0x7f02000d;
-        public static final int teal=0x7f02000e;
-        public static final int yellow=0x7f02000f;
+        public static final int ic_arrow=0x7f020007;
+        public static final int ic_bin=0x7f020008;
+        public static final int ic_box=0x7f020009;
+        public static final int ic_clear=0x7f02000a;
+        public static final int ic_end=0x7f02000b;
+        public static final int ic_launcher=0x7f02000c;
+        public static final int ic_run=0x7f02000d;
+        public static final int ic_stop=0x7f02000e;
+        public static final int magenta=0x7f02000f;
+        public static final int orange=0x7f020010;
+        public static final int pink=0x7f020011;
+        public static final int purple=0x7f020012;
+        public static final int red=0x7f020013;
+        public static final int reg_smile=0x7f020014;
+        public static final int teal=0x7f020015;
+        public static final int yellow=0x7f020016;
     }
     public static final class id {
         public static final int ScrollVertical=0x7f0a0001;
@@ -66,12 +73,15 @@ public final class R {
         public static final int new_box_button=0x7f0a0007;
         public static final int new_end_button=0x7f0a0009;
         public static final int overall=0x7f0a0000;
+        public static final int reggieSmile=0x7f0a000c;
         public static final int register_frame=0x7f0a0002;
         public static final int run_button=0x7f0a000a;
+        public static final int splashText=0x7f0a000d;
         public static final int theLine=0x7f0a0005;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;
+        public static final int splash=0x7f030001;
     }
     public static final class menu {
         public static final int main_activity_actions=0x7f090000;
@@ -110,17 +120,13 @@ public final class R {
         AppBaseTheme from res/values/styles.xml on API 11+ devices.
     
  API 11 theme customizations can go here. 
-
-        Base application theme for API 14+. This theme completely replaces
-        AppBaseTheme from BOTH res/values/styles.xml and
-        res/values-v11/styles.xml on API 14+ devices.
-    
- API 14 theme customizations can go here. 
          */
         public static final int AppBaseTheme=0x7f080000;
         /**  Application theme. 
  All customizations that are NOT specific to a particular API-level can go here. 
          */
         public static final int AppTheme=0x7f080001;
+        public static final int MyActionBar=0x7f080003;
+        public static final int customTheme=0x7f080002;
     }
 }

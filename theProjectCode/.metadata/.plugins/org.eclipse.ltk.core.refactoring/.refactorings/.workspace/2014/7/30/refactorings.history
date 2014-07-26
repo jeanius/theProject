@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy 0 elements to &apos;drawable-xhdpi&apos;&#x0D;&#x0A;- Destination element: &apos;drawable-xhdpi&apos;" description="Copy compilation units" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1406377176415" target="/ReggieProject/res/drawable-xhdpi" units="0" version="1.0"/>
+</session>

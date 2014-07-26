@@ -31,10 +31,10 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 	private Game game;
 	private int[] registerColours;
 	private int[] registerIds;
-	private Button arrowButton;
-	private Button endButton;
-	private Button runButton;
-	private Button binButton;
+	private ImageButton arrowButton;
+	private ImageButton endButton;
+	private ImageButton runButton;
+	private ImageButton binButton;
 	private boolean oneBox;
 	private double theLineX;
 	private int maxRegisters; // Duplication, but constant get is inefficient
@@ -116,24 +116,23 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 		this.setRegisters();
 
 		// Add listeners to activity buttons.
-		arrowButton = (Button) findViewById(R.id.new_arrow_button);
+		arrowButton = (ImageButton) findViewById(R.id.new_arrow_button);
 		arrowButton.setOnClickListener(this);
 		arrowButton.setClickable(false);
 
-		runButton = (Button) findViewById(R.id.run_button);
+		runButton = (ImageButton) findViewById(R.id.run_button);
 		runButton.setOnClickListener(this);
 		runButton.setClickable(false);
 
-		Button boxButton = (Button) findViewById(R.id.new_box_button);
+		ImageButton boxButton = (ImageButton) findViewById(R.id.new_box_button);
 		boxButton.setOnClickListener(this);
 
-		endButton = (Button) findViewById(R.id.new_end_button);
+		endButton = (ImageButton) findViewById(R.id.new_end_button);
 		endButton.setOnClickListener(this);
 		endButton.setClickable(false);
 
-		binButton = (Button) findViewById(R.id.bin_clear_button);
+		binButton = (ImageButton) findViewById(R.id.bin_clear_button);
 		binButton.setClickable(false);
-
 		binButton.setOnClickListener(this);
 		binButton.setOnDragListener(this);
 
@@ -608,13 +607,13 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 
 				if (!running) {
 					running = true;
-					runButton.setText("Stop");
+					runButton.setBackgroundResource(R.drawable.ic_stop);
 					game.runGame();
 				}
 
 				else {
 					running = false;
-					runButton.setText("Run");
+					runButton.setBackgroundResource(R.drawable.ic_run);
 					game.setCurrPos(null);
 				}
 
@@ -742,7 +741,7 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 			if (Math.abs(newY - origY) > THRESHOLD && !draggingArrow
 					&& !draggingBox) {
 
-				binButton.setText("Bin");
+				binButton.setBackgroundResource(R.drawable.ic_bin);
 
 				if (instruction instanceof Arrow) {
 					draggingArrow = true;
@@ -778,11 +777,9 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 			instruction = game.getInstruction(resid);
 		}
 
-		//Log.d("I'm in drag with", instruction + "");
 		switch (de.getAction()) {
 
 		case DragEvent.ACTION_DRAG_STARTED:
-
 			break;
 
 		case DragEvent.ACTION_DRAG_ENTERED:
@@ -883,7 +880,8 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 					arrowview.setBackgroundColor(Color.TRANSPARENT);
 				}
 			}
-			binButton.setText("Clear");
+			
+			binButton.setBackgroundResource(R.drawable.ic_clear);
 			currentlyDragging = null;
 			draggingArrow = false;
 			draggingBox = false;

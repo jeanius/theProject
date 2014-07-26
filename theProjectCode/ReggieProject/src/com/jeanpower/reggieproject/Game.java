@@ -494,12 +494,11 @@ public class Game {
 		int countBox = 0;
 		Log.d("This is the size of list", instructionList.size() + "");
 		Log.d("This is countBox", countBox +"");
-		
+
 		for (Instruction i: instructionList){
 
 			if (i instanceof Box){
 				countBox ++;
-				Log.d("Boo", "Yes I am counting");
 			}
 
 			if (i instanceof Arrow){
@@ -507,70 +506,72 @@ public class Game {
 
 				arrow.calculateSpaces();
 			}
+		}
 
-			if (countBox == 1 && instruction instanceof Box){
-				this.clearAll();
-				activity.clearScreen();
-			}
+		
+		if (countBox == 1 && instruction instanceof Box){ //If this is the last box on screen, clear screen
+			this.clearAll();
+			activity.clearScreen();
+		}
+
+		else {
+			
+			if (instruction instanceof Box){
 
 
-			else {
-				if (instruction instanceof Box){
-					
-					
-					if (instruction.getId() == lastBox.getId()){
+				if (instruction.getId() == lastBox.getId()){
 
-						Instruction previousBox = pred;
+					Instruction previousBox = pred;
 
-						while (previousBox instanceof Arrow || previousBox instanceof End){
-							previousBox = previousBox.getPred();
-						}
-
-						lastBox = (Box) previousBox;
-					}
-					
-
-					if (succ instanceof Box){
-
-						succ.setPred(pred);
-
-						if (null !=pred){
-
-							pred.setSucc(succ);
-						}
-
-						else {
-							first = succ;
-						}
-
-						activity.removeInstruction(instruction.getId());
+					while (previousBox instanceof Arrow || previousBox instanceof End){
+						previousBox = previousBox.getPred();
 					}
 
-					else if (succ instanceof Arrow || succ instanceof End){
-						this.deleteInstruction(succ);
-					}
-
-					else if (null == succ){
-						pred.setSucc(succ);
-						last = pred;
-					}
-
-
+					lastBox = (Box) previousBox;
 				}
 
-				else if (instruction instanceof Arrow || instruction instanceof End){
+
+				if (succ instanceof Box){
+
+					succ.setPred(pred);
+
+					if (null !=pred){
+
+						pred.setSucc(succ);
+					}
+
+					else {
+						first = succ;
+					}
 
 					activity.removeInstruction(instruction.getId());
+				}
 
+				else if (succ instanceof Arrow || succ instanceof End){
+					this.deleteInstruction(succ);
+				}
+
+				else if (null == succ){
 					pred.setSucc(succ);
+					last = pred;
+				}
 
-					if (null != succ){
-						succ.setPred(pred);
-					}
+
+			}
+
+			else if (instruction instanceof Arrow || instruction instanceof End){
+
+				activity.removeInstruction(instruction.getId());
+
+				pred.setSucc(succ);
+
+				if (null != succ){
+					succ.setPred(pred);
 				}
 			}
 		}
 	}
+
 	/**
 	 * Sets current position within running game
 	 * <p>

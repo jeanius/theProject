@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Reggie</string>
+    <string name="app_name">reggie</string>
     <string name="action_settings">Settings</string>
 	<string name="arrow">Arrow</string>
     <string name="box">Box</string>

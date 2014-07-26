@@ -1,4 +1,7 @@
 /**
+ * Code from:
+ * 
+ * http://stackoverflow.com/questions/1714297/android-view-setidint-id-programmatically-how-to-avoid-id-conflicts/15442898#15442898
  * 
  * To provide unique IDs for dynamically added views.
  * 
@@ -13,8 +16,7 @@ public class Util {
 	private static final AtomicInteger sNextGeneratedId = new AtomicInteger(1);
 
 	/**
-	 * Generate a value suitable for use in as ID for dynamically 
-	 * http://stackoverflow.com/questions/1714297/android-view-setidint-id-programmatically-how-to-avoid-id-conflicts/15442898#15442898
+	 * Dynamically Generate a value suitable for use in as ID
 	 * @return a generated ID value
 	 */
 	public static int generateViewId() {

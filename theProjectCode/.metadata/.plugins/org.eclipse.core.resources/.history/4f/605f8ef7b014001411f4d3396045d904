@@ -1,0 +1,187 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/overall"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity" >
+    
+	<ScrollView  
+    	android:id="@+id/ScrollVertical"
+    	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:layout_alignParentLeft="true">
+    
+			<LinearLayout
+	   			android:id="@+id/register_frame"
+	   			android:orientation="vertical"
+	   			android:layout_width="match_parent"
+        		android:layout_height="wrap_content">    
+        		
+			    <Button 	         	
+		         	android:id="@string/Register0"
+           		 	android:layout_width="wrap_content" 
+           		 	android:layout_height="wrap_content"
+         		 	android:layout_gravity="center">
+      		   	</Button>
+      		  
+		       	<Button 
+		       	  	android:id="@string/Register1"
+           		  	android:layout_width="wrap_content" 
+           		  	android:layout_height="wrap_content"
+         		  	android:layout_gravity="center">
+      		   	</Button>
+      		  
+		       	<Button 
+		          	android:id="@string/Register2"
+           		  	android:layout_width="wrap_content" 
+           		  	android:layout_height="wrap_content"
+         		  	android:layout_gravity="center">
+      		   	</Button>
+      		  
+		       	<Button 
+		          	android:id="@string/Register3"
+           		  	android:layout_width="wrap_content" 
+           		  	android:layout_height="wrap_content"
+         		  	android:layout_gravity="center">
+      		   	</Button>
+      		  
+		       	<Button 
+		          	android:id="@string/Register4"
+           		  	android:layout_width="wrap_content" 
+           		  	android:layout_height="wrap_content"
+         		  	android:layout_gravity="center">
+      		   	</Button>
+      		  
+		       	<Button 
+		          	android:id="@string/Register5"
+           		  	android:layout_width="wrap_content" 
+           		  	android:layout_height="wrap_content"
+         		  	android:layout_gravity="center">
+      		   	</Button>
+      		  
+		       	<Button 
+		          	android:id="@string/Register6"
+           		  	android:layout_width="wrap_content" 
+           		  	android:layout_height="wrap_content"
+         		  	android:layout_gravity="center">
+      		   	</Button>
+      		  
+		       	<Button 
+		          	android:id="@string/Register7"
+           		  	android:layout_width="wrap_content" 
+           		  	android:layout_height="wrap_content"
+         		  	android:layout_gravity="center">
+      		   	</Button>
+      		  
+		       	<Button 
+		          	android:id="@string/Register8"
+           		  	android:layout_width="wrap_content" 
+           		  	android:layout_height="wrap_content"
+         		  	android:layout_gravity="center">
+      		   	</Button>
+      		  
+		       	<Button 
+		          	android:id="@string/Register9"
+           		  	android:layout_width="wrap_content" 
+           		  	android:layout_height="wrap_content"
+         		  	android:layout_gravity="center">
+      		   	</Button>			    
+   			</LinearLayout>
+   			
+	</ScrollView>
+	
+	<LinearLayout 
+	    android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_toRightOf="@id/ScrollVertical"
+        android:weightSum="100">
+
+		<com.jeanpower.reggieproject.TwoDScrollView
+	    	android:id="@+id/actionFrameScroll"
+	    	android:layout_width="match_parent" 
+	    	android:layout_height="0dip"
+	    	android:layout_weight="85">
+			
+	    	<RelativeLayout
+		    	android:id="@+id/actionFrame"
+		    	android:layout_width="1000dip"
+		    	android:layout_height="300dip"
+		    	android:layout_gravity="left"
+		    	android:gravity="center">
+		       	
+		    	<View
+		        	android:id="@+id/theLine"
+		        	android:layout_width="match_parent"
+		        	android:layout_height="2dip"
+		        	android:background="#000000">
+		    	</View>
+		    
+						
+			</RelativeLayout>
+
+		</com.jeanpower.reggieproject.TwoDScrollView>
+
+	    <RelativeLayout
+	   		android:id="@+id/bottom_frame"
+	   		android:orientation="vertical"
+	   		android:layout_width="match_parent"
+        	android:layout_height="0dip"
+        	android:layout_weight="15">	
+        	
+			<ImageButton
+		        android:text="@string/box" 
+				android:id="@+id/new_box_button"
+           		android:layout_width="wrap_content" 
+           		android:layout_height="wrap_content"
+         		android:layout_gravity="center"
+         		android:layout_alignParentLeft="true"
+         		android:layout_alignParentBottom="true">
+      		</ImageButton>
+      		
+		    <ImageButton
+		        android:text="@string/arrow"
+				android:id="@+id/new_arrow_button"
+           		android:layout_width="wrap_content" 
+           		android:layout_height="wrap_content"
+         		android:layout_gravity="center"
+         		android:layout_toRightOf="@id/new_box_button"
+         		android:layout_alignParentBottom="true">
+      		</ImageButton>
+      		
+		    <ImageButton
+		        android:text="@string/end"
+				android:id="@+id/new_end_button"
+           		android:layout_width="wrap_content" 
+           		android:layout_height="wrap_content"
+         		android:layout_gravity="center"
+         		android:layout_toRightOf="@id/new_arrow_button"
+         		android:layout_alignParentBottom="true">
+      		</ImageButton>
+
+		    <ImageButton
+		        android:text="@string/run"
+				android:id="@+id/run_button"
+           		android:layout_width="wrap_content" 
+           		android:layout_height="wrap_content"
+         		android:layout_gravity="center"
+         		android:layout_alignParentRight="true"
+         		android:layout_alignParentBottom="true">
+      		</ImageButton>
+      		
+		    
+		    <ImageButton
+		        android:text="@string/bin"
+				android:id="@+id/bin_clear_button"
+           		android:layout_width="wrap_content" 
+           		android:layout_height="wrap_content"
+         		android:layout_gravity="center"
+         		android:layout_toLeftOf="@id/run_button">
+      		</ImageButton>
+
+		</RelativeLayout>
+
+	</LinearLayout>
+
+</RelativeLayout>
