@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">reggie</string>
+    <string name="action_settings">Settings</string>
+	<string name="arrow">Arrow</string>
+    <string name="box">Box</string>
+    <string name="end">End</string>
+    <string name="run">Run</string>
+    <string name="bin">Clear</string>
+    <string name="new">New Game</string>
+    <string name="load">Load Game</string>
+    
+	<string name="Register0">Register0</string>
+	<string name="Register1">Register1</string>
+	<string name="Register2">Register2</string>
+	<string name="Register3">Register3</string>
+	<string name="Register4">Register4</string>
+	<string name="Register5">Register5</string>
+	<string name="Register6">Register6</string>
+	<string name="Register7">Register7</string>
+	<string name="Register8">Register8</string>
+	<string name="Register9">Register9</string>
+
+    <string-array
+        name="register_names">
+        <item>@string/Register0</item>
+        <item>@string/Register1</item>
+        <item>@string/Register2</item>
+        <item>@string/Register3</item>
+        <item>@string/Register4</item>
+        <item>@string/Register5</item>
+        <item>@string/Register6</item>
+        <item>@string/Register7</item>
+        <item>@string/Register8</item>
+        <item>@string/Register9</item>
+    </string-array> 
+      
+    <string-array name="instruction_icons">
+        <item>@drawable/teal</item>
+        <item>@drawable/red</item>
+        <item>@drawable/orange</item>
+        <item>@drawable/magenta</item>
+        <item>@drawable/green</item>    
+        <item>@drawable/blue</item>
+        <item>@drawable/yellow</item>
+        <item>@drawable/purple</item>
+        <item>@drawable/pink</item>   
+        <item>@drawable/brown</item>
+    </string-array>
+    
+</resources>

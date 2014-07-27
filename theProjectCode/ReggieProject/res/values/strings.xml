@@ -8,6 +8,8 @@
     <string name="end">End</string>
     <string name="run">Run</string>
     <string name="bin">Clear</string>
+    <string name="newgame">new game</string>
+    <string name="load">load game</string>
     
 	<string name="Register0">Register0</string>
 	<string name="Register1">Register1</string>

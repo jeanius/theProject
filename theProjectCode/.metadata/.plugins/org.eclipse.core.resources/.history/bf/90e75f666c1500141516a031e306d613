@@ -1,0 +1,36 @@
+package com.jeanpower.reggieproject;
+
+import android.app.Activity;
+import android.graphics.Typeface;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+
+public class OptionScreen extends Activity implements View.OnClickListener{
+	
+	@Override
+	    protected void onCreate(Bundle savedInstanceState) {
+	        super.onCreate(savedInstanceState);
+	        
+	        
+	        Typeface type = Typeface.createFromAsset(getAssets(),"fonts/Zian free promo.ttf"); 
+	        Button newButton = (Button) findViewById(R.id.new_button);
+	        newButton.setTypeface(type);
+	        
+	        Button loadButton = (Button) findViewById(R.id.new_button);
+	        loadButton.setTypeface(type);
+	       
+	        setContentView(R.layout.option);
+	        
+	        newButton.setOnClickListener(this);
+	        loadButton.setOnClickListener(this);
+	        
+}
+
+	@Override
+	public void onClick(View v) {
+		
+	}
+	
+	
+}

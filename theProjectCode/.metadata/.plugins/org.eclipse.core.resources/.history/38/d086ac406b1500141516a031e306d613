@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+    
+    <ImageView
+        android:id="@+id/reggieSmile"
+        android:contentDescription="@string/app_name"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:src="@drawable/reg_smile"
+        android:layout_marginTop="30dip"
+        android:layout_marginBottom="20dip">
+    </ImageView>
+    
+    <Button
+        android:id="@+id/new_button"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#454545"
+        android:gravity="center_horizontal"
+        android:layout_below="@+id/reggieSmile"
+        android:text="@string/app_name"
+        android:textSize="40sp">
+    </Button>
+    
+        <Button
+        android:id="@+id/load_button"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#454545"
+        android:gravity="center_horizontal"
+        android:layout_below="@+id/reggieSmile"
+        android:text="@string/app_name"
+        android:textSize="40sp">
+    </Button>
+    
+</RelativeLayout>

@@ -26,9 +26,6 @@ public class SplashScreen extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-       /* getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
-        getActionBar().hide();*/
-        
         setContentView(R.layout.splash);
         
         Typeface type = Typeface.createFromAsset(getAssets(),"fonts/Zian free promo.ttf"); 
@@ -41,7 +38,7 @@ public class SplashScreen extends Activity {
             public void run() {
             	
             	//Start new intent
-                Intent i = new Intent(SplashScreen.this, MainActivity.class);
+                Intent i = new Intent(SplashScreen.this, OptionScreen.class);
                 startActivity(i);
  
                 // close this activity

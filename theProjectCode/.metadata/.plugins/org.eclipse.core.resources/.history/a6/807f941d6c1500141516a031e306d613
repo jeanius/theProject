@@ -1,0 +1,26 @@
+package com.jeanpower.reggieproject;
+
+import android.app.Activity;
+import android.graphics.Typeface;
+import android.os.Bundle;
+import android.widget.Button;
+import android.widget.TextView;
+
+public class OptionScreen extends Activity{
+	
+	@Override
+	    protected void onCreate(Bundle savedInstanceState) {
+	        super.onCreate(savedInstanceState);
+	        
+	        
+	        Typeface type = Typeface.createFromAsset(getAssets(),"fonts/Zian free promo.ttf"); 
+	        Button newButton = (Button) findViewById(R.id.new_button);
+	        newButton.setTypeface(type);
+	        
+	        TextView newButton = (TextView) findViewById(R.id.new_button);
+	        newButton.setTypeface(type);
+	        
+	        setContentView(R.layout.option);
+	        
+}
+}

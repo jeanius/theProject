@@ -67,42 +67,48 @@ public final class R {
         public static final int ScrollVertical=0x7f0a0001;
         public static final int actionFrame=0x7f0a0004;
         public static final int actionFrameScroll=0x7f0a0003;
+        public static final int anchor=0x7f0a000d;
         public static final int bin_clear_button=0x7f0a000b;
         public static final int bottom_frame=0x7f0a0006;
+        public static final int load_button=0x7f0a000e;
         public static final int new_arrow_button=0x7f0a0008;
         public static final int new_box_button=0x7f0a0007;
+        public static final int new_button=0x7f0a000f;
         public static final int new_end_button=0x7f0a0009;
         public static final int overall=0x7f0a0000;
         public static final int reggieSmile=0x7f0a000c;
         public static final int register_frame=0x7f0a0002;
         public static final int run_button=0x7f0a000a;
-        public static final int splashText=0x7f0a000d;
+        public static final int splashText=0x7f0a0010;
         public static final int theLine=0x7f0a0005;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;
-        public static final int splash=0x7f030001;
+        public static final int option=0x7f030001;
+        public static final int splash=0x7f030002;
     }
     public static final class menu {
         public static final int main_activity_actions=0x7f090000;
     }
     public static final class string {
-        public static final int Register0=0x7f070007;
-        public static final int Register1=0x7f070008;
-        public static final int Register2=0x7f070009;
-        public static final int Register3=0x7f07000a;
-        public static final int Register4=0x7f07000b;
-        public static final int Register5=0x7f07000c;
-        public static final int Register6=0x7f07000d;
-        public static final int Register7=0x7f07000e;
-        public static final int Register8=0x7f07000f;
-        public static final int Register9=0x7f070010;
+        public static final int Register0=0x7f070009;
+        public static final int Register1=0x7f07000a;
+        public static final int Register2=0x7f07000b;
+        public static final int Register3=0x7f07000c;
+        public static final int Register4=0x7f07000d;
+        public static final int Register5=0x7f07000e;
+        public static final int Register6=0x7f07000f;
+        public static final int Register7=0x7f070010;
+        public static final int Register8=0x7f070011;
+        public static final int Register9=0x7f070012;
         public static final int action_settings=0x7f070001;
         public static final int app_name=0x7f070000;
         public static final int arrow=0x7f070002;
         public static final int bin=0x7f070006;
         public static final int box=0x7f070003;
         public static final int end=0x7f070004;
+        public static final int load=0x7f070008;
+        public static final int newgame=0x7f070007;
         public static final int run=0x7f070005;
     }
     public static final class style {

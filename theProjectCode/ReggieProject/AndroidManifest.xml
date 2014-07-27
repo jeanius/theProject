@@ -28,6 +28,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
+      <!-- Option Screen -->
+		<activity
+            android:theme="@android:style/Theme.Holo.NoActionBar"
+            android:name="com.jeanpower.reggieproject.OptionScreen"
+            android:screenOrientation="landscape" 
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/app_name">
+		</activity>
 
       <!-- Main activity -->
         <activity
