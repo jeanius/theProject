@@ -54,19 +54,21 @@ public final class R {
         public static final int ic_launcher=0x7f02000c;
         public static final int ic_run=0x7f02000d;
         public static final int ic_stop=0x7f02000e;
-        public static final int magenta=0x7f02000f;
-        public static final int orange=0x7f020010;
-        public static final int pink=0x7f020011;
-        public static final int purple=0x7f020012;
-        public static final int red=0x7f020013;
-        public static final int reg_smile=0x7f020014;
-        public static final int teal=0x7f020015;
-        public static final int yellow=0x7f020016;
+        public static final int linegradient=0x7f02000f;
+        public static final int magenta=0x7f020010;
+        public static final int orange=0x7f020011;
+        public static final int pink=0x7f020012;
+        public static final int purple=0x7f020013;
+        public static final int red=0x7f020014;
+        public static final int reg_smile=0x7f020015;
+        public static final int teal=0x7f020016;
+        public static final int yellow=0x7f020017;
     }
     public static final class id {
         public static final int ScrollVertical=0x7f0a0001;
         public static final int actionFrame=0x7f0a0004;
         public static final int actionFrameScroll=0x7f0a0003;
+        public static final int action_settings=0x7f0a0011;
         public static final int anchor=0x7f0a000d;
         public static final int bin_clear_button=0x7f0a000b;
         public static final int bottom_frame=0x7f0a0006;
@@ -88,7 +90,8 @@ public final class R {
         public static final int splash=0x7f030002;
     }
     public static final class menu {
-        public static final int main_activity_actions=0x7f090000;
+        public static final int main=0x7f090000;
+        public static final int main_activity_actions=0x7f090001;
     }
     public static final class string {
         public static final int Register0=0x7f070009;

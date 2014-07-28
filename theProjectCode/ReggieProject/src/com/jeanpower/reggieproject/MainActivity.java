@@ -4,6 +4,7 @@ package com.jeanpower.reggieproject;
 
 import java.util.Calendar;
 import java.util.List;
+
 import android.os.Bundle;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -12,6 +13,7 @@ import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.support.v4.app.NavUtils;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.Menu;
@@ -83,6 +85,7 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 		glow = Color.argb(120, 255, 255, 0);
 		screenDensity = this.getResources().getDisplayMetrics().density;
 		container = (RelativeLayout) findViewById(R.id.actionFrame);
+		getActionBar().setDisplayHomeAsUpEnabled(true);
 
 		LinearLayout registerFrame = (LinearLayout) findViewById(R.id.register_frame);
 		LinearLayout.LayoutParams regParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -895,6 +898,15 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
+		
+		
+	    switch (item.getItemId()) {
+	    // Respond to the action bar's Up/Home button
+	    case android.R.id.home:
+	        NavUtils.navigateUpFromSameTask(this);
+	        return true;
+	    }
+	    return super.onOptionsItemSelected(item);
 
 		/*
 		 * int resaid = item.getItemId();
@@ -911,7 +923,7 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 		 * else if (resid == R.id.run_button) { game.runGame(); }
 		 */
 
-		return true;
+		//return true;
 	}
 
 	public void resetRunButton(){

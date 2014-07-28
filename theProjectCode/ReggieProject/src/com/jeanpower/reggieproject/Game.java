@@ -47,7 +47,7 @@ public class Game {
 
 		currPos = first;
 
-		while (null != currPos) {
+		/*while (null != currPos) {
 			Log.d("This is the current instruction", currPos.getId() + "");
 			
 			if (currPos instanceof End){
@@ -74,10 +74,10 @@ public class Game {
 
 			currPos = currPos.getSucc();
 		}
-		/*
-
+		
+*/
 		RunGame rungame = new RunGame();
-		rungame.execute();*/
+		rungame.execute();
 	}
 
 	public void clearAll(){
