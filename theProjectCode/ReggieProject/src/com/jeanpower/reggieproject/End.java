@@ -26,7 +26,6 @@ public class End implements Instruction{
 	@Override
 	public void setSucc(Instruction successor) {
 		succ = successor;
-		
 	}
 
 	@Override
@@ -37,7 +36,9 @@ public class End implements Instruction{
 	@Override
 	public void setPred(Instruction predecessor) {
 		pred = predecessor;
+		if (pred != null){
 		register = pred.getRegister();
+		}
 	}
 
 	@Override
@@ -46,9 +47,7 @@ public class End implements Instruction{
 	}
 
 	@Override
-	public void setRegister() {
-		// TODO Auto-generated method stub
-		
+	public void setRegister() {		
 	}
 
 	@Override
@@ -66,6 +65,4 @@ public class End implements Instruction{
 	public int getId() {
 		return identity;
 	}
-
-
 }

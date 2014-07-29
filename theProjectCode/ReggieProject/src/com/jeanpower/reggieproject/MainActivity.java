@@ -5,10 +5,13 @@ package com.jeanpower.reggieproject;
 import java.util.Calendar;
 import java.util.List;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.TaskStackBuilder;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -251,7 +254,7 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 			int instructionID = inst.getId();
 			button.setId(instructionID);
 			this.removeInstruction(instructionID); // If already there, remove to allow redraw
-	
+
 			RelativeLayout.LayoutParams instructionParameters = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 
 			if (inst instanceof Box) {
@@ -315,7 +318,7 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 
 			else if (inst instanceof Arrow) {
 				Arrow arrow = (Arrow) inst;
-
+				arrow.calculateSpaces();
 				button.setBackgroundColor(Color.TRANSPARENT);
 				DrawArrow drawArrow = new DrawArrow(arrow, buttonWidth,buttonHeight);
 				drawArrow.setColours(registerColours[arrow.getPred().getRegister()], registerColours[arrow.getTo().getRegister()]);
@@ -372,16 +375,6 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 							if (check.getType()) {
 
 								List<Instruction> instructList = game.getToFrom(check.getTo(), check.getPred().getId());
-
-								// Log.d("I am on arrow ", arrow + "");
-								// Log.d("This is arrow's list",
-								// instructionBetween + "");
-								// Log.d("I am checking arrow against", check +
-								// "");
-								// Log.d("This is the instruction list",
-								// instructList + "");
-								// Log.d("I am check arrow and I am",
-								// check.getType() + "");
 
 								int sizeList = instructList.size();
 
@@ -490,18 +483,7 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 				button.bringToFront();
 			}
 		}
-		/*
-		 * //Redraw the line RelativeLayout.LayoutParams params = new
-		 * RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
-		 * RelativeLayout.LayoutParams.WRAP_CONTENT);
-		 * //params.addRule(RelativeLayout.CENTER_IN_PARENT,
-		 * RelativeLayout.TRUE); Resources r = getResources(); float px =
-		 * TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2,
-		 * r.getDisplayMetrics()); params.width = container.getWidth();
-		 * Log.d("This is the container width", container.getWidth() + "");
-		 * params.height = (int) px; View line = findViewById(R.id.theLine);
-		 * line.setLayoutParams(params);
-		 */
+
 		instructionIcons.recycle();
 	}
 
@@ -528,8 +510,7 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 	 * clicked
 	 * <p>
 	 * 
-	 * @param Instruction
-	 *            , int ID of instruction
+	 * @param Instruction int ID of instruction
 	 * @return void
 	 */
 
@@ -592,8 +573,7 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 				game.newInstruction(resid);
 				this.updateDisplay();
 
-				// Can only run game, add arrows/ends, when there is already a
-				// box.
+				// Can only run game, add arrows/ends, when there is already a box.
 				if (!oneBox) {
 					arrowButton.setClickable(true);
 					endButton.setClickable(true);
@@ -640,6 +620,8 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 
 	public void clearScreen(){
 
+		oneBox = false;
+
 		int childCount = container.getChildCount();
 
 		for (int i = 1; i < childCount; i++) {
@@ -648,8 +630,7 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 			container.removeView(child);
 		}
 	}
-	
-	
+
 	public void removeInstruction(int ID){
 
 		View child = findViewById(ID);
@@ -731,9 +712,9 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 					this.updateDisplay();
 				}
 			}
-			
+
 			binButton.setImageResource(R.drawable.ic_clear);
-			
+
 			break;
 
 		case MotionEvent.ACTION_MOVE:
@@ -882,7 +863,7 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 					arrowview.setBackgroundColor(Color.TRANSPARENT);
 				}
 			}
-			
+
 			binButton.setImageResource(R.drawable.ic_clear);
 			currentlyDragging = null;
 			draggingArrow = false;
@@ -898,38 +879,44 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		
-		
-	    switch (item.getItemId()) {
-	    // Respond to the action bar's Up/Home button
-	    case android.R.id.home:
-	        NavUtils.navigateUpFromSameTask(this);
-	        return true;
-	    }
-	    return super.onOptionsItemSelected(item);
 
-		/*
-		 * int resaid = item.getItemId();
-		 * 
-		 * if (resid == R.id.new_arrow_button || resid == R.id.new_box_button ||
-		 * resid == R.id.new_end_button) { game.newInstruction(resid);
-		 * this.updateDisplay();
-		 * 
-		 * // Can only run game, add arrows/ends, when there is already a box.
-		 * if (!oneBox) { arrowButton.setEnabled(true);
-		 * runButton.setEnabled(true); endButton.setEnabled(true); oneBox =
-		 * true; } }
-		 * 
-		 * else if (resid == R.id.run_button) { game.runGame(); }
-		 */
+		switch (item.getItemId()) {
+		// Respond to the action bar's Up button - finishes main activity and goes back to option screen
+		case android.R.id.home:
+			Intent intent = new Intent(this, OptionScreen.class);
+			startActivity(intent);
+			this.finish();
+		}
 
-		//return true;
+		return true;
 	}
+	/*
+	 * int resaid = item.getItemId();
+	 * 
+	 * if (resid == R.id.new_arrow_button || resid == R.id.new_box_button ||
+	 * resid == R.id.new_end_button) { game.newInstruction(resid);
+	 * this.updateDisplay();
+	 * 
+	 * // Can only run game, add arrows/ends, when there is already a box.
+	 * if (!oneBox) { arrowButton.setEnabled(true);
+	 * runButton.setEnabled(true); endButton.setEnabled(true); oneBox =
+	 * true; } }
+	 * 
+	 * else if (resid == R.id.run_button) { game.runGame(); }
+	 */
+
+	//return true;
 
 	public void resetRunButton(){
-		runButton.setImageResource(R.drawable.ic_run);
+
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				runButton.setImageResource(R.drawable.ic_run);
+			}
+		});
 	}
-	
+
 	public synchronized void updateInstructionDisplay(Instruction ins) {
 
 		final Instruction i = ins;
@@ -983,4 +970,6 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 		});
 
 	}
+
+	
 }

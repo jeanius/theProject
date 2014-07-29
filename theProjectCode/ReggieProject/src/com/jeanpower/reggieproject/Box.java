@@ -32,18 +32,15 @@ public class Box implements Instruction{
 		{
 			boolean done = caller.decrementReg(register);
 			
-			if (!done){
+			if (!done){ //If not decremented, set to successor - error checking to ensure end/arrow
 				
 				caller.setCurrPos(succ);
 			}
 			
-			else {
-				Instruction boxSucc = succ;
+			else { //Else skip successor and and set to successor of succ
+				Instruction newSucc = succ.getSucc();
 				
-				while (boxSucc instanceof Arrow || boxSucc instanceof End){
-					boxSucc = succ.getSucc();
-				}
-				caller.setCurrPos(boxSucc);
+				caller.setCurrPos(newSucc);
 			}
 		}
 	}
@@ -81,19 +78,16 @@ public class Box implements Instruction{
 	@Override
 	public Instruction getSucc() {
 			return succ;
-		
 	}
 
 	@Override
 	public void setPred(Instruction predecessor) {
-		
 		pred = predecessor;
 	}
 
 	@Override
 	public Instruction getPred() {
 			return pred;
-
 	}
 
 	@Override
