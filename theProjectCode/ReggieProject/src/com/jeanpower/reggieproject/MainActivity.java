@@ -6,18 +6,25 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ActionViewTarget;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
+import com.github.amlcurran.showcaseview.ApiUtils;
+import com.github.amlcurran.showcaseview.OnShowcaseEventListener;
+import com.github.amlcurran.showcaseview.ShowcaseView;
+
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.support.v4.app.NavUtils;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.Menu;
@@ -67,6 +74,7 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 	private boolean deleteInstruction = false;
 	private ArrayList<Instruction> instructionList;
 	private int instructionCounter;
+	private ShowcaseView sv;
 
 
 	/**
@@ -78,7 +86,6 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 	 * 
 	 * @return void
 	 */
-	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 
@@ -144,7 +151,14 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 		binButton.setClickable(false);
 		binButton.setOnClickListener(this);
 		binButton.setOnDragListener(this);
-
+		
+		//Find if user has seen tutorial before
+		SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
+		 
+		if (pref.getBoolean("tutorial", true)){
+            Intent i = new Intent(MainActivity.this, Tutorial.class);
+            startActivity(i);
+		}
 	}
 
 	/**

@@ -30,18 +30,8 @@ public class Box implements Instruction{
 		
 		else 
 		{
-			boolean done = caller.decrementReg(register);
-			
-			if (!done){ //If not decremented, set to successor - error checking to ensure end/arrow
-				
-				caller.setCurrPos(succ);
-			}
-			
-			else { //Else skip successor and and set to successor of succ
-				Instruction newSucc = succ.getSucc();
-				
-				caller.setCurrPos(newSucc);
-			}
+			caller.decrementReg(register);
+			caller.setCurrPos(succ);
 		}
 	}
 

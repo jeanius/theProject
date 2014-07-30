@@ -1,0 +1,7 @@
+/com
+/.gitignore
+/build.gradle
+/gradle-mvn-push.gradle
+/gradle.properties
+/project.properties
+/src

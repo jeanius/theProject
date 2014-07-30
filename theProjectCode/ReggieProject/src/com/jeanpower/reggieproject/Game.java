@@ -46,38 +46,8 @@ public class Game {
 	public void runGame() {
 
 		currPos = first;
-
-		while (null != currPos) {
-			Log.d("This is the current instruction", currPos.getId() + "");
-
-			if (currPos instanceof End){
-				Log.d("This is an", "end");
-			}
-
-			else if (currPos instanceof Arrow){
-				Log.d("This is an", "arrow");
-			}
-
-			else if (currPos instanceof Box){
-				Log.d("This is an", "box");
-			}
-
-			if (currPos.getPred() != null){
-
-				Log.d("This is the pred of the current instruction", currPos.getPred().getId() + "");
-			}
-
-			if (currPos instanceof Arrow) {
-				Arrow a = (Arrow) currPos;
-				Log.d("This is where the arrow is going", a.getTo().getId() + "");
-			}
-
-			currPos = currPos.getSucc();
-		}
-
-		/*
 		RunGame rungame = new RunGame();
-		rungame.execute();*/
+		rungame.execute();
 	}
 
 	public void clearAll(){
@@ -697,9 +667,42 @@ public class Game {
 		protected Void doInBackground(Void... params) {
 
 			while (null != currPos){
+				
+				if (currPos.getPred() != null){
+
+					Log.d("This is the pred of the current instruction", currPos.getPred() + "");
+				}
+				
+				Log.d("This is the current instruction", currPos.getId() + "");
+
+				if (currPos instanceof End){
+					Log.d("This is an", "end");
+				}
+
+				else if (currPos instanceof Arrow){
+					Log.d("This is an", "arrow");
+				}
+
+				else if (currPos instanceof Box){
+					Log.d("This is an", "box");
+				}
+
+				if (currPos.getSucc() != null){
+
+					Log.d("This is the pred of the current instruction", currPos.getSucc().getId() + "");
+				}
+
+				/*if (currPos instanceof Arrow) {
+					Arrow a = (Arrow) currPos;
+					Log.d("This is where the arrow is going", a.getTo().getId() + "");
+				}*/
 
 				prevPos = currPos;
 				currPos.doWork();
+					
+
+
+
 				activity.updateInstructionDisplay(prevPos);
 
 				try {
