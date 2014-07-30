@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
-		<item value="257" key="DIALOG_WIDTH"/>
-		<item value="487" key="DIALOG_Y_ORIGIN"/>
-		<item value="1218" key="DIALOG_X_ORIGIN"/>
-		<item value="373" key="DIALOG_HEIGHT"/>
+		<item value="607" key="DIALOG_WIDTH"/>
+		<item value="544" key="DIALOG_Y_ORIGIN"/>
+		<item value="279" key="DIALOG_HEIGHT"/>
+		<item value="954" key="DIALOG_X_ORIGIN"/>
 		<item value="1|Segoe UI|9.0|0|WINDOWS|1|-12|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI" key="DIALOG_FONT_NAME"/>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="true" key="wrap"/>
-		<item value="true" key="casesensitive"/>
 		<item value="false" key="isRegEx"/>
+		<item value="true" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="false" key="wholeword"/>
-		<item value="binButton" key="selection"/>
+		<item value="last" key="selection"/>
 		<list key="findhistory">
+			<item value="last"/>
+			<item value="first"/>
+			<item value="deleteIn"/>
+			<item value="clearScreen"/>
+			<item value="oneBox"/>
 			<item value="binButton"/>
 			<item value="bin_cl"/>
 			<item value="clear_"/>
-			<item value="clear_ic"/>
-			<item value="bin_icon"/>
-			<item value="clearAll"/>
-			<item value="clearS"/>
-			<item value="activity"/>
 		</list>
 		<list key="replacehistory">
 			<item value="match_parent"/>

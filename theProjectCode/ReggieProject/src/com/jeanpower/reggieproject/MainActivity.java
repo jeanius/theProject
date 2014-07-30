@@ -2,6 +2,7 @@
 
 package com.jeanpower.reggieproject;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -64,6 +65,8 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 	private boolean running = false;
 	private RelativeLayout container;
 	private boolean deleteInstruction = false;
+	private ArrayList<Instruction> instructionList;
+	private int instructionCounter;
 
 
 	/**
@@ -242,249 +245,31 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 
 	public void updateDisplay() {
 
-		List<Instruction> instructionList = game.getInstructionList();
-		TypedArray instructionIcons = getResources().obtainTypedArray(R.array.instruction_icons);
+		instructionList = game.getInstructionList();
 		this.setLayoutConstants(instructionList);
+		instructionCounter = 0;
+		Instruction [] instructions = new Instruction[1];
+		instructions[0] = instructionList.get(instructionCounter);
 
-		for (Instruction inst : instructionList) {
+		CreateInstruction ci = new CreateInstruction();
+		ci.execute(instructions);
+	}
 
-			ImageButton button = new ImageButton(this);
-			button.setOnTouchListener(this);
-			button.setOnDragListener(this);
-			int instructionID = inst.getId();
-			button.setId(instructionID);
-			this.removeInstruction(instructionID); // If already there, remove to allow redraw
+	public void addToScreen(ImageButton b){
 
-			RelativeLayout.LayoutParams instructionParameters = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+		final ImageButton button = b;
 
-			if (inst instanceof Box) {
-				Box box = (Box) inst;
-				Instruction prevInstruction = null;
-				Box prevBox = null;
+		button.setOnTouchListener(this);
+		button.setOnDragListener(this);
 
-				if (box.getPred() != null) {
-					prevInstruction = box.getPred();
-				}
+		runOnUiThread(new Runnable() {
 
-				button.setBackgroundResource(R.drawable.curvededge);
-
-				button.setImageResource(instructionIcons.getResourceId(box.getRegister(), -1));
-
-				if (box.getType()) // If Increment
-				{
-					instructionParameters.addRule(RelativeLayout.ABOVE,	R.id.theLine);
-				}
-
-				else {
-					instructionParameters.addRule(RelativeLayout.BELOW, R.id.theLine);
-				}
-
-				if (prevInstruction == null) {
-					instructionParameters.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-				}
-
-				else {
-					// To add next to previous box
-					while (prevInstruction instanceof Arrow || prevInstruction instanceof End) {
-
-						prevInstruction = prevInstruction.getPred();
-					}
-
-					// If previous instruction is also a box, remove the
-					// connecting arrow, to allow refresh
-					if (prevInstruction instanceof Box) {
-						prevBox = (Box) prevInstruction;
-						//container.removeView(prevBox.getConnect());
-					}
-
-					instructionParameters.addRule(RelativeLayout.RIGHT_OF, prevBox.getId()); // Right of the current instruction
-				}
-
-				instructionParameters.leftMargin = 1;
-				instructionParameters.topMargin = 1;
-				button.setLayoutParams(instructionParameters);
+			@Override
+			public void run() {
+				removeInstruction(button.getId()); // If already there, remove to allow redraw
 				container.addView(button);
-
-				/*
-				 * //Redraw the connecting lines if (null != prevBox){
-				 * 
-				 * ConnectLine connLine = new ConnectLine(this,
-				 * findViewById(prevBox.getId()), findViewById(instructionID),
-				 * container); connLine.setLayoutParams(new
-				 * RelativeLayout.LayoutParams(buttonWidth, buttonHeight));
-				 * container.addView(connLine); prevBox.setConnect(connLine); }
-				 */
 			}
-
-			else if (inst instanceof Arrow) {
-				Arrow arrow = (Arrow) inst;
-				arrow.calculateSpaces();
-				button.setBackgroundColor(Color.TRANSPARENT);
-				DrawArrow drawArrow = new DrawArrow(arrow, buttonWidth,buttonHeight);
-				drawArrow.setColours(registerColours[arrow.getPred().getRegister()], registerColours[arrow.getTo().getRegister()]);
-
-				int marginTop = 0;
-
-				Bitmap arrowPicture = drawArrow.getImage();
-				button.setImageBitmap(arrowPicture);
-
-				// Arrow left or right matches its predecessor box
-				Instruction prevBox = arrow.getPred();
-
-				while (prevBox instanceof Arrow || prevBox instanceof End) {
-
-					prevBox = prevBox.getPred();
-				}
-
-				if (arrow.getType()) {
-
-					instructionParameters.addRule(RelativeLayout.ALIGN_RIGHT,
-							prevBox.getId());
-				}
-
-				else {
-					instructionParameters.addRule(RelativeLayout.ALIGN_LEFT,
-							prevBox.getId());
-				}
-
-				// To work out offset above/below the line
-				List<Instruction> instructionBetween = null;
-
-				if (arrow.getType()) {
-
-					if (boxAbove != null) {
-						marginTop = buttonHeight * 2;
-					}
-
-					else {
-						marginTop = buttonHeight;
-					}
-
-					// Log.d("MarginTop", marginTop + "");
-
-					instructionBetween = game.getToFrom(arrow.getTo(), arrow.getPred().getId());
-					int pointer = 0;
-					Instruction currentPosition = instructionList.get(pointer);
-
-					while (currentPosition != null&& currentPosition.getId() != arrow.getId()) {
-
-						if (currentPosition instanceof Arrow) {
-
-							Arrow check = (Arrow) currentPosition;
-
-							if (check.getType()) {
-
-								List<Instruction> instructList = game.getToFrom(check.getTo(), check.getPred().getId());
-
-								int sizeList = instructList.size();
-
-								instructList.removeAll(instructionBetween);
-
-								int newSizeList = instructList.size();
-
-								// If there is any overlap in the lists
-								if (sizeList != newSizeList) {
-									marginTop += buttonHeight;
-								}
-							}
-						}
-
-						pointer++;
-						currentPosition = instructionList.get(pointer);
-					}
-					instructionParameters.topMargin = -marginTop;
-				}
-
-				else {
-					if (boxBelow != null) {
-						marginTop = buttonHeight;
-					}
-
-					else {
-						marginTop = 0;
-					}
-
-					instructionBetween = game.getToFrom(arrow.getPred(), arrow.getTo().getId());
-					int pointer = 0;
-					Instruction currentPosition = instructionList.get(pointer);
-
-					while (currentPosition != null
-							&& currentPosition.getId() != arrow.getId()) {
-
-						if (currentPosition instanceof Arrow) {
-
-							Arrow check = (Arrow) currentPosition;
-
-							if (!check.getType()) {
-
-								List<Instruction> instructList = game.getToFrom(check.getPred(), check.getTo().getId());
-								int sizeList = instructList.size();
-
-								instructList.removeAll(instructionBetween);
-
-								int newSizeList = instructList.size();
-								/*
-								Log.d("I am on arrow ", arrow + "");
-								Log.d("This is arrow's list",instructionBetween + "");
-								Log.d("I am checking arrow against", check + "");
-								Log.d("This is the instruction list",
-										instructList + "");
-								Log.d("I am check arrow and I am",
-										check.getType() + "");
-								 */
-								// If there is any overlap in the lists
-								if (sizeList != newSizeList) {
-
-									marginTop += buttonHeight;
-								}
-							}
-						}
-
-						pointer++;
-						currentPosition = instructionList.get(pointer);
-					}
-
-					instructionParameters.topMargin = marginTop;
-				}
-
-				button.setLayoutParams(instructionParameters);
-				container.addView(button);
-				button.bringToFront();
-
-			}
-
-			else if (inst instanceof End) {
-
-				End end = (End) inst;
-				button.setImageResource(R.drawable.end);
-				int topMargin;
-				Instruction prev = end.getPred();
-
-				while (prev instanceof Arrow || prev instanceof End) {
-					prev = prev.getPred();
-				}
-
-				Box prevBox = (Box) prev;
-
-				if (prevBox.getType()) {
-					topMargin = -(int) (buttonHeight / 1.5);
-
-				} else {
-					topMargin = 1;
-
-				}
-				instructionParameters.width = buttonWidth / 2;
-				instructionParameters.height = buttonHeight / 2;
-				instructionParameters.addRule(RelativeLayout.ALIGN_TOP, prev.getId());
-				instructionParameters.addRule(RelativeLayout.ALIGN_RIGHT, prev.getId());
-				instructionParameters.topMargin = topMargin;
-				button.setLayoutParams(instructionParameters);
-				container.addView(button);
-				button.bringToFront();
-			}
-		}
-
-		instructionIcons.recycle();
+		});
 	}
 
 	@Override
@@ -619,7 +404,8 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 	}
 
 	public void clearScreen(){
-
+		
+		//instructionCounter = 0;
 		oneBox = false;
 
 		int childCount = container.getChildCount();
@@ -970,6 +756,237 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 		});
 
 	}
+	private class CreateInstruction extends AsyncTask<Instruction, Void, ImageButton>{
 
-	
+		@Override
+		protected ImageButton doInBackground(Instruction... params) {
+
+			TypedArray instructionIcons = getResources().obtainTypedArray(R.array.instruction_icons);
+
+			Instruction inst = params[0];
+
+			ImageButton button = new ImageButton(getApplicationContext());
+			int instructionID = inst.getId();
+			button.setId(instructionID);
+			RelativeLayout.LayoutParams instructionParameters = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+			if (inst instanceof Box) {
+				Box box = (Box) inst;
+				Instruction prevInstruction = null;
+				Box prevBox = null;
+
+				if (box.getPred() != null) {
+					prevInstruction = box.getPred();
+				}
+
+				button.setBackgroundResource(R.drawable.curvededge);
+
+				button.setImageResource(instructionIcons.getResourceId(box.getRegister(), -1));
+
+				if (box.getType()) // If Increment
+				{
+					instructionParameters.addRule(RelativeLayout.ABOVE,	R.id.theLine);
+				}
+
+				else {
+					instructionParameters.addRule(RelativeLayout.BELOW, R.id.theLine);
+				}
+
+				if (prevInstruction == null) {
+					instructionParameters.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+				}
+
+				else {
+					// To add next to previous box
+					while (prevInstruction instanceof Arrow || prevInstruction instanceof End) {
+
+						prevInstruction = prevInstruction.getPred();
+					}
+
+					// If previous instruction is also a box, remove the
+					// connecting arrow, to allow refresh
+					if (prevInstruction instanceof Box) {
+						prevBox = (Box) prevInstruction;
+						//container.removeView(prevBox.getConnect());
+					}
+
+					instructionParameters.addRule(RelativeLayout.RIGHT_OF, prevBox.getId()); // Right of the current instruction
+				}
+
+				instructionParameters.leftMargin = 1;
+				instructionParameters.topMargin = 1;
+				button.setLayoutParams(instructionParameters);
+			}
+
+			else if (inst instanceof Arrow) {
+				Arrow arrow = (Arrow) inst;
+				arrow.calculateSpaces();
+				button.setBackgroundColor(Color.TRANSPARENT);
+				DrawArrow drawArrow = new DrawArrow(arrow, buttonWidth,buttonHeight);
+				drawArrow.setColours(registerColours[arrow.getPred().getRegister()], registerColours[arrow.getTo().getRegister()]);
+
+				int marginTop = 0;
+
+				Bitmap arrowPicture = drawArrow.getImage();
+				button.setImageBitmap(arrowPicture);
+
+				// Arrow left or right matches its predecessor box
+				Instruction prevBox = arrow.getPred();
+
+				while (prevBox instanceof Arrow || prevBox instanceof End) {
+
+					prevBox = prevBox.getPred();
+				}
+
+				if (arrow.getType()) {
+
+					instructionParameters.addRule(RelativeLayout.ALIGN_RIGHT, prevBox.getId());
+				}
+
+				else {
+					instructionParameters.addRule(RelativeLayout.ALIGN_LEFT, prevBox.getId());
+				}
+
+				// To work out offset above/below the line
+				List<Instruction> instructionBetween = null;
+
+				if (arrow.getType()) {
+
+					if (boxAbove != null) {
+						marginTop = buttonHeight * 2;
+					}
+
+					else {
+						marginTop = buttonHeight;
+					}
+
+					instructionBetween = game.getToFrom(arrow.getTo(), arrow.getPred().getId());
+					int pointer = 0;
+					Instruction currentPosition = instructionList.get(pointer);
+
+					while (currentPosition != null && currentPosition.getId() != arrow.getId()) {
+
+						if (currentPosition instanceof Arrow) {
+
+							Arrow check = (Arrow) currentPosition;
+
+							if (check.getType()) {
+
+								List<Instruction> instructList = game.getToFrom(check.getTo(), check.getPred().getId());
+
+								int sizeList = instructList.size();
+
+								instructList.removeAll(instructionBetween);
+
+								int newSizeList = instructList.size();
+
+								// If there is any overlap in the lists
+								if (sizeList != newSizeList) {
+									marginTop += buttonHeight;
+								}
+							}
+						}
+
+						pointer++;
+						currentPosition = instructionList.get(pointer);
+					}
+					instructionParameters.topMargin = -marginTop;
+				}
+
+				else {
+					if (boxBelow != null) {
+						marginTop = buttonHeight;
+					}
+
+					else {
+						marginTop = 0;
+					}
+
+					instructionBetween = game.getToFrom(arrow.getPred(), arrow.getTo().getId());
+					int pointer = 0;
+					Instruction currentPosition = instructionList.get(pointer);
+
+					while (currentPosition != null && currentPosition.getId() != arrow.getId()) {
+
+						if (currentPosition instanceof Arrow) {
+
+							Arrow check = (Arrow) currentPosition;
+
+							if (!check.getType()) {
+
+								List<Instruction> instructList = game.getToFrom(check.getPred(), check.getTo().getId());
+								int sizeList = instructList.size();
+
+								instructList.removeAll(instructionBetween);
+
+								int newSizeList = instructList.size();
+
+								// If there is any overlap in the lists
+								if (sizeList != newSizeList) {
+
+									marginTop += buttonHeight;
+								}
+							}
+						}
+
+						pointer++;
+						currentPosition = instructionList.get(pointer);
+					}
+
+					instructionParameters.topMargin = marginTop;
+				}
+
+				button.setLayoutParams(instructionParameters);
+			}
+
+			else if (inst instanceof End) {
+
+				End end = (End) inst;
+				button.setImageResource(R.drawable.in_end);
+				button.setBackgroundColor(Color.TRANSPARENT);
+				int topMargin;
+				Instruction prev = end.getPred();
+
+				while (prev instanceof Arrow || prev instanceof End) {
+					prev = prev.getPred();
+				}
+
+				Box prevBox = (Box) prev;
+
+				if (prevBox.getType()) {
+					topMargin = -(int) (buttonHeight / 1.5);
+
+				} else {
+					topMargin = 1;
+
+				}
+				instructionParameters.width = buttonWidth / 2;
+				instructionParameters.height = buttonHeight / 2;
+				instructionParameters.addRule(RelativeLayout.ALIGN_TOP, prev.getId());
+				instructionParameters.addRule(RelativeLayout.ALIGN_RIGHT, prev.getId());
+				instructionParameters.topMargin = topMargin;
+				button.setLayoutParams(instructionParameters);
+			}
+
+			instructionIcons.recycle();
+			return button;
+		}
+
+		protected void onPostExecute(ImageButton result) {
+
+			addToScreen(result);
+			instructionCounter ++;
+
+			
+			if (instructionCounter<instructionList.size()){
+				
+				Instruction [] instructions = new Instruction[1];
+				instructions[0] = instructionList.get(instructionCounter);
+
+				CreateInstruction ci = new CreateInstruction();
+				ci.execute(instructions);
+			}
+
+		}
+	}
 }
