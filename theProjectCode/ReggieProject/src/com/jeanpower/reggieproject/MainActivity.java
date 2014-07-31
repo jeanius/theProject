@@ -2,6 +2,11 @@
 
 package com.jeanpower.reggieproject;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -15,8 +20,10 @@ import com.github.amlcurran.showcaseview.ShowcaseView;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -28,7 +35,9 @@ import android.graphics.Color;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.DragShadowBuilder;
@@ -37,9 +46,9 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+import ar.com.daidalos.afiledialog.FileChooserDialog;
 
-public class MainActivity extends Activity implements View.OnClickListener,
-View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
+public class MainActivity extends Activity implements View.OnClickListener, OnMenuItemClickListener, View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 
 	private Game game;
 	private int[] registerColours;
@@ -75,6 +84,7 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 	private ArrayList<Instruction> instructionList;
 	private int instructionCounter;
 	private ShowcaseView sv;
+	private String folder = "Reggie Files";
 
 
 	/**
@@ -153,12 +163,12 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 		binButton.setOnDragListener(this);
 		
 		//Find if user has seen tutorial before
-		SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
+		//SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
 		 
-		if (pref.getBoolean("tutorial", true)){
-            Intent i = new Intent(MainActivity.this, Tutorial.class);
-            startActivity(i);
-		}
+		//if (pref.getBoolean("tutorial", true)){
+          //  Intent i = new Intent(MainActivity.this, Tutorial.class);
+            //startActivity(i);
+		//}
 	}
 
 	/**
@@ -170,16 +180,16 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		/*
-		 * // Inflate the menu; this adds items to the action bar if it is
-		 * present. MenuInflater inflater = getMenuInflater();
-		 * inflater.inflate(R.menu.main_activity_actions, menu);
-		 * 
-		 * arrowButton = menu.findItem(R.id.new_arrow_button); runButton =
-		 * menu.findItem(R.id.run_button); endButton =
-		 * menu.findItem(R.id.new_end_button); arrowButton.setEnabled(false);
-		 * runButton.setEnabled(false); endButton.setEnabled(false);
-		 */
+		
+		 // Inflate the menu
+		 
+		 MenuInflater inflater = getMenuInflater();
+		 inflater.inflate(R.menu.main_activity_actions, menu);
+		 
+		MenuItem loadButton = menu.findItem(R.id.load_menu_button); 
+		
+		loadButton.setOnMenuItemClickListener(this);
+		 
 		return true;
 	}
 
@@ -474,12 +484,9 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 
 				if ((origX < (v.getX() + v.getWidth()) && v.getY() < theLineX) || (origX > (v.getX() + v.getWidth()) && v.getY() >= theLineX)) {
 					arrowHead = true;
-					Log.d("The arrow head is", "true");
 				}
 
 				else {
-
-					Log.d("The arrow head is", "false");
 					arrowHead = false;
 				}
 			}	
@@ -651,6 +658,9 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 				if (draggingBox) {
 
 					float newY = v.getY();
+					
+					View boxView = findViewById(currentlyDragging.getId());
+					boxView.setBackgroundResource(R.drawable.curvededge);
 
 					if ((newY - origY > THRESHOLD) || (origY - newY > THRESHOLD)) {
 						game.changeInstruction(currentlyDragging);
@@ -659,8 +669,8 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 				}
 
 				if (draggingArrow){
-					View arrowview = findViewById(currentlyDragging.getId());
-					arrowview.setBackgroundColor(Color.TRANSPARENT);
+					View arrowView = findViewById(currentlyDragging.getId());
+					arrowView.setBackgroundColor(Color.TRANSPARENT);
 				}
 			}
 
@@ -690,22 +700,6 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 
 		return true;
 	}
-	/*
-	 * int resaid = item.getItemId();
-	 * 
-	 * if (resid == R.id.new_arrow_button || resid == R.id.new_box_button ||
-	 * resid == R.id.new_end_button) { game.newInstruction(resid);
-	 * this.updateDisplay();
-	 * 
-	 * // Can only run game, add arrows/ends, when there is already a box.
-	 * if (!oneBox) { arrowButton.setEnabled(true);
-	 * runButton.setEnabled(true); endButton.setEnabled(true); oneBox =
-	 * true; } }
-	 * 
-	 * else if (resid == R.id.run_button) { game.runGame(); }
-	 */
-
-	//return true;
 
 	public void resetRunButton(){
 
@@ -1002,5 +996,17 @@ View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 			}
 
 		}
+	}
+	@Override
+	public boolean onMenuItemClick(MenuItem item) {
+		
+	    switch (item.getItemId()) {
+
+	    case R.id.load_menu_button:
+	    	SaveLoad sl = new SaveLoad(this, game);
+	    	sl.saveLoad();
+	    	break;
+	    }
+	        return true;
 	}
 }

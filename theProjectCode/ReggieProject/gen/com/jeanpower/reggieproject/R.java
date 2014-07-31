@@ -74,21 +74,30 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int sv_titleTextColor=0x7f010002;
     }
     public static final class color {
-        public static final int black=0x7f09000a;
-        public static final int blue=0x7f090005;
-        public static final int brown=0x7f090009;
-        public static final int green=0x7f090004;
-        public static final int magenta=0x7f090003;
-        public static final int orange=0x7f090002;
-        public static final int pink=0x7f090008;
-        public static final int purple=0x7f090007;
-        public static final int red=0x7f090001;
-        public static final int teal=0x7f090000;
-        public static final int yellow=0x7f090006;
+        public static final int black=0x7f09000e;
+        public static final int blue=0x7f090009;
+        public static final int brown=0x7f09000d;
+        public static final int daidalos_active_file=0x7f090002;
+        public static final int daidalos_backgroud=0x7f090001;
+        public static final int daidalos_gray=0x7f090000;
+        public static final int daidalos_inactive_file=0x7f090003;
+        public static final int green=0x7f090008;
+        public static final int magenta=0x7f090007;
+        public static final int orange=0x7f090006;
+        public static final int pink=0x7f09000c;
+        public static final int purple=0x7f09000b;
+        public static final int red=0x7f090005;
+        public static final int teal=0x7f090004;
+        public static final int yellow=0x7f09000a;
     }
     public static final class dimen {
         public static final int action_bar_offset=0x7f050002;
         /**  Default screen margins, per the Android Design guidelines. 
+
+         Customize dimensions originally defined in res/values/dimens.xml (such as
+         screen margins) for sw720dp devices (e.g. 10" tablets) in landscape here.
+    
+ Default screen margins, per the Android Design guidelines. 
 
          Customize dimensions originally defined in res/values/dimens.xml (such as
          screen margins) for sw720dp devices (e.g. 10" tablets) in landscape here.
@@ -103,94 +112,130 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int text_padding=0x7f050001;
     }
     public static final class drawable {
-        public static final int blue=0x7f020000;
-        public static final int brown=0x7f020001;
-        public static final int btn_cling_normal=0x7f020002;
-        public static final int btn_cling_pressed=0x7f020003;
-        public static final int button=0x7f020004;
-        public static final int button_normal=0x7f020005;
-        public static final int cling=0x7f020006;
-        public static final int cling_bleached=0x7f020007;
-        public static final int cling_button_bg=0x7f020008;
-        public static final int curvededge=0x7f020009;
-        public static final int curvededgecolor=0x7f02000a;
-        public static final int gradient=0x7f02000b;
-        public static final int green=0x7f02000c;
-        public static final int hand=0x7f02000d;
-        public static final int ic_arrow=0x7f02000e;
-        public static final int ic_bin=0x7f02000f;
-        public static final int ic_box=0x7f020010;
-        public static final int ic_clear=0x7f020011;
-        public static final int ic_end=0x7f020012;
-        public static final int ic_launcher=0x7f020013;
-        public static final int ic_run=0x7f020014;
-        public static final int ic_stop=0x7f020015;
-        public static final int in_end=0x7f020016;
-        public static final int linegradient=0x7f020017;
-        public static final int magenta=0x7f020018;
-        public static final int orange=0x7f020019;
-        public static final int pink=0x7f02001a;
-        public static final int purple=0x7f02001b;
-        public static final int red=0x7f02001c;
-        public static final int reg_smile=0x7f02001d;
-        public static final int teal=0x7f02001e;
-        public static final int yellow=0x7f02001f;
+        public static final int add=0x7f020000;
+        public static final int blue=0x7f020001;
+        public static final int brown=0x7f020002;
+        public static final int btn_cling_normal=0x7f020003;
+        public static final int btn_cling_pressed=0x7f020004;
+        public static final int button=0x7f020005;
+        public static final int button_normal=0x7f020006;
+        public static final int cling=0x7f020007;
+        public static final int cling_bleached=0x7f020008;
+        public static final int cling_button_bg=0x7f020009;
+        public static final int curvededge=0x7f02000a;
+        public static final int curvededgecolor=0x7f02000b;
+        public static final int document=0x7f02000c;
+        public static final int document_gray=0x7f02000d;
+        public static final int folder=0x7f02000e;
+        public static final int gradient=0x7f02000f;
+        public static final int green=0x7f020010;
+        public static final int hand=0x7f020011;
+        public static final int ic_arrow=0x7f020012;
+        public static final int ic_bin=0x7f020013;
+        public static final int ic_box=0x7f020014;
+        public static final int ic_clear=0x7f020015;
+        public static final int ic_end=0x7f020016;
+        public static final int ic_launcher=0x7f020017;
+        public static final int ic_run=0x7f020018;
+        public static final int ic_stop=0x7f020019;
+        public static final int in_end=0x7f02001a;
+        public static final int linegradient=0x7f02001b;
+        public static final int magenta=0x7f02001c;
+        public static final int no=0x7f02001d;
+        public static final int orange=0x7f02001e;
+        public static final int pink=0x7f02001f;
+        public static final int purple=0x7f020020;
+        public static final int red=0x7f020021;
+        public static final int reg_smile=0x7f020022;
+        public static final int teal=0x7f020023;
+        public static final int tick=0x7f020024;
+        public static final int yellow=0x7f020025;
     }
     public static final class id {
         public static final int ScrollVertical=0x7f060004;
         public static final int actionFrame=0x7f060007;
         public static final int actionFrameScroll=0x7f060006;
-        public static final int action_settings=0x7f060014;
-        public static final int anchor=0x7f060010;
+        public static final int action_settings=0x7f06001c;
+        public static final int anchor=0x7f060018;
         public static final int bin_clear_button=0x7f06000e;
         public static final int bottom_frame=0x7f060009;
-        public static final int load_button=0x7f060011;
+        public static final int buttonAdd=0x7f060013;
+        public static final int buttonOk=0x7f060014;
+        public static final int imageViewIcon=0x7f060015;
+        public static final int linearLayoutButtons=0x7f060012;
+        public static final int linearLayoutFiles=0x7f060011;
+        public static final int load_button=0x7f060019;
+        public static final int load_menu_button=0x7f06001d;
         public static final int new_arrow_button=0x7f06000b;
         public static final int new_box_button=0x7f06000a;
-        public static final int new_button=0x7f060012;
+        public static final int new_button=0x7f06001a;
         public static final int new_end_button=0x7f06000c;
         public static final int overall=0x7f060003;
-        public static final int reggieSmile=0x7f06000f;
+        public static final int reggieSmile=0x7f060017;
         public static final int register_frame=0x7f060005;
+        public static final int rootLayout=0x7f06000f;
         public static final int run_button=0x7f06000d;
+        public static final int scrollView1=0x7f060010;
         public static final int showcase_button=0x7f060000;
         public static final int showcase_sub_text=0x7f060002;
         public static final int showcase_title_text=0x7f060001;
-        public static final int splashText=0x7f060013;
+        public static final int splashText=0x7f06001b;
+        public static final int textViewLabel=0x7f060016;
         public static final int theLine=0x7f060008;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;
-        public static final int handy=0x7f030001;
-        public static final int option=0x7f030002;
-        public static final int showcase_button=0x7f030003;
-        public static final int splash=0x7f030004;
+        public static final int daidalos_file_chooser=0x7f030001;
+        public static final int daidalos_file_item=0x7f030002;
+        public static final int handy=0x7f030003;
+        public static final int option=0x7f030004;
+        public static final int showcase_button=0x7f030005;
+        public static final int splash=0x7f030006;
     }
     public static final class menu {
         public static final int main=0x7f0b0000;
         public static final int main_activity_actions=0x7f0b0001;
     }
     public static final class string {
-        public static final int Register0=0x7f07000a;
-        public static final int Register1=0x7f07000b;
-        public static final int Register2=0x7f07000c;
-        public static final int Register3=0x7f07000d;
-        public static final int Register4=0x7f07000e;
-        public static final int Register5=0x7f07000f;
-        public static final int Register6=0x7f070010;
-        public static final int Register7=0x7f070011;
-        public static final int Register8=0x7f070012;
-        public static final int Register9=0x7f070013;
+        public static final int Register0=0x7f07001d;
+        public static final int Register1=0x7f07001e;
+        public static final int Register2=0x7f07001f;
+        public static final int Register3=0x7f070020;
+        public static final int Register4=0x7f070021;
+        public static final int Register5=0x7f070022;
+        public static final int Register6=0x7f070023;
+        public static final int Register7=0x7f070024;
+        public static final int Register8=0x7f070025;
+        public static final int Register9=0x7f070026;
         public static final int action_settings=0x7f070002;
         public static final int app_name=0x7f070001;
-        public static final int arrow=0x7f070003;
-        public static final int bin=0x7f070007;
-        public static final int box=0x7f070004;
-        public static final int end=0x7f070005;
-        public static final int load=0x7f070009;
-        public static final int newgame=0x7f070008;
+        public static final int arrow=0x7f070015;
+        public static final int bin=0x7f070019;
+        public static final int box=0x7f070016;
+        public static final int daidalos_accept=0x7f07000c;
+        public static final int daidalos_app_name=0x7f070005;
+        public static final int daidalos_cancel=0x7f070007;
+        public static final int daidalos_confirm_create_file=0x7f070012;
+        public static final int daidalos_confirm_create_folder=0x7f070014;
+        public static final int daidalos_confirm_select_file=0x7f070011;
+        public static final int daidalos_confirm_select_folder=0x7f070013;
+        public static final int daidalos_create_file=0x7f07000a;
+        public static final int daidalos_create_folder=0x7f07000b;
+        public static final int daidalos_enter_file_name=0x7f07000d;
+        public static final int daidalos_enter_folder_name=0x7f07000e;
+        public static final int daidalos_hello=0x7f070004;
+        public static final int daidalos_new_file=0x7f070009;
+        public static final int daidalos_no=0x7f070010;
+        public static final int daidalos_ok=0x7f070008;
+        public static final int daidalos_select=0x7f070006;
+        public static final int daidalos_yes=0x7f07000f;
+        public static final int end=0x7f070017;
+        public static final int hello_world=0x7f070003;
+        public static final int load=0x7f07001b;
+        public static final int loadmenu=0x7f07001c;
+        public static final int newgame=0x7f07001a;
         public static final int ok=0x7f070000;
-        public static final int run=0x7f070006;
+        public static final int run=0x7f070018;
     }
     public static final class style {
         /** 
@@ -207,9 +252,31 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         AppBaseTheme from res/values/styles.xml on API 11+ devices.
     
  API 11 theme customizations can go here. 
+
+        Base application theme for API 14+. This theme completely replaces
+        AppBaseTheme from BOTH res/values/styles.xml and
+        res/values-v11/styles.xml on API 14+ devices.
+    
+ API 14 theme customizations can go here. 
+
+        Base application theme, dependent on API level. This theme is replaced
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+    
+
+            Theme customizations available in newer API levels can go in
+            res/values-vXX/styles.xml, while customizations related to
+            backward-compatibility can go here.
+        
+
+        Base application theme for API 11+. This theme completely replaces
+        AppBaseTheme from res/values/styles.xml on API 11+ devices.
+    
+ API 11 theme customizations can go here. 
          */
         public static final int AppBaseTheme=0x7f080007;
         /**  Application theme. 
+ All customizations that are NOT specific to a particular API-level can go here. 
+ Application theme. 
  All customizations that are NOT specific to a particular API-level can go here. 
          */
         public static final int AppTheme=0x7f080008;

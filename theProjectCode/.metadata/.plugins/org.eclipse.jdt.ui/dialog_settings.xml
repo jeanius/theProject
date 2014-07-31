@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
+	<item value="480,510" key="UserLibraryLoadSaveDialog.size"/>
 	<item value="500" key="CallHierarchyViewPart.ratio3"/>
 	<item value="500" key="CallHierarchyViewPart.ratio1"/>
 	<item value="3" key="CallHierarchyViewPart.orientation"/>
@@ -26,19 +27,32 @@
 	<section name="JavaElementSearchActions">
 	</section>
 	<section name="BuildPathsPropertyPage">
-		<item value="3" key="pageIndex"/>
+		<item value="1" key="pageIndex"/>
 	</section>
-	<section name="NewClassWizardPage">
-		<item value="false" key="create_constructor"/>
-		<item value="true" key="create_unimplemented"/>
+	<section name="RefactoringWizard.preview">
+		<item value="400" key="height"/>
+		<item value="600" key="width"/>
 	</section>
-	<section name="quick_assist_proposal_size">
+	<section name="org.eclipse.ltk.ui.refactoring.settings">
+		<item value="*" key="patterns"/>
+		<item value="false" key="updateQualifiedNames"/>
+		<item value="false" key="renameSubpackages"/>
+		<item value="false" key="updateTextualMatches"/>
 	</section>
 	<section name="SearchInDialog">
 		<item value="true" key="SearchInJRE"/>
 		<item value="true" key="SearchInProjects"/>
 		<item value="true" key="SearchInAppLibs"/>
 		<item value="true" key="SearchInSources"/>
+	</section>
+	<section name="quick_assist_proposal_size">
+	</section>
+	<section name="NewClassWizardPage">
+		<item value="false" key="create_constructor"/>
+		<item value="true" key="create_unimplemented"/>
+	</section>
+	<section name="ClasspathContainerSelectionPage">
+		<item value="4" key="index"/>
 	</section>
 	<section name="NewPackageWizardPage">
 		<item value="false" key="create_package_info_java"/>
