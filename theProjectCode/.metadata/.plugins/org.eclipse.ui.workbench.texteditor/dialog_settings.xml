@@ -2,27 +2,27 @@
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
 		<item value="607" key="DIALOG_WIDTH"/>
-		<item value="269" key="DIALOG_Y_ORIGIN"/>
-		<item value="970" key="DIALOG_X_ORIGIN"/>
+		<item value="419" key="DIALOG_Y_ORIGIN"/>
 		<item value="279" key="DIALOG_HEIGHT"/>
+		<item value="468" key="DIALOG_X_ORIGIN"/>
 		<item value="1|Segoe UI|9.0|0|WINDOWS|1|-12|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI" key="DIALOG_FONT_NAME"/>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="true" key="wrap"/>
-		<item value="true" key="casesensitive"/>
 		<item value="false" key="isRegEx"/>
+		<item value="true" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="false" key="wholeword"/>
-		<item value="instructionL" key="selection"/>
+		<item value="exception" key="selection"/>
 		<list key="findhistory">
+			<item value="exception"/>
+			<item value="getReg"/>
+			<item value="getRef"/>
+			<item value="run"/>
 			<item value="instructionL"/>
 			<item value="context"/>
 			<item value="getContext"/>
 			<item value="getResource"/>
-			<item value="CONTEXT"/>
-			<item value="onMenuItem"/>
-			<item value="activity"/>
-			<item value="instructionList"/>
 		</list>
 		<list key="replacehistory">
 			<item value="match_parent"/>

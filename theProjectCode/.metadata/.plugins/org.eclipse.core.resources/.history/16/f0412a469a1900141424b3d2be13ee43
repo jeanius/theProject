@@ -1,0 +1,217 @@
+package com.jeanpower.reggieproject;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.util.ArrayList;
+
+import android.app.Activity;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.ContextWrapper;
+import android.os.Environment;
+import android.util.Log;
+import android.widget.Toast;
+import ar.com.daidalos.afiledialog.FileChooserDialog;
+import ar.com.daidalos.afiledialog.FileChooserLabels;
+
+public class SaveLoad{
+
+	Game game;
+	Context context;
+
+	public SaveLoad(Context c, Game g){
+		context = c;
+		game = g;
+	}
+
+	public void saveLoad(){
+
+		FileChooserDialog dialog = new FileChooserDialog(context);
+		dialog.setCanCreateFiles(true);
+		dialog.setFilter(".*txt");
+		dialog.setShowFullPath(true);
+		dialog.loadFolder(Environment.getExternalStorageDirectory() + "/Documents/");
+		FileChooserLabels labels = new FileChooserLabels();
+		labels.createFileDialogTitle = "Save Game";
+		labels.createFileDialogMessage = "Enter game name";
+		labels.labelAddButton = "Navigate to file or click here to save current game";
+		dialog.setLabels(labels);
+		dialog.addListener(new FileChooserDialog.OnFileSelectedListener() {
+
+			public void onFileSelected(Dialog source, File file) {
+				source.hide();
+				Toast toast = Toast.makeText(source.getContext(), "File selected: " + file.getName(), Toast.LENGTH_LONG);
+				toast.show();
+			}
+			public void onFileSelected(Dialog source, File folder, String name) {
+				source.hide();
+				String filename = name + ".txt";
+				File output = new File(folder, filename);
+				//FileOutputStream fw = null;
+				BufferedWriter bw = null;
+				
+				try {
+					
+					bw = new BufferedWriter(new FileWriter(output));
+					String filedata = createGameText();
+					bw.write(filedata);
+					bw.flush();
+					bw.close();
+					
+					//fw = new FileOutputStream(output);
+					
+					//byte[] filedata = createGameText().getBytes();
+					//fw.write(filedata);
+					//fw.close();
+				}
+				catch (Exception e){
+					Log.d("exception", e +"");
+				}
+
+				if (null != bw){
+					Toast toast = Toast.makeText(source.getContext(), "File created: " + folder.getName() + "/" + name, Toast.LENGTH_SHORT);
+					toast.show();
+				}
+
+				if (null == bw){
+					Toast toast = Toast.makeText(source.getContext(), "You need to save to a storage folder, like 'Documents'", Toast.LENGTH_LONG);
+					toast.show();
+				}
+			}
+		});
+
+		dialog.show();
+
+	}
+
+	public void load(){
+
+	}
+
+	public String createGameText(){
+
+		int counter = 0;
+		ArrayList<Instruction> instructionList = game.getInstructionList();
+		int numIns = instructionList.size();
+		
+		String [] strings = new String[numIns];
+		int [] boxEndIDs = new int[numIns];
+
+		for (Instruction i: instructionList){
+
+			if (i instanceof Box){
+
+				StringBuilder sb = new StringBuilder();
+
+				Box box = (Box) i;
+
+				sb.append(counter + ",");
+
+				if (box.getType()){
+					sb.append("INC,");
+				}
+
+				else {
+					sb.append("DEC,");
+				}
+
+				sb.append(box.getRegister() + ",");
+				
+				Instruction successor = box.getSucc();
+				Instruction succOfSucc = null;
+				
+				if (null != successor){
+				succOfSucc = box.getSucc().getSucc();
+				}
+				
+				if (successor instanceof Box || successor instanceof End ||(!box.getType() && successor instanceof Arrow && (succOfSucc instanceof Box || succOfSucc instanceof End))){
+					sb.append(counter + 1 + ",");
+				}
+
+				strings[counter] = sb.toString();
+				boxEndIDs[counter] = box.getId();
+
+				counter++;
+			}
+
+			else if (i instanceof End){
+
+				StringBuilder sb = new StringBuilder();
+
+				counter ++;
+				sb.append(counter + ",");
+
+				sb.append("END");
+				strings[counter] = sb.toString();
+				boxEndIDs[counter] = i.getId();
+
+				counter++;
+			}
+		}
+
+		for (Instruction i: instructionList){
+
+			if (i instanceof Arrow){
+
+				Arrow curr = (Arrow) i;
+				Arrow pred = null;
+				int predID = curr.getPred().getId();
+				int goToId = curr.getTo().getId();
+				int predIndex = 0;
+				int goToIndex = 0;
+
+				if (curr.getPred() instanceof Arrow){
+					pred = (Arrow) curr.getPred();	
+				}
+
+				for (int j = 0; j<numIns; j++){
+
+					int checkID = boxEndIDs[j];
+
+					if (checkID == predID){
+						predIndex = j;
+					}
+					if (checkID == goToId){
+						goToIndex = j;
+					}
+				}
+
+				if ((curr.getPred() instanceof Box || curr.getPred() instanceof End) || (i.getPred() instanceof Arrow && curr.getType() != pred.getType())){ //If more than one arrow out of same box, ignored.
+
+					String predString = strings[predIndex];
+
+					StringBuilder sb = new StringBuilder();
+
+					sb.append(predString);
+					sb.append(goToIndex + ",");
+
+					strings[predIndex] = sb.toString();
+
+				}
+			}
+		}
+		
+		StringBuilder resultSB = new StringBuilder();
+		
+		for (int j = 0; j<numIns; j++){
+			resultSB.append(strings[j] + System.getProperty("line.separator"));
+		}
+		
+		Log.d("This is blah", resultSB.toString() + "");
+		return resultSB.toString();
+
+	}
+
+	public String loadGame(){
+
+		String gameText;
+
+		return null;
+
+	}
+}

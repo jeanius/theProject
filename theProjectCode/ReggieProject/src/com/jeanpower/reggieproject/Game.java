@@ -45,9 +45,17 @@ public class Game {
 
 	public void runGame() {
 
-		currPos = first;
-		RunGame rungame = new RunGame();
-		rungame.execute();
+		boolean canRun = this.errorChecking();
+
+		if (canRun){
+			currPos = first;
+			RunGame rungame = new RunGame();
+			rungame.execute();
+		}
+
+		else {
+			activity.resetRunButton();
+		}
 	}
 
 	public void clearAll(){
@@ -58,25 +66,68 @@ public class Game {
 		prevPos = null;
 	}
 
-	/*int check = 1;
+	public boolean errorChecking(){
 
-		while (null != currPos) {
+		boolean instructionsOk = true;
 
-			// currPos.doWork();
-			Log.d("This is the number instruction", check + "");
-			Log.d("This is the pred of the current instruction", currPos.getPred() + "");
-			Log.d("This is the current instruction", currPos + "");
-			Log.d("This is the succ of current instruction", currPos.getSucc() + "");
+		ArrayList<Instruction> instructionList = this.getInstructionList();
 
-			if (currPos instanceof Arrow) {
-				Arrow a = (Arrow) currPos;
-				Log.d("This is where the arrow is going", a.getTo() + "");
+		for (Instruction i: instructionList){
+
+			if (i instanceof Box){
+
+				Box box = (Box) i;
+
+				if (box.getType()){
+
+					Instruction instruction = box.getSucc();
+
+					while (instruction != null && instruction instanceof Arrow){
+						Arrow arrow = (Arrow) instruction;
+
+						if (!arrow.getType()){
+
+							activity.showMessage("Branching doesn't work on increment instructions!");
+							instructionsOk = false;
+						}
+						instruction = instruction.getSucc();
+					}
+				}
+
+				else {
+					if (box.getSucc() instanceof Box){
+						activity.showMessage("All decrement instructions must have a branch arrow, or end!");
+						instructionsOk = false;
+					}
+
+					else if (box.getSucc() instanceof Arrow){
+						Arrow arrow = (Arrow) box.getSucc();
+
+						if (arrow.getType()){
+							activity.showMessage("All decrement instructions must have a branch arrow, or end!");
+							instructionsOk = false;
+
+						}
+					}
+				}
 			}
+			
+			else if (i instanceof Arrow){
+				Arrow arrow = (Arrow) i;
+				
+				if (!arrow.getType()){
+					
+					if (arrow.getTo().getId() == arrow.getPred().getId()){
+						activity.showMessage("Branches cannot branch to the same instruction!");
+						instructionsOk = false;
+					}
+				}
+			}
+		}
 
-			currPos = currPos.getSucc();
-			check++;
-		}*/
 
+		return instructionsOk;
+	}
 
 	/**
 	 * Iterates through linked list of instructions, returns list of
@@ -398,323 +449,340 @@ public class Game {
 	public void updateTail(Arrow arrow, Box move) {
 
 		boolean canMove = this.tailMove(arrow, move.getId()); // Is the box before the head of arrow?
+		
 
 		if (canMove) {
-
+			Log.d("Can move", "yes");
 			Instruction arrowPred = arrow.getPred();
 			Instruction arrowSucc = arrow.getSucc();
 			Instruction boxSucc = move.getSucc();
 
-			arrow.setPred(move);
-			move.setSucc(arrow);
+			Arrow boxSuccArrow = null;
+			
+			if (boxSucc instanceof Arrow){
+				
+				boxSuccArrow = (Arrow) boxSucc;
+			}
+			
 			arrowPred.setSucc(arrowSucc);
-			arrow.setSucc(boxSucc); //Instruction inserts before successor - arrow will not move past end, or after an end instruction
 
 			if (arrowSucc != null) {
 				arrowSucc.setPred(arrowPred);
 			}
-
+			
 			else {
 				last = arrowPred;
 			}
+			
+			if (!arrow.getType() || boxSucc instanceof Box || boxSucc instanceof End || (arrow.getType() && boxSuccArrow != null && boxSuccArrow.getType())){
+				Log.d("Managed to get in here", "yes");
+				arrow.setPred(move);
+				move.setSucc(arrow);
+				arrow.setSucc(boxSucc); //Instruction inserts before successor - arrow will not move past end, or after an end instruction
 
-			if (boxSucc != null) {
-				boxSucc.setPred(arrow); //
-			}
-
-			arrow.calculateSpaces();
-		}
-	}
-
-	/**
-	 * Changes Box instruction to inc or dec. Changes Arrow instruction to loop or branch.
-	 * <p>
-	 * @param Instruction to be updated
-	 * @return void
-	 */
-	public void changeInstruction(Instruction i) {
-
-		if (i instanceof Box) {
-			Box box = (Box) i;
-			box.setType();
-		}
-
-		else if (i instanceof Arrow) {
-			Arrow arrow = (Arrow) i;
-			Instruction pred = arrow.getPred();
-			Instruction succ = arrow.getSucc();
-			Instruction goTo = arrow.getTo();
-			Instruction goToSucc = goTo.getSucc();
-
-			arrow.setType();
-
-			if (pred.getId() != goTo.getId()){
-
-				arrow.setPred(goTo);
-				goTo.setSucc(arrow);
-				arrow.setSucc(goToSucc);
-				pred.setSucc(succ);
-
-				if (goToSucc != null) {
-
-					goToSucc.setPred(arrow);
-				}
-
-				if (succ != null) {
-
-					succ.setPred(pred);
-				}
-
-				else {
-					last = pred;
+				if (boxSucc != null) {
+					boxSucc.setPred(arrow); 
 				}
 			}
-			arrow.calculateSpaces();
-		}
-	}
-
-	public void deleteInstruction(Instruction inst){
-		List<Instruction> instructionList = this.getInstructionList();
-		int countBox = 0;
-		Instruction succ = inst.getSucc();
-		Instruction pred = inst.getPred();
-
-
-		for (Instruction i: instructionList){
-
-			if (i instanceof Box){
-				countBox ++;
-			}
-
-			if (i instanceof Arrow){
-				Arrow arrow = (Arrow) i;
-
-				if (arrow.getTo().getId() == inst.getId()){ //If an arrow is pointing at a deleted instruction, reset.
-					arrow.setTo(arrow.getPred());
-				}
-			}
-		}
-		
-		Log.d("Countbox", countBox +"");
-
-		
-		if (countBox == 1 && inst instanceof Box){ //If this is the last box on screen, clear screen
-			this.clearAll();
-			activity.clearScreen();
-		}
-
-		else {
-
-			Log.d("Entered succ1", succ + "");
-			Log.d("Entered pred1", pred +"");
-
-			if (inst instanceof Box){
-
-				if (inst.getId() == lastBox.getId()){
-
-					Instruction previousBox = inst.getPred();
-
-					while (previousBox instanceof Arrow || previousBox instanceof End){
-						previousBox = previousBox.getPred();
-					}
-
-					lastBox = (Box) previousBox;
-					//Log.d("Last box is now", lastBox.getId() +"");
-				}
-
-				while (succ instanceof Arrow || succ instanceof End){
-					activity.removeInstruction(succ.getId());
+			else if (arrow.getType() && null != boxSuccArrow && !boxSuccArrow.getType()){ //Loops come after branches
 				
-					if (null != pred){
-						
+				arrow.setPred(boxSuccArrow);
+				arrow.setSucc(boxSuccArrow.getSucc());
+				
+				if (boxSuccArrow.getSucc() != null){
+					boxSuccArrow.setPred(arrow);
+				}
+				boxSuccArrow.setSucc(arrow);	
+			}
+		}
+		arrow.calculateSpaces();
+	}
+/**
+ * Changes Box instruction to inc or dec. Changes Arrow instruction to loop or branch.
+ * <p>
+ * @param Instruction to be updated
+ * @return void
+ */
+public void changeInstruction(Instruction i) {
+
+	if (i instanceof Box) {
+		Box box = (Box) i;
+		box.setType();
+	}
+
+	else if (i instanceof Arrow) {
+		Arrow arrow = (Arrow) i;
+		Instruction pred = arrow.getPred();
+		Instruction succ = arrow.getSucc();
+		Instruction goTo = arrow.getTo();
+		Instruction goToSucc = goTo.getSucc();
+
+		arrow.setType();
+
+		if (pred.getId() != goTo.getId()){
+
+			arrow.setPred(goTo);
+			goTo.setSucc(arrow);
+			arrow.setSucc(goToSucc);
+			pred.setSucc(succ);
+
+			if (goToSucc != null) {
+
+				goToSucc.setPred(arrow);
+			}
+
+			if (succ != null) {
+
+				succ.setPred(pred);
+			}
+
+			else {
+				last = pred;
+			}
+		}
+		arrow.calculateSpaces();
+	}
+}
+
+public void deleteInstruction(Instruction inst){
+	List<Instruction> instructionList = this.getInstructionList();
+	int countBox = 0;
+	Instruction succ = inst.getSucc();
+	Instruction pred = inst.getPred();
+
+
+	for (Instruction i: instructionList){
+
+		if (i instanceof Box){
+			countBox ++;
+		}
+
+		if (i instanceof Arrow){
+			Arrow arrow = (Arrow) i;
+
+			if (arrow.getTo().getId() == inst.getId()){ //If an arrow is pointing at a deleted instruction, reset.
+				arrow.setTo(arrow.getPred());
+			}
+		}
+	}
+
+	Log.d("Countbox", countBox +"");
+
+
+	if (countBox == 1 && inst instanceof Box){ //If this is the last box on screen, clear screen
+		this.clearAll();
+		activity.clearScreen();
+	}
+
+	else {
+
+		Log.d("Entered succ1", succ + "");
+		Log.d("Entered pred1", pred +"");
+
+		if (inst instanceof Box){
+
+			if (inst.getId() == lastBox.getId()){
+
+				Instruction previousBox = inst.getPred();
+
+				while (previousBox instanceof Arrow || previousBox instanceof End){
+					previousBox = previousBox.getPred();
+				}
+
+				lastBox = (Box) previousBox;
+				//Log.d("Last box is now", lastBox.getId() +"");
+			}
+
+			while (succ instanceof Arrow || succ instanceof End){
+				activity.removeInstruction(succ.getId());
+
+				if (null != pred){
+
 					succ = succ.getSucc();
 					pred.setSucc(succ);
-					
-					}
-					else {
-						
-						succ.setPred(null);
-						succ = succ.getSucc();
-					}
-				}
-
-				//Exit here with either a Box, or a null
-				
-				Log.d("Entered succ2", succ + "");
-				Log.d("Entered pred2", pred +"");
-				
-				if (succ != null){
-					Log.d("ENtered here", "1");
-					succ.setPred(pred);
-				}
-
-				else {
-					Log.d("ENtered here", "2");
-					last = pred;			
-				}
-
-				if (pred != null){
-					Log.d("ENtered here", "3");
-					pred.setSucc(succ);
 
 				}
 				else {
-					Log.d("ENtered here", "4");
-					first = succ;
+
+					succ.setPred(null);
+					succ = succ.getSucc();
 				}
 			}
 
-			else if (inst instanceof Arrow || inst instanceof End){
+			//Exit here with either a Box, or a null
 
+			Log.d("Entered succ2", succ + "");
+			Log.d("Entered pred2", pred +"");
+
+			if (succ != null){
+				Log.d("ENtered here", "1");
+				succ.setPred(pred);
+			}
+
+			else {
+				Log.d("ENtered here", "2");
+				last = pred;			
+			}
+
+			if (pred != null){
+				Log.d("ENtered here", "3");
 				pred.setSucc(succ);
 
-				if (null != succ){
-					succ.setPred(pred);
-				}
+			}
+			else {
+				Log.d("ENtered here", "4");
+				first = succ;
+			}
+		}
+
+		else if (inst instanceof Arrow || inst instanceof End){
+
+			pred.setSucc(succ);
+
+			if (null != succ){
+				succ.setPred(pred);
+			}
+		}
+
+		Log.d("Calling it with", inst.getId() + "");
+		activity.removeInstruction(inst.getId());
+
+	}
+}
+
+/**
+ * Sets current position within running game
+ * <p>
+ * 
+ * @param Instruction. New current instruction
+ * @return void
+ */
+public void setCurrPos(Instruction newPos) {
+
+	currPos = newPos;
+}
+
+/**
+ * Returns data held in specific register
+ * <p>
+ * 
+ * @param int. Index/number of register.
+ * @return int
+ */
+public int getRegData(int registerNum) {
+
+	return registers[registerNum];
+}
+
+/**
+ * Increments data held in specific register
+ * <p>
+ * Increments, then calls method in activity to pull data and update UI
+ * <p>
+ * 
+ * @param int. Index/number of register.
+ * @return void
+ */
+public void incrementReg(int registerNum) {
+
+	int newNum = registers[registerNum] + 1;
+	registers[registerNum] = newNum;
+
+}
+
+/**
+ * Decrements data held in specific register
+ * <p>
+ * Decrements, then calls method in activity to pull data and update UI
+ * <p>
+ * 
+ * @param int. Index/number of register.
+ * @return void
+ */
+public boolean decrementReg(int registerNum) {
+
+	if (registers[registerNum] >=1){
+		int newNum = registers[registerNum] - 1;
+		registers[registerNum] = newNum;
+		return true;
+	}
+
+	else {
+		return false;
+	}
+}
+
+/**
+ * Zeros a specific register
+ * <p>
+ * Zeros, then calls method in activity to pull data and update UI
+ * <p>
+ * 
+ * @param int. Index/number of register.
+ * @return void
+ */
+public void zeroReg(int registerNum) {
+
+	registers[registerNum] = 0;
+	activity.setRegisters();
+}
+
+public int getMaxReg() {
+	return MAXREGISTERS;
+}
+
+
+private class RunGame extends AsyncTask<Void, Void, Void>{
+
+	@Override
+	protected Void doInBackground(Void... params) {
+
+		while (null != currPos){
+
+			if (currPos.getPred() != null){
+
+				Log.d("This is the pred of the current instruction", currPos.getPred() + "");
 			}
 
-			Log.d("Calling it with", inst.getId() + "");
-			activity.removeInstruction(inst.getId());
-			
-		}
-	}
+			Log.d("This is the current instruction", currPos.getId() + "");
 
-	/**
-	 * Sets current position within running game
-	 * <p>
-	 * 
-	 * @param Instruction. New current instruction
-	 * @return void
-	 */
-	public void setCurrPos(Instruction newPos) {
+			if (currPos instanceof End){
+				Log.d("This is an", "end");
+			}
 
-		currPos = newPos;
-	}
+			else if (currPos instanceof Arrow){
+				Log.d("This is an", "arrow");
+			}
 
-	/**
-	 * Returns data held in specific register
-	 * <p>
-	 * 
-	 * @param int. Index/number of register.
-	 * @return int
-	 */
-	public int getRegData(int registerNum) {
+			else if (currPos instanceof Box){
+				Log.d("This is an", "box");
+			}
 
-		return registers[registerNum];
-	}
+			if (currPos.getSucc() != null){
 
-	/**
-	 * Increments data held in specific register
-	 * <p>
-	 * Increments, then calls method in activity to pull data and update UI
-	 * <p>
-	 * 
-	 * @param int. Index/number of register.
-	 * @return void
-	 */
-	public void incrementReg(int registerNum) {
+				Log.d("This is the pred of the current instruction", currPos.getSucc().getId() + "");
+			}
 
-		int newNum = registers[registerNum] + 1;
-		registers[registerNum] = newNum;
-
-	}
-
-	/**
-	 * Decrements data held in specific register
-	 * <p>
-	 * Decrements, then calls method in activity to pull data and update UI
-	 * <p>
-	 * 
-	 * @param int. Index/number of register.
-	 * @return void
-	 */
-	public boolean decrementReg(int registerNum) {
-
-		if (registers[registerNum] >=1){
-			int newNum = registers[registerNum] - 1;
-			registers[registerNum] = newNum;
-			return true;
-		}
-
-		else {
-			return false;
-		}
-	}
-
-	/**
-	 * Zeros a specific register
-	 * <p>
-	 * Zeros, then calls method in activity to pull data and update UI
-	 * <p>
-	 * 
-	 * @param int. Index/number of register.
-	 * @return void
-	 */
-	public void zeroReg(int registerNum) {
-
-		registers[registerNum] = 0;
-		activity.setRegisters();
-	}
-
-	public int getMaxReg() {
-		return MAXREGISTERS;
-	}
-
-
-	private class RunGame extends AsyncTask<Void, Void, Void>{
-
-		@Override
-		protected Void doInBackground(Void... params) {
-
-			while (null != currPos){
-				
-				if (currPos.getPred() != null){
-
-					Log.d("This is the pred of the current instruction", currPos.getPred() + "");
-				}
-				
-				Log.d("This is the current instruction", currPos.getId() + "");
-
-				if (currPos instanceof End){
-					Log.d("This is an", "end");
-				}
-
-				else if (currPos instanceof Arrow){
-					Log.d("This is an", "arrow");
-				}
-
-				else if (currPos instanceof Box){
-					Log.d("This is an", "box");
-				}
-
-				if (currPos.getSucc() != null){
-
-					Log.d("This is the pred of the current instruction", currPos.getSucc().getId() + "");
-				}
-
-				/*if (currPos instanceof Arrow) {
+			/*if (currPos instanceof Arrow) {
 					Arrow a = (Arrow) currPos;
 					Log.d("This is where the arrow is going", a.getTo().getId() + "");
 				}*/
 
-				prevPos = currPos;
-				currPos.doWork();
-					
+			prevPos = currPos;
+			currPos.doWork();
 
+			activity.updateInstructionDisplay(prevPos);
 
-
+			try {
+				Thread.sleep(1000);
 				activity.updateInstructionDisplay(prevPos);
-
-				try {
-					Thread.sleep(1000);
-					activity.updateInstructionDisplay(prevPos);
-				}
-				catch (Exception e){
-					Log.d("This was interrupted", "interrupted");
-				}	
 			}
-			activity.resetRunButton();
-			return null;
+			catch (Exception e){
+				Log.d("This was interrupted", "interrupted");
+			}	
 		}
+		activity.resetRunButton();
+		return null;
 	}
+}
 }

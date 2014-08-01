@@ -84,7 +84,6 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 	private ArrayList<Instruction> instructionList;
 	private int instructionCounter;
 	private ShowcaseView sv;
-	private String folder = "Reggie Files";
 
 
 	/**
@@ -102,8 +101,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		game = new Game(this);
-		oneBox = false; // To track if user has added a Box instruction,
-		// preventing arrow/run/end being called
+		oneBox = false; // To track if user has added a Box instruction, preventing arrow/run/end being called
 		maxRegisters = game.getMaxReg();
 		glow = Color.argb(120, 255, 255, 0);
 		screenDensity = this.getResources().getDisplayMetrics().density;
@@ -706,6 +704,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 		runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
+				running = false;
 				runButton.setImageResource(R.drawable.ic_run);
 			}
 		});
@@ -1008,5 +1007,16 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 	    	break;
 	    }
 	        return true;
+	}
+	
+	public void showMessage(String message){
+		
+		Context context = getApplicationContext();
+		CharSequence text = message;
+		int duration = Toast.LENGTH_SHORT;
+
+		Toast toast = Toast.makeText(context, text, duration);
+		toast.show();
+		
 	}
 }
