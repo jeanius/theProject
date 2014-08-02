@@ -20,11 +20,7 @@ public class OptionScreen extends Activity implements View.OnClickListener{
 	        Button newButton = (Button) findViewById(R.id.new_button);
 	        newButton.setTypeface(type);
 	        
-	        Button loadButton = (Button) findViewById(R.id.load_button);
-	        loadButton.setTypeface(type);
-	        
 	        newButton.setOnClickListener(this);
-	        loadButton.setOnClickListener(this);
 	        
 }
 
@@ -42,10 +38,7 @@ public class OptionScreen extends Activity implements View.OnClickListener{
             finish();
 			
 		}
-		
-		else if (resid == R.id.load_button){
-			
-		}
+
 		
 	}
 	

@@ -16,30 +16,13 @@
         android:layout_marginBottom="20dip">
     </ImageView>
     
-	<View
-        android:id="@+id/anchor"
-        android:layout_width="0dip"
-        android:layout_height="0dip"
-        android:layout_centerHorizontal="true"
-        android:visibility="invisible">
-	</View>
-
-    <Button
-            android:id="@+id/load_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/reggieSmile"
-            android:layout_toRightOf="@id/anchor"
-            android:text="@string/load"
-            android:textColor="#454545">
-    </Button>
 
 	<Button
             android:id="@+id/new_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/reggieSmile"
-            android:layout_toLeftOf="@id/anchor"
+			android:layout_centerInParent="true"
             android:text="@string/newgame"
             android:textColor="#454545">
 	</Button>

@@ -99,6 +99,12 @@ public class Box implements Instruction{
 			register = 0;
 		}
 	}
+	
+
+	public void changeRegister(int reg) {
+		
+		register = reg;
+	}
 
 	@Override
 	public int getRegister() {

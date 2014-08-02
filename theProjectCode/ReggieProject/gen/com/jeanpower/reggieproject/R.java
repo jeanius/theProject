@@ -155,8 +155,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int ScrollVertical=0x7f060004;
         public static final int actionFrame=0x7f060007;
         public static final int actionFrameScroll=0x7f060006;
-        public static final int action_settings=0x7f06001c;
-        public static final int anchor=0x7f060018;
+        public static final int action_settings=0x7f06001a;
         public static final int bin_clear_button=0x7f06000e;
         public static final int bottom_frame=0x7f060009;
         public static final int buttonAdd=0x7f060013;
@@ -164,11 +163,10 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int imageViewIcon=0x7f060015;
         public static final int linearLayoutButtons=0x7f060012;
         public static final int linearLayoutFiles=0x7f060011;
-        public static final int load_button=0x7f060019;
-        public static final int load_menu_button=0x7f06001d;
+        public static final int load_menu_button=0x7f06001b;
         public static final int new_arrow_button=0x7f06000b;
         public static final int new_box_button=0x7f06000a;
-        public static final int new_button=0x7f06001a;
+        public static final int new_button=0x7f060018;
         public static final int new_end_button=0x7f06000c;
         public static final int overall=0x7f060003;
         public static final int reggieSmile=0x7f060017;
@@ -179,7 +177,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int showcase_button=0x7f060000;
         public static final int showcase_sub_text=0x7f060002;
         public static final int showcase_title_text=0x7f060001;
-        public static final int splashText=0x7f06001b;
+        public static final int splashText=0x7f060019;
         public static final int textViewLabel=0x7f060016;
         public static final int theLine=0x7f060008;
     }
@@ -197,16 +195,16 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int main_activity_actions=0x7f0b0001;
     }
     public static final class string {
-        public static final int Register0=0x7f07001d;
-        public static final int Register1=0x7f07001e;
-        public static final int Register2=0x7f07001f;
-        public static final int Register3=0x7f070020;
-        public static final int Register4=0x7f070021;
-        public static final int Register5=0x7f070022;
-        public static final int Register6=0x7f070023;
-        public static final int Register7=0x7f070024;
-        public static final int Register8=0x7f070025;
-        public static final int Register9=0x7f070026;
+        public static final int Register0=0x7f07001c;
+        public static final int Register1=0x7f07001d;
+        public static final int Register2=0x7f07001e;
+        public static final int Register3=0x7f07001f;
+        public static final int Register4=0x7f070020;
+        public static final int Register5=0x7f070021;
+        public static final int Register6=0x7f070022;
+        public static final int Register7=0x7f070023;
+        public static final int Register8=0x7f070024;
+        public static final int Register9=0x7f070025;
         public static final int action_settings=0x7f070002;
         public static final int app_name=0x7f070001;
         public static final int arrow=0x7f070015;
@@ -231,8 +229,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int daidalos_yes=0x7f07000f;
         public static final int end=0x7f070017;
         public static final int hello_world=0x7f070003;
-        public static final int load=0x7f07001b;
-        public static final int loadmenu=0x7f07001c;
+        public static final int loadmenu=0x7f07001b;
         public static final int newgame=0x7f07001a;
         public static final int ok=0x7f070000;
         public static final int run=0x7f070018;

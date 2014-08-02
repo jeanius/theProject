@@ -84,6 +84,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 	private ArrayList<Instruction> instructionList;
 	private int instructionCounter;
 	private ShowcaseView sv;
+	public static Activity act;
 
 
 	/**
@@ -107,7 +108,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 		screenDensity = this.getResources().getDisplayMetrics().density;
 		container = (RelativeLayout) findViewById(R.id.actionFrame);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
-
+		act = this;
 		LinearLayout registerFrame = (LinearLayout) findViewById(R.id.register_frame);
 		LinearLayout.LayoutParams regParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
@@ -191,6 +192,11 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 		return true;
 	}
 
+	public void setGame(Game g){
+		game = g;
+		this.updateDisplay();
+	}
+	
 	/**
 	 * To ignore orientation change, so UI is horizontal
 	 * <p>
@@ -271,10 +277,12 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 		this.setLayoutConstants(instructionList);
 		instructionCounter = 0;
 		Instruction [] instructions = new Instruction[1];
+		
+		if (instructionList.size() > 0){
 		instructions[0] = instructionList.get(instructionCounter);
-
 		CreateInstruction ci = new CreateInstruction();
 		ci.execute(instructions);
+		}
 	}
 
 	public void addToScreen(ImageButton b){
@@ -518,6 +526,13 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 				}
 			}
 
+			if (draggingBox) {
+
+				View boxView = findViewById(currentlyDragging.getId());
+				boxView.setBackgroundResource(R.drawable.curvededge);
+
+			}
+			
 			binButton.setImageResource(R.drawable.ic_clear);
 
 			break;
@@ -526,8 +541,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 
 			float newY = me.getRawY();
 
-			if (Math.abs(newY - origY) > THRESHOLD && !draggingArrow
-					&& !draggingBox) {
+			if (Math.abs(newY - origY) > THRESHOLD && !draggingArrow && !draggingBox) {
 
 				binButton.setImageResource(R.drawable.ic_bin);
 
@@ -656,13 +670,9 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 				if (draggingBox) {
 
 					float newY = v.getY();
-					
-					View boxView = findViewById(currentlyDragging.getId());
-					boxView.setBackgroundResource(R.drawable.curvededge);
 
 					if ((newY - origY > THRESHOLD) || (origY - newY > THRESHOLD)) {
 						game.changeInstruction(currentlyDragging);
-						this.updateDisplay();
 					}
 				}
 
@@ -672,11 +682,11 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 				}
 			}
 
-			binButton.setImageResource(R.drawable.ic_clear);
 			currentlyDragging = null;
 			draggingArrow = false;
 			draggingBox = false;
 			deleteInstruction = false;
+			
 			this.updateDisplay();
 
 			break;
@@ -1002,8 +1012,12 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 	    switch (item.getItemId()) {
 
 	    case R.id.load_menu_button:
+	    	boolean canRun = game.errorChecking();
+	    	
+	    	if (canRun){
 	    	SaveLoad sl = new SaveLoad(this, game);
 	    	sl.saveLoad();
+	    	}
 	    	break;
 	    }
 	        return true;
@@ -1013,7 +1027,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 		
 		Context context = getApplicationContext();
 		CharSequence text = message;
-		int duration = Toast.LENGTH_SHORT;
+		int duration = Toast.LENGTH_LONG;
 
 		Toast toast = Toast.makeText(context, text, duration);
 		toast.show();
