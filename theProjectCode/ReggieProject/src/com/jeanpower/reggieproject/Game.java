@@ -102,6 +102,7 @@ public class Game {
 		lastBox = null;
 		currPos = null;
 		prevPos = null;
+		activity.clearScreen();
 		activity.updateDisplay();
 	}
 
@@ -622,11 +623,8 @@ public class Game {
 			}
 		}
 
-
-
 		if (countBox == 1 && inst instanceof Box){ //If this is the last box on screen, clear screen
 			this.clearAll();
-			activity.clearScreen();
 		}
 
 		else {

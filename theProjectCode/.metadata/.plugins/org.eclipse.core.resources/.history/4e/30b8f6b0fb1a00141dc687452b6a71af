@@ -1,0 +1,551 @@
+package com.jeanpower.reggieproject;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.Scanner;
+import android.annotation.SuppressLint;
+import android.app.Dialog;
+import android.content.Context;
+import android.os.Build;
+import android.os.Environment;
+import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
+import ar.com.daidalos.afiledialog.FileChooserDialog;
+import ar.com.daidalos.afiledialog.FileChooserLabels;
+
+public class SaveLoad{
+
+	Game game;
+	Context context;
+	MainActivity main;
+	int counter = 0;
+	String [] instructionInput;
+	Instruction [] instructionArray;
+
+	public SaveLoad(Context c, MainActivity ma, Game g){
+		context = c;
+		main = ma;
+		game = g;
+	}
+
+	public void saveLoad(){
+
+		FileChooserDialog dialog = new FileChooserDialog(context);
+		dialog.setCanCreateFiles(true);
+		dialog.setFilter(".*txt");
+		dialog.setShowFullPath(true);
+		dialog.loadFolder(Environment.getExternalStorageDirectory() + "/Documents/");
+		FileChooserLabels labels = new FileChooserLabels();
+		labels.createFileDialogTitle = "Save Game";
+		labels.createFileDialogMessage = "Enter game name";
+		labels.labelAddButton = "Navigate to file or click here to save current game";
+		dialog.setLabels(labels);
+		dialog.addListener(new FileChooserDialog.OnFileSelectedListener() {
+
+			public void onFileSelected(Dialog source, File file) {
+				source.hide();
+				readFile(file);
+				main.showMessage("File selected: " + file.getName());
+			}
+			public void onFileSelected(Dialog source, File folder, String name) {
+				source.hide();
+				String filename = name + ".txt";
+				File output = new File(folder, filename);
+				FileOutputStream fw = null;
+
+				try {			
+					fw = new FileOutputStream(output);
+
+
+					byte[] filedata = createGameText().getBytes();
+					fw.write(filedata);
+					fw.close();
+				}
+				catch (Exception e){
+					Log.d("exception", e +"");
+					Log.e("exception", Log.getStackTraceString(e));
+				}
+
+				if (null != fw){
+
+					main.showMessage("File created: " + folder.getName() + "/" + name);
+				}
+
+				if (null == fw){
+					main.showMessage("You need to save to a storage folder, like 'Documents'");
+				}
+			}
+		});
+
+		dialog.show();
+	}
+
+	public String createGameText(){
+
+		int counter = 0;
+		ArrayList<Instruction> instructionList = game.getInstructionList();
+		int numIns = instructionList.size();
+
+		String [] strings = new String[numIns];
+		int [] boxEndIDs = new int[numIns];
+		//TODO - Sort list, rather than iterating through 3 times?
+
+		for (Instruction i: instructionList){
+
+			if (i instanceof Box){
+
+				StringBuilder sb = new StringBuilder();
+
+				Box box = (Box) i;
+
+				sb.append(counter + ",");
+
+				if (box.getType()){
+					sb.append("INC,");
+				}
+
+				else {
+					sb.append("DEB,");
+				}
+
+				sb.append(box.getRegister() + ",");
+
+				Instruction successor = box.getSucc();
+				Instruction succOfSucc = null;
+
+				if (null != successor){
+					succOfSucc = box.getSucc().getSucc();
+				}
+
+				if (box.getType() && (successor instanceof Box || successor instanceof End)){
+					sb.append(counter + 1 + ",");
+				}
+
+				else if (!box.getType() && successor instanceof Arrow){
+
+					if (succOfSucc instanceof Box || succOfSucc instanceof End){
+						sb.append(counter + 1 + ",");
+					}
+				}
+
+				else if (!box.getType() && successor instanceof End){
+
+					if (null != succOfSucc){
+						sb.append(counter + 2 + ",");
+					}
+					else {
+						sb.append(",");
+					}
+
+					sb.append(counter + 1 + ",");
+				}
+
+				strings[counter] = sb.toString();
+				boxEndIDs[counter] = box.getId();
+
+				counter++;
+			}
+
+			else if (i instanceof End){
+
+				StringBuilder sb = new StringBuilder();
+
+				sb.append(counter + ",");
+
+				sb.append("END");
+				strings[counter] = sb.toString();
+				boxEndIDs[counter] = i.getId();
+
+				counter++;
+			}
+		}
+
+		for (Instruction i: instructionList){
+
+			if (i instanceof Arrow){
+
+				Arrow curr = (Arrow) i;
+
+				if (curr.getType()){
+
+					Arrow pred = null;
+					Instruction predBox = curr.getPred();
+					int predID = curr.getPred().getId();
+					int goToId = curr.getTo().getId();
+					int predIndex = 0;
+					int goToIndex = 0;
+
+					if (curr.getPred() instanceof Arrow){
+						pred = (Arrow) curr.getPred();	
+					}
+
+					while (predBox instanceof Arrow || predBox instanceof End){
+						predBox = predBox.getPred();
+						predID = predBox.getId();
+					}
+
+					for (int j = 0; j<numIns; j++){
+
+						int checkID = boxEndIDs[j];
+
+						if (checkID == predID){
+							predIndex = j;
+						}
+						if (checkID == goToId){
+							goToIndex = j;
+						}
+					}
+
+					if ((curr.getPred() instanceof Box || curr.getPred() instanceof End) || (null !=pred && (curr.getType() != pred.getType()))){ //If more than one same type of arrow out of same box, ignored.
+
+						String predString = strings[predIndex];
+
+						StringBuilder sb = new StringBuilder();
+
+						sb.append(predString);
+						sb.append(goToIndex + ",");
+
+						strings[predIndex] = sb.toString();
+					}
+				}
+			}
+		}
+
+		for (Instruction i: instructionList){
+
+			if (i instanceof Arrow){
+
+				Arrow curr = (Arrow) i;
+
+				if (!curr.getType()){
+
+					Arrow pred = null;
+					Instruction predBox = curr.getPred();
+					int predID = curr.getPred().getId();
+					int goToId = curr.getTo().getId();
+					int predIndex = 0;
+					int goToIndex = 0;
+
+					if (curr.getPred() instanceof Arrow){
+						pred = (Arrow) curr.getPred();	
+					}
+
+					while (predBox instanceof Arrow || predBox instanceof End){
+						predBox = predBox.getPred();
+						predID = predBox.getId();
+					}
+
+					for (int j = 0; j<numIns; j++){
+
+						int checkID = boxEndIDs[j];
+
+						if (checkID == predID){
+							predIndex = j;
+						}
+						if (checkID == goToId){
+							goToIndex = j;
+						}
+					}
+
+					if ((curr.getPred() instanceof Box || curr.getPred() instanceof End) || (i.getPred() instanceof Arrow && curr.getType() != pred.getType())){ //If more than one arrow out of same box, ignored.
+
+						String predString = strings[predIndex];
+
+						StringBuilder sb = new StringBuilder();
+
+						sb.append(predString);
+						sb.append(goToIndex + ",");
+
+						strings[predIndex] = sb.toString();
+
+					}
+				}
+			}
+		}
+
+		StringBuilder resultSB = new StringBuilder();
+
+		for (int j = 0; j<numIns; j++){
+
+			if (null != strings[j]){
+				resultSB.append(strings[j] + System.getProperty("line.separator"));
+			}
+		}
+
+		return resultSB.toString();
+
+	}
+
+
+	@SuppressLint("NewApi")
+	public void readFile(File file){
+
+		Scanner scan = null;
+		Scanner scanner = null;
+
+		try {
+			try{
+				scan = new Scanner(file);
+				scanner = new Scanner(file);
+
+				while (scan.hasNextLine()){
+					counter ++;
+					scan.nextLine();
+				}
+
+				instructionInput = new String[counter];
+				counter = 0;
+
+				while (scanner.hasNextLine()){
+					instructionInput[counter] = scanner.nextLine();
+					counter ++;
+				}
+			}
+
+			finally {
+				if (null != scan){
+					scan.close();
+				}
+				if (null != scanner){
+					scanner.close();
+				}
+			}
+		}
+
+		catch (Exception e) {
+			Log.d("Exception", e +"");
+			Log.e("exception", Log.getStackTraceString(e));
+		}
+
+		boolean done = true;
+
+		for (int i = 0; i<counter; i++){
+
+			String instructionText = instructionInput[i];
+			String [] tokens = instructionText.split(",");
+
+			if (tokens.length > 5 || tokens.length < 1){
+
+				main.showMessage("Incorrect data on line" + i + ". Each line should have no more than 5 pieces of data, separated by commas");
+				done = false;
+			}	
+		}
+
+		if (done){
+			this.createInstruction();
+		}	
+	}
+
+	public void createInstruction(){	
+
+		instructionArray = new Instruction[counter];
+		boolean done = true; //Ensure overall correctness
+
+		for (int i = 0; i<counter; i++){
+
+			boolean ok = true; //Ensure correctness within instruction
+			
+			String instructionText = instructionInput[i];
+			String [] tokens = instructionText.split(",");
+
+			String instruction = tokens[1];
+			int register = -1;
+			
+			if (!instruction.equals("INC") && !instruction.equals("DEB") && !instruction.equals("END")){
+				done = false;	
+				ok = false;
+				main.showMessage("Incorrect data for step " + i + ". Must use a INC, DEB or END as instruction type");
+			}
+
+			if (instruction.equals("INC") || instruction.equals("DEB")){
+
+				try {
+					register = Integer.parseInt(tokens[2]);
+					
+					if (register >= game.getMaxReg() || register<0){
+						done = false;
+						ok = false;
+						main.showMessage("Incorrect data for step " + i + ". Register must be a number between 0 and 9.");
+					}
+				}
+				catch(Exception e){
+					done = false;
+					ok = false;
+					main.showMessage("Incorrect data for step " + i + ". Register must be a number.");
+				}			
+			}
+
+			if (ok){
+
+				if (instruction.equals("END")){
+					End end = new End(game);
+					instructionArray[i] = end;
+				}
+
+				else if (instruction.equals("INC") || instruction.equals("DEB")){
+
+					Box box = new Box(game);
+					box.changeRegister(register);
+
+					if (instruction.equals("DEB")){
+						box.setType();
+					}
+					instructionArray[i] = box;
+				}	
+			}
+		}
+		
+		if (done){
+		this.addArrows();
+		}
+	}
+
+
+	@SuppressLint("NewApi")
+	public void addArrows(){
+
+		Log.d("Got into new arrows", "yes");
+		for (int i = 0; i<counter; i++){
+
+			String instructionText = instructionInput[i];
+			String [] tokens = instructionText.split(",");
+
+			int goTo = -1;
+			int branch = -1;
+
+			boolean done = true;
+
+			if (instructionArray[i] instanceof Box){
+
+				Box box = (Box) instructionArray[i];
+
+				try {
+					goTo = Integer.parseInt(tokens[3]); //Both types of box will have a "GoTo"
+
+					if (goTo >= counter || goTo < 0){
+						main.showMessage("Incorrect data for step" + i + ". Go To must be a real step number.");
+						done = false;
+					}
+				}
+				catch(Exception e){
+					main.showMessage("Incorrect data for step" + i + ". Go To step must be a number.");
+					done = false;
+				}			
+
+				if (!box.getType()){
+
+					try {
+						branch = Integer.parseInt(tokens[4]); //Only DEB will have a branch
+
+						if (branch >= counter || branch < 0){
+							main.showMessage("Incorrect data for step" + i + ". Branch must be a real step number.");
+							done = false;
+						}
+					}
+
+					catch(Exception e){
+						main.showMessage("Incorrect data for step" + i + ". Branch step must be a number.");
+						done = false;
+					}	
+				}
+			}
+
+			if (done){
+
+				Instruction inst = instructionArray[i];
+				Instruction succ = null;
+				Instruction succOfSucc = null;
+				
+				if (null != inst){
+					
+					
+					if ((i+1)<counter){ //Start off with all boxes successors of each other.
+
+						succ = instructionArray[i+1];
+						
+						if (null !=succ){
+						succ.setPred(inst);
+						succOfSucc = succ.getSucc();
+						}
+					}
+					
+					
+					inst.setSucc(succ);
+
+					if (Build.VERSION.SDK_INT >= 17) {
+						inst.setId(View.generateViewId());
+					}
+
+					else {
+						inst.setId(Util.generateViewId());
+					}
+
+					if (goTo >= 0 && (goTo != (i+1))){ //Arrows are needed if goTo is not the immediate successor
+
+						Arrow arrow = new Arrow (game);
+
+						if (Build.VERSION.SDK_INT >= 17) {
+							arrow.setId(View.generateViewId());
+						}
+
+						else {
+							arrow.setId(Util.generateViewId());
+						}
+
+						inst.setSucc(arrow);
+						arrow.setSucc(succ);
+						arrow.setPred(inst);
+
+						if (null !=succ){
+							succ.setPred(arrow);
+						}
+
+						arrow.setTo(instructionArray[goTo]); //TODO - Can't branch to Ends?
+						succ = arrow;
+					}
+
+
+					if (branch >= 0){ //Any branch requires an arrow
+
+						Arrow arrow = new Arrow (game);
+						arrow.setType();
+
+						if (Build.VERSION.SDK_INT >= 17) {
+							arrow.setId(View.generateViewId());
+						}
+
+						else {
+							arrow.setId(Util.generateViewId());
+						}
+
+						arrow.setTo(instructionArray[branch]); //TODO - Can't branch to Ends?
+
+						if (succ instanceof Box || succ instanceof Arrow){
+							succ.setSucc(arrow);
+							arrow.setPred(succ);
+							arrow.setSucc(succOfSucc);
+
+							if (null != succOfSucc){
+								succOfSucc.setPred(arrow);	
+							}
+						}
+					}
+				}
+		}
+		}
+			Log.d("First is", instructionArray[0] + "");
+			Log.d("Last is", instructionArray[counter-1] + "");
+			game.setFirst(instructionArray[0]);
+			game.setLastBox(instructionArray[counter-1]);
+			Instruction last = instructionArray[counter-1];
+
+			while (null !=last){
+				game.setLast(last);
+				last = last.getSucc();
+			}
+			main.updateDisplay();
+		}
+	}
+

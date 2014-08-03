@@ -435,7 +435,6 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 
 	public void clearScreen(){
 		
-		//instructionCounter = 0;
 		oneBox = false;
 
 		int childCount = container.getChildCount();
@@ -686,6 +685,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 			draggingArrow = false;
 			draggingBox = false;
 			deleteInstruction = false;
+			binButton.setImageResource(R.drawable.ic_clear);
 			
 			this.updateDisplay();
 
@@ -1015,7 +1015,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 	    	boolean canRun = game.errorChecking();
 	    	
 	    	if (canRun){
-	    	SaveLoad sl = new SaveLoad(this, game);
+	    	SaveLoad sl = new SaveLoad(this, this, game);
 	    	sl.saveLoad();
 	    	}
 	    	break;

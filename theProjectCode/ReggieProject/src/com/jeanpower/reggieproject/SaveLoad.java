@@ -1,26 +1,12 @@
 package com.jeanpower.reggieproject;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.io.PrintWriter;
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Scanner;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
@@ -33,9 +19,14 @@ public class SaveLoad{
 
 	Game game;
 	Context context;
+	MainActivity main;
+	int counter = 0;
+	String [] instructionInput;
+	Instruction [] instructionArray;
 
-	public SaveLoad(Context c, Game g){
+	public SaveLoad(Context c, MainActivity ma, Game g){
 		context = c;
+		main = ma;
 		game = g;
 	}
 
@@ -55,13 +46,8 @@ public class SaveLoad{
 
 			public void onFileSelected(Dialog source, File file) {
 				source.hide();
-
-				Toast toast = Toast.makeText(source.getContext(), "File selected: " + file.getName(), Toast.LENGTH_LONG);
-
-				loadGame(file);
-				((MainActivity) MainActivity.act).updateDisplay();
-
-				toast.show();
+				readFile(file);
+				main.showMessage("File selected: " + file.getName());
 			}
 			public void onFileSelected(Dialog source, File folder, String name) {
 				source.hide();
@@ -83,23 +69,17 @@ public class SaveLoad{
 				}
 
 				if (null != fw){
-					Toast toast = Toast.makeText(source.getContext(), "File created: " + folder.getName() + "/" + name, Toast.LENGTH_SHORT);
-					toast.show();
+
+					main.showMessage("File created: " + folder.getName() + "/" + name);
 				}
 
 				if (null == fw){
-					Toast toast = Toast.makeText(source.getContext(), "You need to save to a storage folder, like 'Documents'", Toast.LENGTH_LONG);
-					toast.show();
+					main.showMessage("You need to save to a storage folder, like 'Documents'");
 				}
 			}
 		});
 
 		dialog.show();
-
-	}
-
-	public void load(){
-
 	}
 
 	public String createGameText(){
@@ -300,13 +280,10 @@ public class SaveLoad{
 
 
 	@SuppressLint("NewApi")
-	public String loadGame(File file){
+	public void readFile(File file){
 
-		int counter = 0;
-		String [] instructionInput = null;
 		Scanner scan = null;
 		Scanner scanner = null;
-		Instruction [] instructionArray = null;
 
 		try {
 			try{
@@ -342,231 +319,245 @@ public class SaveLoad{
 			Log.e("exception", Log.getStackTraceString(e));
 		}
 
-		boolean issue = false;
+		boolean done = true;
+
 		for (int i = 0; i<counter; i++){
 
 			String instructionText = instructionInput[i];
 			String [] tokens = instructionText.split(",");
 
 			if (tokens.length > 5 || tokens.length < 1){
-				Toast toast = Toast.makeText(context, "Incorrect data on line" + i + ". Each line should have no more than 5 pieces of data, separated by commas", Toast.LENGTH_LONG);
-				toast.show();
-				issue = true;
-			}	
 
-			//for (int j = 0; j<tokens.length; j++){
-			//	Log.d(tokens[j] + "", " ");
-			//	}
-			//Log.d("DONE", "DONE");
+				main.showMessage("Incorrect data on line" + i + ". Each line should have no more than 5 pieces of data, separated by commas");
+				done = false;
+			}	
 		}
 
-		if (!issue){
+		if (done){
+			this.createInstruction();
+		}	
+	}
 
-			instructionArray = new Instruction[counter];
+	public void createInstruction(){	
 
-			boolean done = true;
-			for (int i = 0; i<counter; i++){
+		instructionArray = new Instruction[counter];
+		boolean done = true; //Ensure overall correctness
 
-				String instructionText = instructionInput[i];
-				String [] tokens = instructionText.split(",");
+		for (int i = 0; i<counter; i++){
 
-				String instruction = tokens[1];
-				int register = -1;
+			boolean ok = true; //Ensure correctness within instruction
 
-				if (instruction.equals("INC") || instruction.equals("DEB")){
-					try {
-						register = Integer.parseInt(tokens[2]);
-					}
-					catch(Exception e){
-						Toast toast = Toast.makeText(context, "Incorrect data for step " + i + ". Register must be a number.", Toast.LENGTH_LONG);
-						done = false;
-						toast.show();
-					}			
+			String instructionText = instructionInput[i];
+			String [] tokens = instructionText.split(",");
+
+			String instruction = tokens[1];
+			int register = -1;
+
+			if (!instruction.equals("INC") && !instruction.equals("DEB") && !instruction.equals("END")){
+				done = false;	
+				ok = false;
+				main.showMessage("Incorrect data for step " + i + ". Must use a INC, DEB or END as instruction type");
+			}
+
+			if (instruction.equals("INC") || instruction.equals("DEB")){
+
+				try {
+					register = Integer.parseInt(tokens[2]);
 
 					if (register >= game.getMaxReg() || register<0){
-						Toast toast = Toast.makeText(context, "Incorrect data for step " + i + ". Register must be a number between 0 and 9.", Toast.LENGTH_LONG);
 						done = false;
-						toast.show();
+						ok = false;
+						main.showMessage("Incorrect data for step " + i + ". Register must be a number between 0 and 9.");
 					}
 				}
+				catch(Exception e){
+					done = false;
+					ok = false;
+					main.showMessage("Incorrect data for step " + i + ". Register must be a number.");
+				}			
+			}
 
-				if (done){
+			if (ok){
 
-					if (instruction.equals("END")){
-						End end = new End(game);
-						instructionArray[i] = end;
+				if (instruction.equals("END")){
+					End end = new End(game);
+					instructionArray[i] = end;
+				}
+
+				else if (instruction.equals("INC") || instruction.equals("DEB")){
+
+					Box box = new Box(game);
+					box.changeRegister(register);
+
+					if (instruction.equals("DEB")){
+						box.setType();
 					}
-					else if (instruction.equals("INC") || instruction.equals("DEB")){
+					instructionArray[i] = box;
+				}	
+			}
+		}
 
-						Box box = new Box(game);
-						box.changeRegister(register);
+		if (done){
+			this.addArrows();
+		}
+	}
 
-						if (instruction.equals("DEB")){
-							box.setType();
+
+	@SuppressLint("NewApi")
+	public void addArrows(){
+
+		boolean ok = true;
+
+		for (int i = 0; i<counter; i++){
+
+			String instructionText = instructionInput[i];
+			String [] tokens = instructionText.split(",");
+			Instruction inst = instructionArray[i];
+
+			int goTo = -1;
+			int branch = -1;
+
+			boolean done = true;
+
+			if (instructionArray[i] instanceof Box){
+
+				Box box = (Box) inst;
+
+				try {
+					goTo = Integer.parseInt(tokens[3]); //Both types of box will have a "GoTo"
+
+					if (goTo >= counter || goTo < 0){
+						main.showMessage("Incorrect data for step" + i + ". Go To must be a real step number.");
+						done = false;
+						ok = false;
+					}
+				}
+				catch(Exception e){
+					main.showMessage("Incorrect data for step" + i + ". Go To step must be a number.");
+					done = false;
+					ok = false;
+				}			
+
+				if (!box.getType()){
+
+					try {
+						branch = Integer.parseInt(tokens[4]); //Only DEB will have a branch
+
+						if (branch >= counter || branch < 0){
+							main.showMessage("Incorrect data for step" + i + ". Branch must be a real step number.");
+							done = false;
+							ok = false;
 						}
-						instructionArray[i] = box;
-					}	
-
-					else{
-						Toast toast = Toast.makeText(context, "Incorrect data for step " + i + ". Must use a INC, DEB or END as instruction type", Toast.LENGTH_LONG);
-						instructionArray = null;
-						toast.show();
 					}
+
+					catch(Exception e){
+						main.showMessage("Incorrect data for step" + i + ". Branch step must be a number.");
+						done = false;
+						ok = false;
+					}	
 				}
 			}
 
-			if (null != instructionArray){
+			if (done){
 
-				for (int i = 0; i<counter; i++){
+				Instruction succ = null;
+				Instruction succOfSucc = null;
 
-					String instructionText = instructionInput[i];
-					String [] tokens = instructionText.split(",");
+				if (null != inst){
 
-					int goTo = -1;
-					int branch = -1;
+					if ((i+1)<counter){ //Start off with all boxes successors of each other.
 
-					boolean ok = true;
+						succ = instructionArray[i+1];
 
-					if (instructionArray[i] instanceof Box){
-
-						Box box = (Box) instructionArray[i];
-
-						try {
-							goTo = Integer.parseInt(tokens[3]);
-						}
-						catch(Exception e){
-							Toast toast = Toast.makeText(context, "Incorrect data for step" + i + ". Go To step must be a number.", Toast.LENGTH_LONG);
-							ok = false;
-							toast.show();
-						}			
-
-						if (!box.getType())
-
-							try {
-								branch = Integer.parseInt(tokens[4]);
-							}
-
-						catch(Exception e){
-							Toast toast = Toast.makeText(context, "Incorrect data for step" + i + ". Branch step must be a number.", Toast.LENGTH_LONG);
-							ok = false;
-							toast.show();
-						}	
-					}
-
-					if ((goTo >= counter || branch >= counter ||goTo <0) && instructionArray[i] instanceof Box){
-
-						Toast toast = Toast.makeText(context, "Incorrect data for step" + i + ". Go To/Branch must be a step number.", Toast.LENGTH_LONG);
-						ok = false;
-						toast.show();
-					}
-
-					if ((branch < 0) && instructionArray[i] instanceof Box){
-
-						Box box = (Box) instructionArray[i];
-
-						if (!box.getType()){
-
-							Toast toast = Toast.makeText(context, "Incorrect data for step" + i + ". Go To/Branch must be a step number.", Toast.LENGTH_LONG);
-							ok = false;
-							toast.show();
+						if (null !=succ){
+							succ.setPred(inst);
+							succOfSucc = succ.getSucc();
 						}
 					}
 
-					Log.d("Goto", goTo +"");
-					Log.d("branch", branch + "");
+					inst.setSucc(succ); 
 
-					if (ok){
+					if (Build.VERSION.SDK_INT >= 17) {
+						inst.setId(View.generateViewId());
+					}
 
-						Instruction inst = instructionArray[i];
+					else {
+						inst.setId(Util.generateViewId());
+					}
+					
+					//Works down to here
+					
+					if (goTo >= 0 && (goTo != (i+1))){ //Arrows are needed if goTo is not the immediate successor
 
-						if (null != inst){
+						Log.d("I got in here with " + i, goTo +"");
+						Arrow arrow = new Arrow (game);
 
-							if (Build.VERSION.SDK_INT >= 17) {
-								inst.setId(View.generateViewId());
+						if (Build.VERSION.SDK_INT >= 17) {
+							arrow.setId(View.generateViewId());
+						}
+
+						else {
+							arrow.setId(Util.generateViewId());
+						}
+
+						inst.setSucc(arrow);
+						arrow.setSucc(succ);
+						arrow.setPred(inst);
+
+						if (null !=succ){
+							succ.setPred(arrow);
+						}
+
+						arrow.setTo(instructionArray[goTo]); //TODO - Can't branch to Ends?
+						succ = arrow;
+						succOfSucc = arrow.getSucc();
+					}
+
+
+					if (branch >= 0){ //Any branch requires an arrow
+
+						Arrow arrow = new Arrow (game);
+						arrow.setType();
+
+						if (Build.VERSION.SDK_INT >= 17) {
+							arrow.setId(View.generateViewId());
+						}
+
+						else {
+							arrow.setId(Util.generateViewId());
+						}
+
+						arrow.setTo(instructionArray[branch]); //TODO - Can't branch to Ends?
+
+						if (succ instanceof Box || succ instanceof Arrow){
+							succ.setSucc(arrow);
+							arrow.setPred(succ);
+							arrow.setSucc(succOfSucc);
+
+							if (null != succOfSucc){
+								succOfSucc.setPred(arrow);	
 							}
-
-							else {
-								inst.setId(Util.generateViewId());
-							}
-
-							Instruction succ = null;
-
-							if ((i+1)<counter){
-
-								succ = instructionArray[i+1];
-							}
-							
-							inst.setSucc(succ);
-							
-							if (goTo >= 0 && (goTo < i+1 || goTo > i+i)){
-
-									Arrow arrow = new Arrow (game);
-
-									if (Build.VERSION.SDK_INT >= 17) {
-										arrow.setId(View.generateViewId());
-									}
-
-									else {
-										arrow.setId(Util.generateViewId());
-									}
-
-									inst.setSucc(arrow);
-									arrow.setSucc(succ);
-									arrow.setPred(inst);
-
-									if (null !=succ){
-										succ.setPred(arrow);
-									}
-
-									arrow.setTo(instructionArray[goTo]);
-									succ = arrow;
-								}
+						}
 						
-
-							if (branch >= 0){
-
-								Arrow arrow = new Arrow (game);
-								arrow.setType();
-
-								if (Build.VERSION.SDK_INT >= 17) {
-									arrow.setId(View.generateViewId());
-								}
-
-								else {
-									arrow.setId(Util.generateViewId());
-								}
-
-								arrow.setTo(instructionArray[branch]);
-								
-								Instruction succOfSucc = succ.getSucc();
-
-								if (succ instanceof Box || succ instanceof Arrow){
-									succ.setSucc(arrow);
-									arrow.setPred(succ);
-									arrow.setSucc(succOfSucc);
-
-									if (null != succOfSucc){
-										succOfSucc.setPred(arrow);	
-									}
-								}
-							}
-						}
-
-						game.setFirst(instructionArray[0]);
-						game.setLastBox(instructionArray[counter-1]);
-						Instruction last = instructionArray[counter-1];
-
-						while (null !=last){
-							game.setLast(last);
-							last = last.getSucc();
-						}
-
+						succ = arrow;
+						succOfSucc = arrow.getSucc();
 					}
 				}
 			}
 		}
+		if (ok){
+			Log.d("First is", instructionArray[0] + "");
+			Log.d("Last is", instructionArray[counter-1] + "");
+			game.setFirst(instructionArray[0]);
+			game.setLastBox(instructionArray[counter-1]);
+			Instruction last = instructionArray[counter-1];
 
-		//Todo - reset last
-		return null;
+			while (null !=last){
+				game.setLast(last);
+				last = last.getSucc();
+			}
+			main.updateDisplay();
+		}
 	}
 }
+
