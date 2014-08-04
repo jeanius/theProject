@@ -11,7 +11,6 @@ public class Arrow implements Instruction{
 	private boolean loop;
 	private int spaces;
 
-
 	public Arrow(Game g){
 
 		caller = g;
@@ -23,7 +22,7 @@ public class Arrow implements Instruction{
 
 	@Override
 	public void doWork() {
-		
+
 		if (loop)
 		{
 			caller.setCurrPos(toInstruction);
@@ -31,14 +30,22 @@ public class Arrow implements Instruction{
 
 		else
 		{
-			if (caller.getRegData(register) == 0)
-			{
-				caller.setCurrPos(toInstruction);
+			if (pred instanceof Box){
+
+				Box box = (Box) pred;
+
+				if (!box.decDone()){
+					caller.setCurrPos(toInstruction);
+				}
+
+				else
+				{
+					caller.setCurrPos(succ);
+				}
 			}
 
-			else
-			{
-				caller.setCurrPos(succ);
+			else {
+				caller.setCurrPos(null);
 			}
 		}
 	}
@@ -57,9 +64,9 @@ public class Arrow implements Instruction{
 	@Override
 	public void setPred(Instruction predecessor) {
 		pred = predecessor;
-		
+
 		if (pred != null){
-		register = pred.getRegister();
+			register = pred.getRegister();
 		}
 	}
 
@@ -71,15 +78,15 @@ public class Arrow implements Instruction{
 		if (loop){
 
 			currPos = pred;
-			
+
 
 			while (currPos != null && currPos.getId() != toInstruction.getId()){
-				
-				
+
+
 				if (currPos instanceof Box) {
 					count ++;
 				}
-				
+
 				currPos = currPos.getPred();
 			}
 		}
@@ -87,12 +94,12 @@ public class Arrow implements Instruction{
 		else {
 
 			if (pred.getId() != toInstruction.getId()){
-				
+
 				currPos = pred;
 
 				while (currPos != null && currPos.getId() != toInstruction.getId()){
 					currPos = currPos.getSucc();
-					
+
 					if (currPos instanceof Box) {
 						count ++;
 					}

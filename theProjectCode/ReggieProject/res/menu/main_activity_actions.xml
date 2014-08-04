@@ -6,4 +6,10 @@
         android:orderInCategory="100"
         android:showAsAction="always"/> 
         
+    <item
+        android:title="@string/tutorial"
+        android:id="@+id/tutorial_menu_button"
+        android:orderInCategory="100"
+        android:showAsAction="always"/> 
+        
 </menu>

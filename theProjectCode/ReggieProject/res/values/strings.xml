@@ -10,6 +10,12 @@
     <string name="bin">Clear</string>
     <string name="newgame">start game</string>
     <string name="loadmenu">Load/Save</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="back">Back</string>
+    <string name="cont">Continue</string>
+    <string name="stop">Finish</string>
+    <string name="tutorial">Tutorial</string>
     
 	<string name="Register0">Register0</string>
 	<string name="Register1">Register1</string>

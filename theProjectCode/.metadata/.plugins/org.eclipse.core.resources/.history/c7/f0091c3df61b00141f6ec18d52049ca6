@@ -1,0 +1,15 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    
+    <item
+        android:title="@string/loadmenu"
+        android:id="@+id/load_menu_button"
+        android:orderInCategory="100"
+        android:showAsAction="always"/> 
+        
+    <item
+        android:title="@string/tutorial"
+        android:id="@+id/load_menu_button"
+        android:orderInCategory="100"
+        android:showAsAction="always"/> 
+        
+</menu>

@@ -24,10 +24,10 @@ public final class R {
 		public static final int folder = 0x7f02000e;
 		public static final int ic_launcher = 0x7f020017;
 		public static final int no = 0x7f02001d;
-		public static final int tick = 0x7f020024;
+		public static final int tick = 0x7f020025;
 	}
 	public static final class id {
-		public static final int action_settings = 0x7f06001a;
+		public static final int action_settings = 0x7f06001f;
 		public static final int buttonAdd = 0x7f060013;
 		public static final int buttonOk = 0x7f060014;
 		public static final int imageViewIcon = 0x7f060015;

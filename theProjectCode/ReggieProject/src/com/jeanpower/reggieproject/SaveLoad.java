@@ -11,7 +11,6 @@ import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 import ar.com.daidalos.afiledialog.FileChooserDialog;
 import ar.com.daidalos.afiledialog.FileChooserLabels;
 
@@ -57,8 +56,6 @@ public class SaveLoad{
 
 				try {			
 					fw = new FileOutputStream(output);
-
-
 					byte[] filedata = createGameText().getBytes();
 					fw.write(filedata);
 					fw.close();
@@ -273,9 +270,7 @@ public class SaveLoad{
 				resultSB.append(strings[j] + System.getProperty("line.separator"));
 			}
 		}
-
 		return resultSB.toString();
-
 	}
 
 
@@ -394,6 +389,12 @@ public class SaveLoad{
 					}
 					instructionArray[i] = box;
 				}	
+
+				if (i-1 >= 0){
+					Instruction predIns = instructionArray[i-1];
+					instructionArray[i].setPred(predIns);
+					predIns.setSucc(instructionArray[i]);
+				}
 			}
 		}
 
@@ -461,21 +462,10 @@ public class SaveLoad{
 			if (done){
 
 				Instruction succ = null;
-				Instruction succOfSucc = null;
 
 				if (null != inst){
 
-					if ((i+1)<counter){ //Start off with all boxes successors of each other.
-
-						succ = instructionArray[i+1];
-
-						if (null !=succ){
-							succ.setPred(inst);
-							succOfSucc = succ.getSucc();
-						}
-					}
-
-					inst.setSucc(succ); 
+					succ = inst.getSucc();
 
 					if (Build.VERSION.SDK_INT >= 17) {
 						inst.setId(View.generateViewId());
@@ -484,12 +474,8 @@ public class SaveLoad{
 					else {
 						inst.setId(Util.generateViewId());
 					}
-					
-					//Works down to here
-					
-					if (goTo >= 0 && (goTo != (i+1))){ //Arrows are needed if goTo is not the immediate successor
 
-						Log.d("I got in here with " + i, goTo +"");
+					if (goTo >= 0 && goTo != (i+1) && (inst.getSucc() instanceof Box || inst.getSucc() == null)){ //Arrows are needed if goTo is not the immediate successor, except in case of END
 						Arrow arrow = new Arrow (game);
 
 						if (Build.VERSION.SDK_INT >= 17) {
@@ -508,13 +494,18 @@ public class SaveLoad{
 							succ.setPred(arrow);
 						}
 
-						arrow.setTo(instructionArray[goTo]); //TODO - Can't branch to Ends?
+						Instruction goToIns = instructionArray[goTo];
+
+						while (goToIns instanceof End){ //Arrows cannot branch to an end
+							goToIns = goToIns.getPred();
+						}
+
+						arrow.setTo(goToIns);
 						succ = arrow;
-						succOfSucc = arrow.getSucc();
 					}
 
 
-					if (branch >= 0){ //Any branch requires an arrow
+					if (branch >= 0 && instructionArray[branch] instanceof Box){ //Any branch requires an arrow, except those that branch to END
 
 						Arrow arrow = new Arrow (game);
 						arrow.setType();
@@ -527,35 +518,35 @@ public class SaveLoad{
 							arrow.setId(Util.generateViewId());
 						}
 
-						arrow.setTo(instructionArray[branch]); //TODO - Can't branch to Ends?
+						Instruction branchIns = instructionArray[branch];
 
-						if (succ instanceof Box || succ instanceof Arrow){
-							succ.setSucc(arrow);
-							arrow.setPred(succ);
-							arrow.setSucc(succOfSucc);
-
-							if (null != succOfSucc){
-								succOfSucc.setPred(arrow);	
-							}
+						while (branchIns instanceof End){ //Arrows cannot branch to an end
+							branchIns = branchIns.getPred();
 						}
-						
-						succ = arrow;
-						succOfSucc = arrow.getSucc();
+
+						arrow.setTo(branchIns);
+
+							inst.setSucc(arrow);
+							arrow.setPred(inst);
+							succ.setPred(inst);
+							arrow.setSucc(succ);
 					}
 				}
 			}
 		}
+
 		if (ok){
-			Log.d("First is", instructionArray[0] + "");
-			Log.d("Last is", instructionArray[counter-1] + "");
+
 			game.setFirst(instructionArray[0]);
 			game.setLastBox(instructionArray[counter-1]);
 			Instruction last = instructionArray[counter-1];
 
-			while (null !=last){
+			while (null != last){
 				game.setLast(last);
 				last = last.getSucc();
 			}
+			
+			main.clearScreen();
 			main.updateDisplay();
 		}
 	}

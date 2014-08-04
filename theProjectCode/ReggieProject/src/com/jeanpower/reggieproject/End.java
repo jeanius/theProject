@@ -7,20 +7,35 @@ public class End implements Instruction{
 	private Instruction succ;
 	private Instruction pred;
 	private int register;
-	
+
 	public End(Game g){
-		 
+
 		caller = g;
 		succ = null;
 		pred = null;
 	}
-	
-	
+
+
 	@Override
 	public void doWork() {
 
-		caller.setCurrPos(null);
+		if (pred instanceof Box){
 
+			Box box = (Box) pred;
+
+			if (!box.decDone()){
+				caller.setCurrPos(null);
+			}
+
+			else
+			{
+				caller.setCurrPos(succ);
+			}
+		}
+		
+		else {
+			caller.setCurrPos(null);
+		}
 	}
 
 	@Override
@@ -37,7 +52,7 @@ public class End implements Instruction{
 	public void setPred(Instruction predecessor) {
 		pred = predecessor;
 		if (pred != null){
-		register = pred.getRegister();
+			register = pred.getRegister();
 		}
 	}
 
@@ -60,7 +75,7 @@ public class End implements Instruction{
 	public void setId(int ID) {
 		identity = ID;
 	}
-	
+
 	@Override
 	public int getId() {
 		return identity;

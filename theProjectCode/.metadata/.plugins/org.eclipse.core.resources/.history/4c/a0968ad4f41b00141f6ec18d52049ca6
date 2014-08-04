@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+ 
+    <ImageView
+        android:id="@+id/reggieHappy"
+        android:contentDescription="@string/app_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:src="@drawable/reg_happy"
+        android:layout_marginTop="30dip"
+        android:layout_marginBottom="20dip">
+    </ImageView>
+    
+    <TextView
+        android:id="@+id/welcomeText"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#454545"
+        android:gravity="center_horizontal"
+        android:layout_toRightOf="@+id/reggieHappy"
+        android:text="@string/app_name"
+        android:textSize="20sp">
+    </TextView>
+    
+    <Button
+        android:id="@+id/dialogYes"
+        android:layout_width="100px"
+        android:layout_height="wrap_content"
+        android:text=" Ok "
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_below="@+id/reggieHappy"
+        />
+         
+     <Button
+        android:id="@+id/dialogNo"
+        android:layout_width="100px"
+        android:layout_height="wrap_content"
+        android:text=" Ok "
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_below="@+id/reggieHappy"
+        />
+ 
+</RelativeLayout>

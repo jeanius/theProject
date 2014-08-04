@@ -1,0 +1,35 @@
+package com.jeanpower.reggieproject;
+
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
+
+import android.app.Activity;
+import android.os.Bundle;
+import android.widget.LinearLayout;
+
+public class Tutorial extends Activity {
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		
+        super.onCreate(savedInstanceState);
+        
+        LinearLayout ll = new LinearLayout(getApplicationContext());
+        
+        
+       // setContentView(R.layout.tutorial);
+        
+		ViewTarget target = new ViewTarget(R.id.bin_clear_button, this);
+		
+		new ShowcaseView.Builder(this, true)
+	    .setTarget(target)
+	    .setContentTitle("ShowcaseView")
+	    .setContentText("This is highlighting the Home button")
+	    .hideOnTouchOutside()
+	    .build();
+	
+	}
+	
+	
+
+}

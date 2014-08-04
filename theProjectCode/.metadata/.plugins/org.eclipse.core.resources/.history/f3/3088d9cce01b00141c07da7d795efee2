@@ -1,0 +1,83 @@
+package com.jeanpower.reggieproject;
+
+public class End implements Instruction{
+
+	private Game caller;
+	private int identity;
+	private Instruction succ;
+	private Instruction pred;
+	private int register;
+	private boolean next = true;
+
+	public End(Game g){
+
+		caller = g;
+		succ = null;
+		pred = null;
+	}
+
+
+	@Override
+	public void doWork() {
+		
+		if (caller.getRegData(register) > 0){
+			next = false;	
+		}
+		
+		if (next){
+			caller.setCurrPos(null);
+		}
+
+		else
+		{
+			caller.setCurrPos(succ);
+		}
+		
+		if (caller.getRegData(register) == 0){
+			next = true;
+		}
+	}
+
+	@Override
+	public void setSucc(Instruction successor) {
+		succ = successor;
+	}
+
+	@Override
+	public Instruction getSucc() {
+		return succ;
+	}
+
+	@Override
+	public void setPred(Instruction predecessor) {
+		pred = predecessor;
+		if (pred != null){
+			register = pred.getRegister();
+		}
+	}
+
+	@Override
+	public Instruction getPred() {
+		return pred;
+	}
+
+	@Override
+	public void setRegister() {		
+	}
+
+	@Override
+	public int getRegister() {
+		return register;
+	}
+
+
+	@Override
+	public void setId(int ID) {
+		identity = ID;
+	}
+
+	@Override
+	public int getId() {
+		return identity;
+	}
+}

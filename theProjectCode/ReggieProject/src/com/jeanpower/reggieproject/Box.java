@@ -1,5 +1,7 @@
 package com.jeanpower.reggieproject;
 
+import android.util.Log;
+
 public class Box implements Instruction{
 	
 	private int register;
@@ -9,6 +11,8 @@ public class Box implements Instruction{
 	private boolean inc;
 	private int identity;
 	private ConnectLine line;
+	private boolean decrementDone;
+	
 	
 	public Box(Game g){
 		 
@@ -30,20 +34,16 @@ public class Box implements Instruction{
 		
 		else 
 		{
-			
-			int number = caller.getRegData(register);
-			
-			if (number == 0){
+			decrementDone = caller.decrementReg(register);
+			Log.d("Dec done", decrementDone +"");
 			caller.setCurrPos(succ);
-			}
-			
-			else {
-				caller.decrementReg(register);
-				caller.setCurrPos(succ.getSucc());
-			}
 		}
 	}
 
+	public boolean decDone(){
+		return decrementDone;
+	}
+	
 	@Override
 	public void setSucc(Instruction successor) {	
 		succ = successor;
