@@ -24,7 +24,7 @@ public final class R {
 		public static final int folder = 0x7f02000e;
 		public static final int ic_launcher = 0x7f020017;
 		public static final int no = 0x7f02001d;
-		public static final int tick = 0x7f020029;
+		public static final int tick = 0x7f02002a;
 	}
 	public static final class id {
 		public static final int action_settings = 0x7f06001e;

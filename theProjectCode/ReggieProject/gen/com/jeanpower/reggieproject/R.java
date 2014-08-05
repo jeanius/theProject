@@ -157,9 +157,10 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int reg_shy=0x7f020025;
         public static final int reg_smile=0x7f020026;
         public static final int reg_super=0x7f020027;
-        public static final int teal=0x7f020028;
-        public static final int tick=0x7f020029;
-        public static final int yellow=0x7f02002a;
+        public static final int reg_worry=0x7f020028;
+        public static final int teal=0x7f020029;
+        public static final int tick=0x7f02002a;
+        public static final int yellow=0x7f02002b;
     }
     public static final class id {
         public static final int ScrollVertical=0x7f060004;

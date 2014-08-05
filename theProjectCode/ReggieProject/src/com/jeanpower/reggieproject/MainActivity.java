@@ -475,8 +475,14 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 			origY = me.getRawY();
 
 			if (instruction instanceof Arrow){
+				
+				Arrow arrow = (Arrow) instruction;
+				
+				if (arrow.getType() && arrow.getTo().getId() == arrow.getPred().getId()){
+					arrowHead = true;
+				}
 
-				if ((origX < (v.getX() + v.getWidth()) && v.getY() < theLineX) || (origX > (v.getX() + v.getWidth()) && v.getY() >= theLineX)) {
+				else if ((origX < (v.getX() + v.getWidth()) && v.getY() < theLineX) || (origX > (v.getX() + v.getWidth()) && v.getY() >= theLineX)) {
 					arrowHead = true;
 				}
 

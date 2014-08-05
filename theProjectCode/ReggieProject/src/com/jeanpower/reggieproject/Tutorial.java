@@ -1,25 +1,24 @@
 package com.jeanpower.reggieproject;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
-
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
-
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
+import android.graphics.drawable.ColorDrawable;
 import com.github.amlcurran.showcaseview.ShowcaseView;
 
 public class Tutorial implements View.OnClickListener{
@@ -37,6 +36,7 @@ public class Tutorial implements View.OnClickListener{
 	ShowcaseView sv;
 	Game game;
 	ArrayList<Instruction> instructions;
+	RelativeLayout.LayoutParams butParams;
 
 	public Tutorial(MainActivity ma, Game g) {
 
@@ -47,7 +47,7 @@ public class Tutorial implements View.OnClickListener{
 		tutTexts = res.getTextArray(R.array.tutorial_text);		
 		showcaseText = res.getStringArray(R.array.showcase_text);
 		showcaseTitles = res.getStringArray(R.array.showcase_title_text);	
-		
+
 		dialog = new Dialog(main);
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		dialog.setContentView(R.layout.tutorial);
@@ -57,14 +57,12 @@ public class Tutorial implements View.OnClickListener{
 		tutText.setText(tutTexts[counter]);
 
 		container = (RelativeLayout) dialog.findViewById(R.id.container);
-		
+
 		RelativeLayout.LayoutParams yesParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-		//yesParams.addRule(RelativeLayout.BELOW, R.id.welcomeText);
 		yesParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
 		yesParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
 
 		RelativeLayout.LayoutParams noParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-		//noParams.addRule(RelativeLayout.BELOW, R.id.welcomeText);
 		noParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
 		noParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE);
 
@@ -73,18 +71,23 @@ public class Tutorial implements View.OnClickListener{
 
 		yesButton = (Button) dialog.findViewById(R.id.yesButton);
 		noButton = (Button) dialog.findViewById(R.id.noButton);
-		
+
 		yesButton.setOnClickListener(this);
 		noButton.setOnClickListener(this);
 		yesButton.setLayoutParams(yesParams);
 		noButton.setLayoutParams(noParams);
+		
+		butParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+		butParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+		butParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
+		butParams.bottomMargin=200;
 
 		dialog.show();
 	}
 
 	@Override
 	public void onClick(View view) {
-		
+
 		int resid = view.getId();
 
 		switch (resid){
@@ -95,210 +98,265 @@ public class Tutorial implements View.OnClickListener{
 			break;
 		case R.id.yesButton:
 			counter ++;
-			
+
 			if (counter == 16){
 				instructions = game.getInstructionList();
-				
+
 				Arrow arrow = null;
-				
+
 				for(Instruction i: instructions){
-					
+
 					if (i instanceof Arrow){
 						arrow = (Arrow) i;
 					}
 				}
-				
+
 				if (null == arrow){
-					
+
 					game.newInstruction(R.id.new_arrow_button);
 					main.updateDisplay();
 				}
 			}
-			
-			
+
 			this.continueTutorial();
 			break;
 		default:
 			sv.hide();
-			dialog.show();
+			if (counter < tutTexts.length){
+				dialog.show();
+			}
 			break;
 		}
 	}
 
 	public void continueTutorial(){
-		
+
 		ImageView iv = (ImageView) dialog.findViewById(R.id.reggieSmile);
 		Drawable myDrawable;
 		ViewTarget target;
-		tutText.setText(tutTexts[counter]);
-		
-		
+
+		if (counter < tutTexts.length){
+			tutText.setText(tutTexts[counter]);
+		}
+
 		switch (counter){
-			case 1:
-				myDrawable = main.getResources().getDrawable(R.drawable.reg_happy);
-				iv.setImageDrawable(myDrawable);
-				yesButton.setText(main.getResources().getText(R.string.cont));
-				noButton.setText(main.getResources().getText(R.string.stop));
+		case 1:
+			myDrawable = main.getResources().getDrawable(R.drawable.reg_happy);
+			iv.setImageDrawable(myDrawable);
+			yesButton.setText(main.getResources().getText(R.string.cont));
+			noButton.setText(main.getResources().getText(R.string.stop));
 			break;
-			
-			case 2:
-				dialog.hide();
-				target = new ViewTarget(main.registerIds[0], main);
-				sv = new ShowcaseView.Builder(main, true)
-				.setTarget(target)
-				.setContentTitle(showcaseTitles[0])
-				.setContentText(showcaseText[0])
-				.setOnClickListener(this)
-				.build();	
-			break;
-			
-			case 3:
-				myDrawable = main.getResources().getDrawable(R.drawable.reg_cool);
-				iv.setImageDrawable(myDrawable);		
-			break;
-		
-			case 4:
-				myDrawable = main.getResources().getDrawable(R.drawable.reg_awesome);
-				iv.setImageDrawable(myDrawable);		
-			break;
-		
-			case 7:
-				myDrawable = main.getResources().getDrawable(R.drawable.reg_super);
-				iv.setImageDrawable(myDrawable);		
-			break;
-			
-			case 8:
-				myDrawable = main.getResources().getDrawable(R.drawable.reg_cool);
-				iv.setImageDrawable(myDrawable);		
-			break;
-			
-			case 10:
-				myDrawable = main.getResources().getDrawable(R.drawable.reg_shy);
-				iv.setImageDrawable(myDrawable);		
-				break;
-				
-			case 11:
-				myDrawable = main.getResources().getDrawable(R.drawable.reg_cool);
-				iv.setImageDrawable(myDrawable);	
-				break;			
-				
-			case 12:
 
-				dialog.hide();
-				target = new ViewTarget(R.id.new_box_button, main);
-				sv = new ShowcaseView.Builder(main, true)
-				.setTarget(target)
-				.setContentTitle(showcaseTitles[1])
-				.setContentText(showcaseText[1])
-				.setOnClickListener(this)
-				.build();	
-				
-				game.newInstruction(R.id.new_box_button);
-				main.updateDisplay();
-				
-				break;
-				
-			case 13:
+		case 2:			
+			dialog.hide();
+			target = new ViewTarget(main.registerIds[0], main);
+			sv = new ShowcaseView.Builder(main, true)
+			.setTarget(target)
+			.setContentTitle(showcaseTitles[0])
+			.setContentText(showcaseText[0])
+			.setOnClickListener(this)
+			.build();	
+			sv.setButtonPosition(butParams);
 
-				Box box = null;
-				instructions = game.getInstructionList();
-				for(Instruction i: instructions){
-					
-					if (i instanceof Box){
-						box = (Box) i;
-					}
+			break;
+
+		case 3:
+			myDrawable = main.getResources().getDrawable(R.drawable.reg_cool);
+			iv.setImageDrawable(myDrawable);		
+			break;
+
+		case 4:
+			myDrawable = main.getResources().getDrawable(R.drawable.reg_awesome);
+			iv.setImageDrawable(myDrawable);		
+			break;
+
+		case 7:
+			myDrawable = main.getResources().getDrawable(R.drawable.reg_super);
+			iv.setImageDrawable(myDrawable);		
+			break;
+
+		case 8:
+			myDrawable = main.getResources().getDrawable(R.drawable.reg_cool);
+			iv.setImageDrawable(myDrawable);		
+			break;
+
+		case 10:
+			myDrawable = main.getResources().getDrawable(R.drawable.reg_shy);
+			iv.setImageDrawable(myDrawable);		
+			break;
+
+		case 11:
+			myDrawable = main.getResources().getDrawable(R.drawable.reg_cool);
+			iv.setImageDrawable(myDrawable);	
+			break;			
+
+		case 12:
+
+			dialog.hide();
+			target = new ViewTarget(R.id.new_box_button, main);
+			sv = new ShowcaseView.Builder(main, true)
+			.setTarget(target)
+			.setContentTitle(showcaseTitles[1])
+			.setContentText(showcaseText[1])
+			.setOnClickListener(this)
+			.build();	
+			sv.setButtonPosition(butParams);
+
+			game.newInstruction(R.id.new_box_button);
+			main.updateDisplay();
+
+			break;
+
+		case 13:
+
+			Box box = null;
+			instructions = game.getInstructionList();
+			for(Instruction i: instructions){
+
+				if (i instanceof Box){
+					box = (Box) i;
 				}
-				
-				dialog.hide();
-				target = new ViewTarget(box.getId(), main);
-				sv = new ShowcaseView.Builder(main, true)
-				.setTarget(target)
-				.setContentTitle(showcaseTitles[2])
-				.setContentText(showcaseText[2])
-				.setOnClickListener(this)
-				.build();	
-				break;
-				
-			case 15:
+			}
 
-				game.newInstruction(R.id.new_box_button);
-				game.newInstruction(R.id.new_box_button);
-				main.updateDisplay();
-				
-				dialog.hide();
-				target = new ViewTarget(R.id.new_arrow_button, main);
-				sv = new ShowcaseView.Builder(main, true)
-				.setTarget(target)
-				.setContentTitle(showcaseTitles[3])
-				.setContentText(showcaseText[3])
-				.setOnClickListener(this)
-				.build();	
-				break;
-				
-			case 17:
-				
-				Arrow arrow = null;
-				instructions = game.getInstructionList();
-				for(Instruction i: instructions){
-					
-					if (i instanceof Arrow){
-						arrow = (Arrow) i;
-					}
+			dialog.hide();
+			target = new ViewTarget(box.getId(), main);
+			sv = new ShowcaseView.Builder(main, true)
+			.setTarget(target)
+			.setContentTitle(showcaseTitles[2])
+			.setContentText(showcaseText[2])
+			.setOnClickListener(this)
+			.build();	
+			sv.setButtonPosition(butParams);
+			break;
+
+		case 15:
+
+			game.newInstruction(R.id.new_box_button);
+			game.newInstruction(R.id.new_box_button);
+			main.updateDisplay();
+
+			dialog.hide();
+			target = new ViewTarget(R.id.new_arrow_button, main);
+			sv = new ShowcaseView.Builder(main, true)
+			.setTarget(target)
+			.setContentTitle(showcaseTitles[3])
+			.setContentText(showcaseText[3])
+			.setOnClickListener(this)
+			.build();	
+			sv.setButtonPosition(butParams);
+			break;
+
+		case 16:
+			myDrawable = main.getResources().getDrawable(R.drawable.reg_worry);
+			iv.setImageDrawable(myDrawable);	
+			break;	
+
+		case 17:
+
+			myDrawable = main.getResources().getDrawable(R.drawable.reg_happy);
+			iv.setImageDrawable(myDrawable);	
+
+			Arrow arrow = null;
+			instructions = game.getInstructionList();
+			for(Instruction i: instructions){
+
+				if (i instanceof Arrow){
+					arrow = (Arrow) i;
 				}
-				
-				dialog.hide();
-				target = new ViewTarget(arrow.getId(), main);
-				sv = new ShowcaseView.Builder(main, true)
-				.setTarget(target)
-				.setContentTitle(showcaseTitles[4])
-				.setContentText(showcaseText[4])
-				.setOnClickListener(this)
-				.doNotBlockTouches()
-				.build();	
-				break;
-			
-			case 19:
-				
-				dialog.hide();
-				target = new ViewTarget(R.id.new_end_button, main);
-				sv = new ShowcaseView.Builder(main, true)
-				.setTarget(target)
-				.setContentTitle(showcaseTitles[5])
-				.setContentText(showcaseText[5])
-				.setOnClickListener(this)
-				.build();	
-				break;
+			}
 
-			case 21:
-				
-				dialog.hide();
-				target = new ViewTarget(R.id.bin_clear_button, main);
-				sv = new ShowcaseView.Builder(main, true)
-				.setTarget(target)
-				.setContentTitle(showcaseTitles[6])
-				.setContentText(showcaseText[6])
-				.setOnClickListener(this)
-				.doNotBlockTouches()
-				.build();	
-				break;	
-				
-			case 22:
-				
-				dialog.hide();
-				target = new ViewTarget(R.id.bin_clear_button, main);
-				sv = new ShowcaseView.Builder(main, true)
-				.setTarget(target)
-				.setContentTitle(showcaseTitles[6])
-				.setContentText(showcaseText[6])
-				.setOnClickListener(this)
-				.doNotBlockTouches()
-				.build();	
-				break;	
-				
-				
-				
-			default:
-				break;
+			dialog.hide();
+			target = new ViewTarget(arrow.getId(), main);
+			sv = new ShowcaseView.Builder(main, true)
+			.setTarget(target)
+			.setContentTitle(showcaseTitles[4])
+			.setContentText(showcaseText[4])
+			.setOnClickListener(this)
+			.doNotBlockTouches()
+			.build();	
+			sv.setButtonPosition(butParams);
+			break;
+
+		case 19:
+
+			dialog.hide();
+			target = new ViewTarget(R.id.new_end_button, main);
+			sv = new ShowcaseView.Builder(main, true)
+			.setTarget(target)
+			.setContentTitle(showcaseTitles[5])
+			.setContentText(showcaseText[5])
+			.setOnClickListener(this)
+			.build();	
+			sv.setButtonPosition(butParams);
+			break;
+
+		case 21:
+
+			myDrawable = main.getResources().getDrawable(R.drawable.reg_awesome);
+			iv.setImageDrawable(myDrawable);	
+
+
+			dialog.hide();
+			target = new ViewTarget(R.id.bin_clear_button, main);
+
+			sv = new ShowcaseView.Builder(main, true)
+			.setTarget(target)
+			.setContentTitle(showcaseTitles[6])
+			.setContentText(showcaseText[6])
+			.setOnClickListener(this)
+			.doNotBlockTouches()
+			.build();	
+			sv.setButtonPosition(butParams);
+			break;	
+
+		case 22: 
+			File cache = main.getBaseContext().getCacheDir();
+			File temporary = new File(cache.getPath() + "/in.txt");
+			FileOutputStream fw = null;
+			String line1 = "0,DEB,0,2,1," + System.getProperty("line.separator") + "1,END" + System.getProperty("line.separator") + "2,INC,1,0,";
+			//TODO - Do this better!
+			byte [] l1 = line1.getBytes();
+
+			try {
+
+				fw = new FileOutputStream(temporary);
+				fw.write(l1);
+
+				SaveLoad sl = new SaveLoad(main, main, game);
+				sl.readFile(temporary);
+
+			} 
+			catch (Exception e) {
+
+				Log.d("exception", e +"");
+				Log.e("exception", Log.getStackTraceString(e));
+			} 
+
+			for (int i = 0; i<game.getMaxReg(); i++){
+				game.zeroReg(i);
+			}
+
+			for (int i = 0; i<5; i++){
+				game.incrementReg(0);
+			}
+			main.setRegisters();
+
+			dialog.hide();
+			target = new ViewTarget(R.id.run_button, main);
+			sv = new ShowcaseView.Builder(main, true)
+			.setTarget(target)
+			.setContentTitle(showcaseTitles[7])
+			.setContentText(showcaseText[7])
+			.setOnClickListener(this)
+			.doNotBlockTouches()
+			.build();	
+			sv.setButtonPosition(butParams);
+			break;	
+			
+			//TODO - Tutorial not shown again
+
+		default:
+			break;
 		}
 	}
 

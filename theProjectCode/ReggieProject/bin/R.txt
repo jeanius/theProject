@@ -78,9 +78,10 @@ int drawable reg_happy 0x7f020024
 int drawable reg_shy 0x7f020025
 int drawable reg_smile 0x7f020026
 int drawable reg_super 0x7f020027
-int drawable teal 0x7f020028
-int drawable tick 0x7f020029
-int drawable yellow 0x7f02002a
+int drawable reg_worry 0x7f020028
+int drawable teal 0x7f020029
+int drawable tick 0x7f02002a
+int drawable yellow 0x7f02002b
 int id ScrollVertical 0x7f060004
 int id actionFrame 0x7f060007
 int id actionFrameScroll 0x7f060006
