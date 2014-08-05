@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:id="@+id/container" >
+ 
+    <ImageView
+        android:id="@+id/reggieSmile"
+        android:contentDescription="@string/app_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:src="@drawable/reg_smile"
+        android:layout_marginTop="30dip"
+        android:layout_marginBottom="20dip">
+    </ImageView>
+    
+    <TextView
+        android:id="@+id/welcomeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#454545"
+        android:gravity="center_horizontal"
+        android:layout_toRightOf="@+id/reggieSmile"
+        android:text="@string/app_name"
+        android:textSize="18sp">
+    </TextView>
+    
+    
+    <Button
+        android:id="@+id/yesButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/yes">
+    </Button>
+    
+    <Button
+        android:id="@+id/noButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/no">
+    </Button>
+ 
+</RelativeLayout>

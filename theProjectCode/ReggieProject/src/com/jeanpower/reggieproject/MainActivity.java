@@ -36,7 +36,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 	private Game game;
 	//private Game storedGame;
 	private int[] registerColours;
-	private int[] registerIds;
+	int[] registerIds;
 	private ImageButton arrowButton;
 	private ImageButton endButton;
 	private ImageButton runButton;
@@ -151,7 +151,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 		SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
 		 
 		if (pref.getBoolean("tutorial", true)){
-			Tutorial tutorial = new Tutorial(this);
+			Tutorial tutorial = new Tutorial(this, game);
 		}
 	}
 
@@ -1015,7 +1015,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 	    case R.id.tutorial_menu_button:
 	    	//storedGame = game;
 	    	Log.d("Hello", "hello");
-	    	Tutorial tutorial = new Tutorial(this);
+	    	Tutorial tutorial = new Tutorial(this, game);
 	    	break;
 	    }
 	        return true;
