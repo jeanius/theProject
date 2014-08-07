@@ -1,7 +1,5 @@
 package com.jeanpower.reggieproject;
 
-import android.util.Log;
-
 public class Box implements Instruction{
 	
 	private int register;

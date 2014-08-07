@@ -28,13 +28,13 @@ import android.view.View.DragShadowBuilder;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 public class MainActivity extends Activity implements View.OnClickListener, OnMenuItemClickListener, View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 
 	private Game game;
-	//private Game storedGame;
 	private int[] registerColours;
 	int[] registerIds;
 	private ImageButton arrowButton;
@@ -42,7 +42,6 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 	private ImageButton runButton;
 	private ImageButton binButton;
 	private ImageButton boxButton;
-	//private boolean oneBox;
 	private double theLineX;
 	private int maxRegisters; // Duplication, but constant get is inefficient
 	private double origX;
@@ -57,7 +56,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 	private static int glow;
 	private int boxAbove;
 	private int boxBelow;
-	private Button regButton;
+	ImageButton sizer;
 	private final int MAX_DURATION = 200;
 	private long startClickTime;
 	private float screenDensity;
@@ -68,9 +67,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 	private boolean deleteInstruction = false;
 	private ArrayList<Instruction> instructionList;
 	private int instructionCounter;
-	//public static Activity act;
-
-
+	
 	/**
 	 * Called when application is opened.
 	 * <p>
@@ -86,17 +83,23 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		game = new Game(this);
-		//storedGame = game;
-		//oneBox = false; // To track if user has added a Box instruction, preventing arrow/run/end being called
 		maxRegisters = game.getMaxReg();
 		glow = Color.argb(120, 255, 255, 0);
 		screenDensity = this.getResources().getDisplayMetrics().density;
 		container = (RelativeLayout) findViewById(R.id.actionFrame);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
-		//act = this;
 		LinearLayout registerFrame = (LinearLayout) findViewById(R.id.register_frame);
 		LinearLayout.LayoutParams regParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-
+		
+		sizer = new ImageButton(getApplicationContext());
+		sizer.setBackgroundColor(Color.TRANSPARENT);
+		sizer.setImageResource(R.drawable.teal);
+		sizer.setPadding(0, 0, 0, 0);
+		container.addView(sizer);
+		
+		sizer.setVisibility(View.INVISIBLE);
+		
+		
 		// To give black border
 		regParams.setMargins(1, 1, 1, 1);
 		registerFrame.setBackgroundColor(Color.BLACK);
@@ -116,7 +119,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 			registerIds[i] = resID; // At position 0 is first register, etc
 
 			// Adding to screen, setting colour
-			regButton = (Button) findViewById(resID);
+			Button regButton = (Button) findViewById(resID);
 			regButton.setLayoutParams(regParams); // For wrap content
 			regButton.setBackgroundColor(registerColours[i]);
 			regButton.setOnClickListener(this);
@@ -204,11 +207,11 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 	public void setLayoutConstants(List<Instruction> list) {
 
 		if (buttonWidth <= 0) {
-			buttonWidth = regButton.getWidth();
+			buttonWidth = sizer.getWidth();
 		}
 
 		if (buttonHeight <= 0) {
-			buttonHeight = regButton.getHeight();
+			buttonHeight = sizer.getHeight();
 		}
 
 		if (theLineX <= 0) {
@@ -281,7 +284,6 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 
 		if (instructionList.size() > 0){
 
-			//oneBox = true;
 			arrowButton.setVisibility(View.VISIBLE);
 			endButton.setVisibility(View.VISIBLE);
 			runButton.setVisibility(View.VISIBLE);
@@ -411,7 +413,6 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 					endButton.setVisibility(View.INVISIBLE);
 					runButton.setVisibility(View.INVISIBLE);
 					binButton.setVisibility(View.INVISIBLE);
-					//oneBox = false;
 					this.clearScreen ();
 				}
 				break;
@@ -423,9 +424,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 	}
 
 	public void clearScreen(){
-
-		//oneBox = false;
-
+		
 		int childCount = container.getChildCount();
 
 		for (int i = 1; i < childCount; i++) {
@@ -465,6 +464,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 
 		int resid = v.getId();
 		Instruction instruction = game.getInstruction(resid);
+		v.setBackgroundColor(Color.YELLOW);
 
 		switch (me.getAction() & MotionEvent.ACTION_MASK) { //Motionevent	contains pointer data too - bitwise and to leave just action
 
@@ -476,20 +476,25 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 
 			if (instruction instanceof Arrow){
 
-				Arrow arrow = (Arrow) instruction;
+				//Find view in relation to parent for accurate arrowhead/arrowtail choice
+				View parent = v.getRootView();
 
-				if (arrow.getType() && arrow.getTo().getId() == arrow.getPred().getId()){
-					arrowHead = true;
-				}
+				int[] viewLocation = new int[2]; 
+				v.getLocationInWindow(viewLocation);
 
-				else if ((origX < (v.getX() + v.getWidth()) && v.getY() < theLineX) || (origX > (v.getX() + v.getWidth()) && v.getY() >= theLineX)) {
+				int[] rootLocation = new int[2];
+				parent.getLocationInWindow(rootLocation);
+
+				int relativeLeft = viewLocation[0] - rootLocation[0];
+
+				if ((origX < (relativeLeft + v.getWidth()/2) && v.getY() < theLineX) || (origX > (relativeLeft + v.getWidth()/2) && v.getY() >= theLineX)) {
 					arrowHead = true;
 				}
 
 				else {
 					arrowHead = false;
 				}
-			}	
+			}
 
 			startClickTime = Calendar.getInstance().getTimeInMillis();
 			break;
@@ -724,18 +729,17 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 				ImageButton currentlyChanging = (ImageButton) findViewById(i.getId());
 
 				if (!changingButton) {
+					
+					currentlyChanging.getDrawable().setAlpha(100);
 
 					if (i instanceof Box) {
 						Box box = (Box) i;
-						currentlyChanging.setBackgroundResource(R.drawable.curvededgecolor);
-
 						Button register = (Button) findViewById(registerIds[box.getRegister()]);
 						register.getBackground().setAlpha(128);
 					}
 
 					else if (i instanceof Arrow) {
 						Arrow arrow = (Arrow) i;
-						currentlyChanging.setBackgroundColor(glow);
 						ImageButton goTo = (ImageButton) findViewById(arrow.getTo().getId());
 						goTo.getBackground().setAlpha(128);
 					}
@@ -745,16 +749,16 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 
 				else if (changingButton) {
 
+					currentlyChanging.getDrawable().setAlpha(255);
+					
 					if (i instanceof Box) {
 						Box box = (Box) i;
-						currentlyChanging.setBackgroundResource(R.drawable.curvededge);
 						Button register = (Button) findViewById(registerIds[box.getRegister()]);
 						register.getBackground().setAlpha(255);
 					}
 
 					else if (i instanceof Arrow) {
 						Arrow arrow = (Arrow) i;
-						currentlyChanging.setBackgroundColor(Color.TRANSPARENT);
 						ImageButton goTo = (ImageButton) findViewById(arrow.getTo().getId());
 						goTo.getBackground().setAlpha(255);
 					}
@@ -775,6 +779,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 			Instruction inst = params[0];
 
 			ImageButton button = new ImageButton(getApplicationContext());
+			button.setPadding(0,0,0,0);
 			int instructionID = inst.getId();
 			button.setId(instructionID);
 			RelativeLayout.LayoutParams instructionParameters = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -787,8 +792,8 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 				if (box.getPred() != null) {
 					prevInstruction = box.getPred();
 				}
-
-				button.setBackgroundResource(R.drawable.curvededge);
+				
+				button.setBackgroundColor(Color.TRANSPARENT);
 
 				button.setImageResource(instructionIcons.getResourceId(box.getRegister(), -1));
 
@@ -831,7 +836,6 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 				arrow.calculateSpaces();
 				button.setBackgroundColor(Color.TRANSPARENT);
 				DrawArrow drawArrow = new DrawArrow(arrow, buttonWidth,buttonHeight);
-				drawArrow.setColours(registerColours[arrow.getPred().getRegister()], registerColours[arrow.getTo().getRegister()]);
 
 				int marginTop = 0;
 
@@ -860,7 +864,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 
 				if (arrow.getType()) {
 
-					if (boxAbove > 0) {
+					if (boxAbove >= 0) {
 						marginTop = buttonHeight * 2;
 					}
 
@@ -890,7 +894,8 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 
 								// If there is any overlap in the lists
 								if (sizeList != newSizeList) {
-									marginTop += buttonHeight;
+									RelativeLayout.LayoutParams par = (RelativeLayout.LayoutParams) findViewById(check.getId()).getLayoutParams();
+									marginTop = -par.topMargin + buttonHeight;
 								}
 							}
 						}
@@ -902,7 +907,8 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 				}
 
 				else {
-					if (boxBelow > 0) {
+					
+					if (boxBelow >= 0) {
 						marginTop = buttonHeight;
 					}
 
@@ -911,6 +917,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 					}
 
 					instructionBetween = game.getToFrom(arrow.getPred(), arrow.getTo().getId());
+					
 					int pointer = 0;
 					Instruction currentPosition = instructionList.get(pointer);
 
@@ -931,8 +938,8 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 
 								// If there is any overlap in the lists
 								if (sizeList != newSizeList) {
-
-									marginTop += buttonHeight;
+									RelativeLayout.LayoutParams par = (RelativeLayout.LayoutParams) findViewById(check.getId()).getLayoutParams();
+									marginTop = par.topMargin + buttonHeight;
 								}
 							}
 						}
@@ -945,6 +952,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 				}
 
 				button.setLayoutParams(instructionParameters);
+				
 			}
 
 			else if (inst instanceof End) {
@@ -962,15 +970,15 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 				Box prevBox = (Box) prev;
 
 				if (prevBox.getType()) {
-					topMargin = -(int) (buttonHeight / 1.5);
+					topMargin = -(int) (buttonHeight/1.4);
 
 				} 
 				else {
-					topMargin = 1;
+					topMargin = 0;
 				}
 
-				instructionParameters.width = buttonWidth / 2;
-				instructionParameters.height = buttonHeight / 2;
+				instructionParameters.width = (int) (buttonWidth/1.5);
+				instructionParameters.height = (int) (buttonHeight/1.5);
 				instructionParameters.addRule(RelativeLayout.ALIGN_TOP, prev.getId());
 				instructionParameters.addRule(RelativeLayout.ALIGN_RIGHT, prev.getId());
 				instructionParameters.topMargin = topMargin;

@@ -123,7 +123,7 @@
     <string name="show3">Tap me to change my register. \n\nDrag me below the line to make me a decrement/branch instruction!</string>
     <string name="show4">Click the triangle to add an arrow</string>
     <string name="show5">Drag me to a different instruction to loop back to. Clicking me will change me into a branch - Try it!</string>
-    <string name="show6">Click the upside-down T to add an end</string>
+    <string name="show6">Click the icon to add an end</string>
     <string name="show7">This is the clear button. It changes to a "Bin" to drop instructions into, when you drag them - Try it!</string>
     <string name="show8">What does this program do? Try run it and find out!</string>
     

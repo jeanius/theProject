@@ -845,8 +845,6 @@ private class RunGame extends AsyncTask<Void, Void, Void>{
 				if (null != currPos){
 
 					if (currPos.getId() == currArrow.getTo().getId()){
-						Log.d("Entered here with pos", currPos.getId() +"");
-						Log.d("Entered here with arrow", currArrow.getId() + "");
 
 						activity.updateInstructionDisplay(currArrow);
 

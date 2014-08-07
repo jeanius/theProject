@@ -8,7 +8,6 @@ import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import android.app.Dialog;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -18,8 +17,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.graphics.drawable.ColorDrawable;
-import com.github.amlcurran.showcaseview.ShowcaseView;
 
 public class Tutorial implements View.OnClickListener{
 
