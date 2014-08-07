@@ -25,7 +25,25 @@ public class Arrow implements Instruction{
 
 		if (loop)
 		{
-			caller.setCurrPos(toInstruction);
+
+			if (pred instanceof Box){
+				Box box = (Box) pred;
+
+				if (!box.getType()){
+
+					if (!box.decDone()){
+						caller.setCurrPos(succ);
+					}
+
+					else
+					{
+						caller.setCurrPos(toInstruction);
+					}
+				}
+				else {
+					caller.setCurrPos(toInstruction);
+				}
+			}
 		}
 
 		else

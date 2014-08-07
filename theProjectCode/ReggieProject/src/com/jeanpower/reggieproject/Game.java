@@ -179,9 +179,9 @@ public class Game {
 					}
 				}
 			}
-			
+
 			if (i.getId() == last.getId()){
-				
+
 				if (i instanceof Box){
 					activity.showMessage("There is no End, Loop or Branch instruction at the end!");
 					instructionsOk = false;
@@ -323,6 +323,7 @@ public class Game {
 			else if (instruction instanceof End){
 
 				if (last instanceof Arrow || last instanceof Box){ //If there is already an end, will not be added
+					Log.d("Got here", "yes");
 					last.setSucc(instruction);
 					instruction.setPred(last);
 					last = instruction;
@@ -517,6 +518,8 @@ public class Game {
 
 		return move;
 	}
+
+
 	public void updateTail(Arrow arrow, Box move) {
 
 		boolean canMove = this.tailMove(arrow, move.getId()); // Is the box before the head of arrow?
@@ -564,8 +567,12 @@ public class Game {
 				}
 				boxSuccArrow.setSucc(arrow);	
 			}
+
+			if (null == arrow.getSucc()){
+				last = arrow;
+			}
+			arrow.calculateSpaces();
 		}
-		arrow.calculateSpaces();
 	}
 	/**
 	 * Changes Box instruction to inc or dec. Changes Arrow instruction to loop or branch.
@@ -631,6 +638,11 @@ public class Game {
 
 				succArrow.setSucc(arrow);	
 			}
+
+			if (null == arrow.getSucc()){
+				last = arrow;
+			}
+
 			arrow.calculateSpaces();
 		}
 	}
@@ -661,6 +673,7 @@ public class Game {
 		}
 
 		else {
+
 			if (inst instanceof Box){
 
 				if (inst.getId() == lastBox.getId()){
@@ -689,159 +702,151 @@ public class Game {
 						succ = succ.getSucc();
 					}
 				}
-
-				//Exit here with either a Box, or a null
-
-				if (succ != null){
-					succ.setPred(pred);
-				}
-
-				else {
-					last = pred;			
-				}
-
-				if (pred != null){
-					pred.setSucc(succ);
-
-				}
-				else {
-					first = succ;
-				}
 			}
 
-			else if (inst instanceof Arrow || inst instanceof End){
+			if (succ != null){
+				succ.setPred(pred);
+			}
 
+			else {
+				last = pred;			
+			}
+
+			if (pred != null){
 				pred.setSucc(succ);
 
-				if (null != succ){
-					succ.setPred(pred);
-				}
 			}
-			activity.removeInstruction(inst.getId());
-		}
+			else {
+				first = succ;
+			}
+			
+		activity.removeInstruction(inst.getId());
 	}
+}
 
-	/**
-	 * Sets current position within running game
-	 * <p>
-	 * 
-	 * @param Instruction. New current instruction
-	 * @return void
-	 */
-	public void setCurrPos(Instruction newPos) {
+/**
+ * Sets current position within running game
+ * <p>
+ * 
+ * @param Instruction. New current instruction
+ * @return void
+ */
+public void setCurrPos(Instruction newPos) {
 
-		currPos = newPos;
-	}
+	currPos = newPos;
+}
 
-	/**
-	 * Returns data held in specific register
-	 * <p>
-	 * 
-	 * @param int. Index/number of register.
-	 * @return int
-	 */
-	public int getRegData(int registerNum) {
+/**
+ * Returns data held in specific register
+ * <p>
+ * 
+ * @param int. Index/number of register.
+ * @return int
+ */
+public int getRegData(int registerNum) {
 
-		return registers[registerNum];
-	}
+	return registers[registerNum];
+}
 
-	/**
-	 * Increments data held in specific register
-	 * <p>
-	 * Increments, then calls method in activity to pull data and update UI
-	 * <p>
-	 * 
-	 * @param int. Index/number of register.
-	 * @return void
-	 */
-	public void incrementReg(int registerNum) {
+/**
+ * Increments data held in specific register
+ * <p>
+ * Increments, then calls method in activity to pull data and update UI
+ * <p>
+ * 
+ * @param int. Index/number of register.
+ * @return void
+ */
+public void incrementReg(int registerNum) {
 
-		int newNum = registers[registerNum] + 1;
+	int newNum = registers[registerNum] + 1;
+	registers[registerNum] = newNum;
+
+}
+
+/**
+ * Decrements data held in specific register
+ * <p>
+ * Decrements, then calls method in activity to pull data and update UI
+ * <p>
+ * 
+ * @param int. Index/number of register.
+ * @return void
+ */
+public boolean decrementReg(int registerNum) {
+
+	if (registers[registerNum] >=1){
+		int newNum = registers[registerNum] - 1;
 		registers[registerNum] = newNum;
-
+		return true;
 	}
 
-	/**
-	 * Decrements data held in specific register
-	 * <p>
-	 * Decrements, then calls method in activity to pull data and update UI
-	 * <p>
-	 * 
-	 * @param int. Index/number of register.
-	 * @return void
-	 */
-	public boolean decrementReg(int registerNum) {
-
-		if (registers[registerNum] >=1){
-			int newNum = registers[registerNum] - 1;
-			registers[registerNum] = newNum;
-			return true;
-		}
-
-		else {
-			return false;
-		}
+	else {
+		return false;
 	}
+}
 
-	/**
-	 * Zeros a specific register
-	 * <p>
-	 * Zeros, then calls method in activity to pull data and update UI
-	 * <p>
-	 * 
-	 * @param int. Index/number of register.
-	 * @return void
-	 */
-	public void zeroReg(int registerNum) {
+/**
+ * Zeros a specific register
+ * <p>
+ * Zeros, then calls method in activity to pull data and update UI
+ * <p>
+ * 
+ * @param int. Index/number of register.
+ * @return void
+ */
+public void zeroReg(int registerNum) {
 
-		registers[registerNum] = 0;
-		activity.setRegisters();
-	}
+	registers[registerNum] = 0;
+	activity.setRegisters();
+}
 
-	public int getMaxReg() {
-		return MAXREGISTERS;
-	}
+public int getMaxReg() {
+	return MAXREGISTERS;
+}
 
 
-	private class RunGame extends AsyncTask<Void, Void, Void>{
+private class RunGame extends AsyncTask<Void, Void, Void>{
 
-		@Override
-		protected Void doInBackground(Void... params) {
+	@Override
+	protected Void doInBackground(Void... params) {
 
-			while (null != currPos){
+		while (null != currPos){
 
-				Arrow currArrow = null;
+			Arrow currArrow = null;
 
-				if (currPos instanceof Arrow){
+			if (currPos instanceof Arrow){
 
-					currArrow = (Arrow) currPos;
-				}
+				currArrow = (Arrow) currPos;
+			}
 
-				if  (currPos instanceof Box || currPos instanceof End || (null != currArrow && currArrow.getType())){
+			if  (currPos instanceof Box || currPos instanceof End){
 
-					prevPos = currPos;
-					currPos.doWork();
+				prevPos = currPos;
+				currPos.doWork();
 
+				activity.updateInstructionDisplay(prevPos);
+
+				try {
+					Thread.sleep(1000);
 					activity.updateInstructionDisplay(prevPos);
-
-					try {
-						Thread.sleep(1000);
-						activity.updateInstructionDisplay(prevPos);
-					}
-					catch (Exception e){
-						Log.d("This was interrupted", "interrupted");
-					}	
 				}
+				catch (Exception e){
+					Log.d("This was interrupted", "interrupted");
+				}	
+			}
 
-				else if (null != currArrow && !currArrow.getType()){
+			else if (null != currArrow){
 
-					prevPos = currPos;
+				prevPos = currPos;
 
-					currPos.doWork();
-					
-					if (null != currPos){
+				currPos.doWork();
+
+				if (null != currPos){
 
 					if (currPos.getId() == currArrow.getTo().getId()){
+						Log.d("Entered here with pos", currPos.getId() +"");
+						Log.d("Entered here with arrow", currArrow.getId() + "");
 
 						activity.updateInstructionDisplay(currArrow);
 
@@ -853,23 +858,23 @@ public class Game {
 							Log.d("This was interrupted", "interrupted");
 						}	
 					}
-					}
 				}
 			}
-
-			activity.resetRunButton();
-			return null;
 		}
-	}
 
-	public void setFirst(Instruction f){
-		first = f;
+		activity.resetRunButton();
+		return null;
 	}
+}
 
-	public void setLast(Instruction l){
-		last = l;
-	}
-	public void setLastBox(Instruction lb){
-		lastBox = lb;
-	}
+public void setFirst(Instruction f){
+	first = f;
+}
+
+public void setLast(Instruction l){
+	last = l;
+}
+public void setLastBox(Instruction lb){
+	lastBox = lb;
+}
 }

@@ -35,7 +35,6 @@ public class Box implements Instruction{
 		else 
 		{
 			decrementDone = caller.decrementReg(register);
-			Log.d("Dec done", decrementDone +"");
 			caller.setCurrPos(succ);
 		}
 	}

@@ -141,15 +141,15 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 		binButton = (ImageButton) findViewById(R.id.bin_clear_button);
 		binButton.setOnClickListener(this);
 		binButton.setOnDragListener(this);
-		
+
 		arrowButton.setVisibility(View.INVISIBLE);
 		endButton.setVisibility(View.INVISIBLE);
 		runButton.setVisibility(View.INVISIBLE);
 		binButton.setVisibility(View.INVISIBLE);
-		
+
 		//Find if user has seen tutorial before
 		SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
-		 
+
 		if (pref.getBoolean("tutorial", true)){
 			Tutorial tutorial = new Tutorial(this, game);
 		}
@@ -164,22 +164,22 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		
-		 // Inflate the menu
-		 
-		 MenuInflater inflater = getMenuInflater();
-		 inflater.inflate(R.menu.main_activity_actions, menu);
-		 
+
+		// Inflate the menu
+
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.main_activity_actions, menu);
+
 		MenuItem loadButton = menu.findItem(R.id.load_menu_button); 
 		MenuItem tutorialButton = menu.findItem(R.id.tutorial_menu_button); 
-		
+
 		loadButton.setOnMenuItemClickListener(this);
 		tutorialButton.setOnMenuItemClickListener(this);
-		 
+
 		return true;
 	}
 
-	
+
 	/**
 	 * To ignore orientation change, so UI is horizontal
 	 * <p>
@@ -194,15 +194,15 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 	@Override
 	public void onStart() {
 		super.onStart();
-		
-	//	this.clearScreen();
+
+		//	this.clearScreen();
 		//game = storedGame;
 		//this.updateDisplay();
 
 	}
 
 	public void setLayoutConstants(List<Instruction> list) {
-		
+
 		if (buttonWidth <= 0) {
 			buttonWidth = regButton.getWidth();
 		}
@@ -278,18 +278,18 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 		this.setLayoutConstants(instructionList);
 		instructionCounter = 0;
 		Instruction [] instructions = new Instruction[1];
-		
+
 		if (instructionList.size() > 0){
-			
-		//oneBox = true;
-		arrowButton.setVisibility(View.VISIBLE);
-		endButton.setVisibility(View.VISIBLE);
-		runButton.setVisibility(View.VISIBLE);
-		binButton.setVisibility(View.VISIBLE);
-		instructions[0] = instructionList.get(instructionCounter);
-		CreateInstruction ci = new CreateInstruction();
-		ci.execute(instructions);
-		
+
+			//oneBox = true;
+			arrowButton.setVisibility(View.VISIBLE);
+			endButton.setVisibility(View.VISIBLE);
+			runButton.setVisibility(View.VISIBLE);
+			binButton.setVisibility(View.VISIBLE);
+			instructions[0] = instructionList.get(instructionCounter);
+			CreateInstruction ci = new CreateInstruction();
+			ci.execute(instructions);
+
 		}
 	}
 
@@ -309,7 +309,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 			}
 		});
 	}
-	
+
 	/**
 	 * Update the colour of the instruction, as per the register colours, when
 	 * clicked
@@ -387,7 +387,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 					endButton.setVisibility(View.INVISIBLE);
 					boxButton.setVisibility(View.INVISIBLE);
 					binButton.setVisibility(View.INVISIBLE);
-					
+
 					game.runGame();
 				}
 
@@ -423,7 +423,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 	}
 
 	public void clearScreen(){
-		
+
 		//oneBox = false;
 
 		int childCount = container.getChildCount();
@@ -466,7 +466,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 		int resid = v.getId();
 		Instruction instruction = game.getInstruction(resid);
 
-		switch (me.getAction() & MotionEvent.ACTION_MASK) { // Motionevent	contains pointer data too - bitwise and to leave just action
+		switch (me.getAction() & MotionEvent.ACTION_MASK) { //Motionevent	contains pointer data too - bitwise and to leave just action
 
 		case MotionEvent.ACTION_DOWN:
 			draggingArrow = false;
@@ -475,9 +475,9 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 			origY = me.getRawY();
 
 			if (instruction instanceof Arrow){
-				
+
 				Arrow arrow = (Arrow) instruction;
-				
+
 				if (arrow.getType() && arrow.getTo().getId() == arrow.getPred().getId()){
 					arrowHead = true;
 				}
@@ -500,7 +500,6 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 		case MotionEvent.ACTION_UP:
 			long clickDuration = Calendar.getInstance().getTimeInMillis() - startClickTime;
 
-			Log.d("clickDuration", clickDuration + "");
 			if (clickDuration < MAX_DURATION) {
 
 				if (instruction instanceof Box) {
@@ -520,15 +519,11 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 				}
 			}
 
-			if (draggingBox) {
-
-				View boxView = findViewById(currentlyDragging.getId());
-				boxView.setBackgroundResource(R.drawable.curvededge);
-
+			if (null != v){
+				v.setVisibility(View.VISIBLE);
 			}
-			
-			binButton.setImageResource(R.drawable.ic_clear);
 
+			binButton.setImageResource(R.drawable.ic_clear);
 			break;
 
 		case MotionEvent.ACTION_MOVE:
@@ -541,15 +536,14 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 
 				if (instruction instanceof Arrow) {
 					draggingArrow = true;
-					v.setBackgroundColor(glow);
 				}
 
 				else if (instruction instanceof Box) {
 					draggingBox = true;
-					v.setBackgroundColor(glow);
 				}
 
 				currentlyDragging = instruction;
+				v.setVisibility(View.INVISIBLE);
 				DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(v); // TODO - 2 different shadow builders?
 				v.startDrag(null, shadowBuilder, v, 0);
 			}
@@ -681,7 +675,6 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 			draggingBox = false;
 			deleteInstruction = false;
 			binButton.setImageResource(R.drawable.ic_clear);
-			
 			this.updateDisplay();
 
 			break;
@@ -819,8 +812,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 						prevInstruction = prevInstruction.getPred();
 					}
 
-					// If previous instruction is also a box, remove the
-					// connecting arrow, to allow refresh
+					// If previous instruction is also a box, remove the connecting arrow, to allow refresh
 					if (prevInstruction instanceof Box) {
 						prevBox = (Box) prevInstruction;
 						//container.removeView(prevBox.getConnect());
@@ -976,7 +968,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 				else {
 					topMargin = 1;
 				}
-				
+
 				instructionParameters.width = buttonWidth / 2;
 				instructionParameters.height = buttonHeight / 2;
 				instructionParameters.addRule(RelativeLayout.ALIGN_TOP, prev.getId());
@@ -995,7 +987,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 			instructionCounter ++;
 
 			if (instructionCounter<instructionList.size()){
-				
+
 				Instruction [] instructions = new Instruction[1];
 				instructions[0] = instructionList.get(instructionCounter);
 
@@ -1004,37 +996,35 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 			}
 		}
 	}
-	
+
 	@Override
 	public boolean onMenuItemClick(MenuItem item) {
-		
-	    switch (item.getItemId()) {
 
-	    case R.id.load_menu_button:
-	    	boolean canRun = game.errorChecking();
-	    	if (canRun){
-	    	SaveLoad sl = new SaveLoad(this, this, game);
-	    	sl.saveLoad();
-	    	}
-	    	break;
-	    	
-	    case R.id.tutorial_menu_button:
-	    	//storedGame = game;
-	    	Log.d("Hello", "hello");
-	    	Tutorial tutorial = new Tutorial(this, game);
-	    	break;
-	    }
-	        return true;
+		switch (item.getItemId()) {
+
+		case R.id.load_menu_button:
+			boolean canRun = game.errorChecking();
+			if (canRun){
+				SaveLoad sl = new SaveLoad(this, this, game);
+				sl.saveLoad();
+			}
+			break;
+
+		case R.id.tutorial_menu_button:
+			Tutorial tutorial = new Tutorial(this, game);
+			break;
+		}
+		return true;
 	}
-	
+
 	public void showMessage(String message){
-		
+
 		Context context = getApplicationContext();
 		CharSequence text = message;
 		int duration = Toast.LENGTH_LONG;
 
 		Toast toast = Toast.makeText(context, text, duration);
 		toast.show();
-		
+
 	}
 }
