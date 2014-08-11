@@ -67,6 +67,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 	private boolean deleteInstruction = false;
 	private ArrayList<Instruction> instructionList;
 	private int instructionCounter;
+	private Tutorial tutorial;
 	
 	/**
 	 * Called when application is opened.
@@ -96,9 +97,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 		sizer.setImageResource(R.drawable.teal);
 		sizer.setPadding(0, 0, 0, 0);
 		container.addView(sizer);
-		
 		sizer.setVisibility(View.INVISIBLE);
-		
 		
 		// To give black border
 		regParams.setMargins(1, 1, 1, 1);
@@ -154,7 +153,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 		SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
 
 		if (pref.getBoolean("tutorial", true)){
-			Tutorial tutorial = new Tutorial(this, game);
+			tutorial = new Tutorial(this, game);
 		}
 	}
 
@@ -197,11 +196,6 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 	@Override
 	public void onStart() {
 		super.onStart();
-
-		//	this.clearScreen();
-		//game = storedGame;
-		//this.updateDisplay();
-
 	}
 
 	public void setLayoutConstants(List<Instruction> list) {
@@ -432,6 +426,12 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 			View child = container.getChildAt(1);
 			container.removeView(child);
 		}
+		
+		for (int i = 0; i<game.getMaxReg(); i++){
+			game.zeroReg(i);
+		}
+		
+		this.setRegisters();
 	}
 
 	public void removeInstruction(int ID){
@@ -511,6 +511,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 
 					game.updateInstruction(instruction);
 					this.updateColour(instruction);
+					this.updateDisplay();
 				}
 
 				else if (instruction instanceof End) {
@@ -694,6 +695,11 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 		switch (item.getItemId()) {
 		// Respond to the action bar's Up button - finishes main activity and goes back to option screen
 		case android.R.id.home:
+			
+			if (tutorial.getDialog() != null){
+				tutorial.getDialog().dismiss();	
+			}
+			
 			Intent intent = new Intent(this, OptionScreen.class);
 			startActivity(intent);
 			this.finish();
@@ -835,7 +841,8 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 				Arrow arrow = (Arrow) inst;
 				arrow.calculateSpaces();
 				button.setBackgroundColor(Color.TRANSPARENT);
-				DrawArrow drawArrow = new DrawArrow(arrow, buttonWidth,buttonHeight);
+				DrawArrow drawArrow = new DrawArrow(arrow, buttonWidth,buttonHeight, getApplicationContext());
+				drawArrow.setColours(registerColours[arrow.getPred().getRegister()], registerColours[arrow.getTo().getRegister()]);
 
 				int marginTop = 0;
 
@@ -903,6 +910,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 						pointer++;
 						currentPosition = instructionList.get(pointer);
 					}
+					
 					instructionParameters.topMargin = -marginTop;
 				}
 
@@ -1019,7 +1027,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 			break;
 
 		case R.id.tutorial_menu_button:
-			Tutorial tutorial = new Tutorial(this, game);
+			tutorial = new Tutorial(this, game);
 			break;
 		}
 		return true;

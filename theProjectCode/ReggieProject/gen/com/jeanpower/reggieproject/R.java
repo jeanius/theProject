@@ -160,13 +160,16 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int reg_worry=0x7f020028;
         public static final int teal=0x7f020029;
         public static final int tick=0x7f02002a;
-        public static final int yellow=0x7f02002b;
+        public static final int tut_branch=0x7f02002b;
+        public static final int tut_incdec=0x7f02002c;
+        public static final int tut_loop=0x7f02002d;
+        public static final int yellow=0x7f02002e;
     }
     public static final class id {
         public static final int ScrollVertical=0x7f060004;
         public static final int actionFrame=0x7f060007;
         public static final int actionFrameScroll=0x7f060006;
-        public static final int action_settings=0x7f06001e;
+        public static final int action_settings=0x7f06001f;
         public static final int bin_clear_button=0x7f06000e;
         public static final int bottom_frame=0x7f060009;
         public static final int buttonAdd=0x7f060013;
@@ -175,7 +178,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int imageViewIcon=0x7f060015;
         public static final int linearLayoutButtons=0x7f060012;
         public static final int linearLayoutFiles=0x7f060011;
-        public static final int load_menu_button=0x7f06001f;
+        public static final int load_menu_button=0x7f060020;
         public static final int new_arrow_button=0x7f06000b;
         public static final int new_box_button=0x7f06000a;
         public static final int new_button=0x7f060018;
@@ -193,7 +196,8 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int splashText=0x7f060019;
         public static final int textViewLabel=0x7f060016;
         public static final int theLine=0x7f060008;
-        public static final int tutorial_menu_button=0x7f060020;
+        public static final int tutImage=0x7f06001e;
+        public static final int tutorial_menu_button=0x7f060021;
         public static final int welcomeText=0x7f06001b;
         public static final int yesButton=0x7f06001c;
     }
@@ -267,6 +271,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int page20=0x7f07003f;
         public static final int page21=0x7f070040;
         public static final int page22=0x7f070041;
+        public static final int page23=0x7f070042;
         public static final int page3=0x7f07002e;
         public static final int page4=0x7f07002f;
         public static final int page5=0x7f070030;
@@ -275,23 +280,23 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int page8=0x7f070033;
         public static final int page9=0x7f070034;
         public static final int run=0x7f070018;
-        public static final int show1=0x7f070042;
-        public static final int show2=0x7f070043;
-        public static final int show3=0x7f070044;
-        public static final int show4=0x7f070045;
-        public static final int show5=0x7f070046;
-        public static final int show6=0x7f070047;
-        public static final int show7=0x7f070048;
-        public static final int show8=0x7f070049;
+        public static final int show1=0x7f070043;
+        public static final int show2=0x7f070044;
+        public static final int show3=0x7f070045;
+        public static final int show4=0x7f070046;
+        public static final int show5=0x7f070047;
+        public static final int show6=0x7f070048;
+        public static final int show7=0x7f070049;
+        public static final int show8=0x7f07004a;
         public static final int stop=0x7f070020;
-        public static final int title1=0x7f07004a;
-        public static final int title2=0x7f07004b;
-        public static final int title3=0x7f07004c;
-        public static final int title4=0x7f07004d;
-        public static final int title5=0x7f07004e;
-        public static final int title6=0x7f07004f;
-        public static final int title7=0x7f070050;
-        public static final int title8=0x7f070051;
+        public static final int title1=0x7f07004b;
+        public static final int title2=0x7f07004c;
+        public static final int title3=0x7f07004d;
+        public static final int title4=0x7f07004e;
+        public static final int title5=0x7f07004f;
+        public static final int title6=0x7f070050;
+        public static final int title7=0x7f070051;
+        public static final int title8=0x7f070052;
         public static final int tutorial=0x7f070021;
         public static final int yes=0x7f07001c;
     }

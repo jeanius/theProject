@@ -25,7 +25,6 @@ public class Arrow implements Instruction{
 
 		if (loop)
 		{
-
 			if (pred instanceof Box){
 				Box box = (Box) pred;
 

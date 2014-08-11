@@ -3,10 +3,13 @@ package com.jeanpower.reggieproject;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
+
 import android.app.Dialog;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.preference.PreferenceManager;
@@ -34,7 +37,10 @@ public class Tutorial implements View.OnClickListener{
 	Game game;
 	ArrayList<Instruction> instructions;
 	RelativeLayout.LayoutParams butParams;
-
+	ImageView tutImage;
+	Drawable tutDraw;
+	ImageView iv;
+	
 	public Tutorial(MainActivity ma, Game g) {
 
 		main = ma;
@@ -78,6 +84,21 @@ public class Tutorial implements View.OnClickListener{
 		butParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
 		butParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
 		butParams.bottomMargin=200;
+		
+		
+		tutImage = (ImageView) dialog.findViewById(R.id.tutImage);
+		tutDraw = main.getResources().getDrawable(R.drawable.tut_incdec);
+		tutImage.setImageDrawable(tutDraw);
+		
+		RelativeLayout.LayoutParams tutParam = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+		tutParam.addRule(RelativeLayout.BELOW, R.id.welcomeText);
+		tutParam.addRule(RelativeLayout.ABOVE, R.id.yesButton);
+		tutParam.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
+		tutImage.setLayoutParams(tutParam);
+		tutImage.setVisibility(View.INVISIBLE);
+		
+		iv = (ImageView) dialog.findViewById(R.id.reggieSmile);
+
 
 		dialog.show();
 	}
@@ -96,7 +117,7 @@ public class Tutorial implements View.OnClickListener{
 		case R.id.yesButton:
 			counter ++;
 
-			if (counter == 16){
+			if (counter == 17){
 				instructions = game.getInstructionList();
 
 				Arrow arrow = null;
@@ -128,7 +149,6 @@ public class Tutorial implements View.OnClickListener{
 
 	public void continueTutorial(){
 
-		ImageView iv = (ImageView) dialog.findViewById(R.id.reggieSmile);
 		Drawable myDrawable;
 		ViewTarget target;
 
@@ -154,7 +174,6 @@ public class Tutorial implements View.OnClickListener{
 			.setOnClickListener(this)
 			.build();	
 			sv.setButtonPosition(butParams);
-
 			break;
 
 		case 3:
@@ -188,7 +207,6 @@ public class Tutorial implements View.OnClickListener{
 			break;			
 
 		case 12:
-
 			dialog.hide();
 			target = new ViewTarget(R.id.new_box_button, main);
 			sv = new ShowcaseView.Builder(main, true)
@@ -201,10 +219,12 @@ public class Tutorial implements View.OnClickListener{
 
 			game.newInstruction(R.id.new_box_button);
 			main.updateDisplay();
-
 			break;
 
 		case 13:
+			tutDraw = main.getResources().getDrawable(R.drawable.tut_incdec);
+			tutImage.setImageDrawable(tutDraw);
+			tutImage.setVisibility(View.VISIBLE);
 
 			Box box = null;
 			instructions = game.getInstructionList();
@@ -226,8 +246,16 @@ public class Tutorial implements View.OnClickListener{
 			sv.setButtonPosition(butParams);
 			break;
 
-		case 15:
+		case 14:
+			tutImage.setVisibility(View.INVISIBLE);
+			break;
+			
+		case 16:
 
+			tutDraw = main.getResources().getDrawable(R.drawable.tut_loop);
+			tutImage.setImageDrawable(tutDraw);
+			tutImage.setVisibility(View.VISIBLE);
+			
 			game.newInstruction(R.id.new_box_button);
 			game.newInstruction(R.id.new_box_button);
 			main.updateDisplay();
@@ -243,15 +271,19 @@ public class Tutorial implements View.OnClickListener{
 			sv.setButtonPosition(butParams);
 			break;
 
-		case 16:
+		case 17:
+			tutImage.setVisibility(View.INVISIBLE);
 			myDrawable = main.getResources().getDrawable(R.drawable.reg_worry);
 			iv.setImageDrawable(myDrawable);	
 			break;	
 
-		case 17:
+		case 18:
 
 			myDrawable = main.getResources().getDrawable(R.drawable.reg_happy);
 			iv.setImageDrawable(myDrawable);	
+			tutDraw = main.getResources().getDrawable(R.drawable.tut_branch);
+			tutImage.setImageDrawable(tutDraw);
+			tutImage.setVisibility(View.VISIBLE);
 
 			Arrow arrow = null;
 			instructions = game.getInstructionList();
@@ -273,9 +305,12 @@ public class Tutorial implements View.OnClickListener{
 			.build();	
 			sv.setButtonPosition(butParams);
 			break;
-
-		case 19:
-
+			
+		case 19: 
+			tutImage.setVisibility(View.INVISIBLE);
+			break;
+			
+		case 20:
 			dialog.hide();
 			target = new ViewTarget(R.id.new_end_button, main);
 			sv = new ShowcaseView.Builder(main, true)
@@ -287,11 +322,10 @@ public class Tutorial implements View.OnClickListener{
 			sv.setButtonPosition(butParams);
 			break;
 
-		case 21:
+		case 22:
 
 			myDrawable = main.getResources().getDrawable(R.drawable.reg_awesome);
 			iv.setImageDrawable(myDrawable);	
-
 
 			dialog.hide();
 			target = new ViewTarget(R.id.bin_clear_button, main);
@@ -306,7 +340,7 @@ public class Tutorial implements View.OnClickListener{
 			sv.setButtonPosition(butParams);
 			break;	
 
-		case 22: 
+		case 23: 
 			File cache = main.getBaseContext().getCacheDir();
 			File temporary = new File(cache.getPath() + "/in.txt");
 			FileOutputStream fw = null;
@@ -315,7 +349,6 @@ public class Tutorial implements View.OnClickListener{
 			byte [] l1 = line1.getBytes();
 
 			try {
-
 				fw = new FileOutputStream(temporary);
 				fw.write(l1);
 
@@ -339,22 +372,19 @@ public class Tutorial implements View.OnClickListener{
 			main.setRegisters();
 
 			dialog.hide();
-			target = new ViewTarget(R.id.run_button, main);
-			sv = new ShowcaseView.Builder(main, true)
-			.setTarget(target)
-			.setContentTitle(showcaseTitles[7])
-			.setContentText(showcaseText[7])
-			.setOnClickListener(this)
-			.doNotBlockTouches()
-			.build();	
-			sv.setButtonPosition(butParams);
-			break;	
-			
-			//TODO - Tutorial not shown again
 
+			SharedPreferences pref = main.getSharedPreferences("MyPref", 0);
+			Editor edit = pref.edit();
+			edit.putBoolean("tutorial", false);
+			edit.commit();
+			
 		default:
 			break;
 		}
 	}
 
+	public Dialog getDialog(){
+		return dialog;
+	}
+	
 }

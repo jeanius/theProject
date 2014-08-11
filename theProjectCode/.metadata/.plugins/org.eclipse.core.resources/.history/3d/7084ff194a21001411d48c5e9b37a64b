@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">reggie</string>
+    <string name="action_settings">Settings</string>
+	<string name="arrow">Arrow</string>
+    <string name="box">Box</string>
+    <string name="end">End</string>
+    <string name="run">Run</string>
+    <string name="bin">Clear</string>
+    <string name="newgame">start game</string>
+    <string name="loadmenu">Load/Save</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="back">Back</string>
+    <string name="cont">Continue</string>
+    <string name="stop">Finish</string>
+    <string name="tutorial">Tutorial</string>
+    
+	<string name="Register0">Register0</string>
+	<string name="Register1">Register1</string>
+	<string name="Register2">Register2</string>
+	<string name="Register3">Register3</string>
+	<string name="Register4">Register4</string>
+	<string name="Register5">Register5</string>
+	<string name="Register6">Register6</string>
+	<string name="Register7">Register7</string>
+	<string name="Register8">Register8</string>
+	<string name="Register9">Register9</string>
+
+    <string-array
+        name="register_names">
+        <item>@string/Register0</item>
+        <item>@string/Register1</item>
+        <item>@string/Register2</item>
+        <item>@string/Register3</item>
+        <item>@string/Register4</item>
+        <item>@string/Register5</item>
+        <item>@string/Register6</item>
+        <item>@string/Register7</item>
+        <item>@string/Register8</item>
+        <item>@string/Register9</item>
+    </string-array> 
+      
+    <string-array name="instruction_icons">
+        <item>@drawable/teal</item>
+        <item>@drawable/red</item>
+        <item>@drawable/orange</item>
+        <item>@drawable/magenta</item>
+        <item>@drawable/green</item>    
+        <item>@drawable/blue</item>
+        <item>@drawable/yellow</item>
+        <item>@drawable/purple</item>
+        <item>@drawable/pink</item>   
+        <item>@drawable/brown</item>
+    </string-array>
+    
+    <!-- Tutorial Texts -->
+    
+	<string-array name="tutorial_text">
+        <item>@string/page1</item>
+        <item>@string/page2</item>
+        <item>@string/page3</item>
+        <item>@string/page4</item>
+        <item>@string/page5</item>
+        <item>@string/page6</item>
+        <item>@string/page7</item>
+        <item>@string/page8</item>
+        <item>@string/page9</item>
+        <item>@string/page10</item>
+        <item>@string/page11</item>
+        <item>@string/page12</item>
+        <item>@string/page13</item>
+        <item>@string/page14</item>
+        <item>@string/page15</item>
+        <item>@string/page16</item>
+        <item>@string/page17</item>
+        <item>@string/page18</item>
+        <item>@string/page19</item>
+        <item>@string/page20</item>
+        <item>@string/page21</item>
+        <item>@string/page22</item>
+    </string-array>
+    
+    
+    <string name="page1">Hi there! I\'m <b>Reggie</b>, the Register machine! \n\n I\'m here to help you understand how a computer works. \n\n Would you like to complete the tutorial?</string>
+    <string name="page2">Fantastic! Let\'s get started! \n\n I am a Register machine - a simple computer. \n\nI have 10 pieces of memory, called registers. Each one can hold a number.</string>
+    <string name="page3">You communicate with me using instructions, telling me what to do with the numbers entered in these registers. \n\nI\'ll talk about the instructions later. </string>
+    <string name="page4">This is how a real computer works! \n\n Programs are written using instructions and given to the CPU. \n\n The CPU processes the instruction, and decides what to do.</string>
+    <string name="page5">The CPU stores numbers in the memory on the computer. \n\n It is stored in the form of binary code (like 01010010) and the CPU does calculations like "ADD" and "SUBTRACT" on these numbers, after pulling them from memory.</string>
+    <string name="page6"><i>Everything</i> a computer does and <i>everything</i> it stores in memory works with this binary code. \n\n Programs just interpret the code differently.</string>
+    <string name="page7">A game could read the binary (01010101) and take that to mean \"The character has a red hat\". \n\n A text editor could interpret it as \"This next piece of text is <b>bold!</b>\" </string>
+    <string name="page8">It all depends on the programmer who has created the game or text editor! \n\n A computer can do over 100 MILLION calculations with the binary code per SECOND! \n\n That\'s why the updates on screen are instant.</string>
+    <string name="page9">When you change text to <b>bold</b>, the text editor sends binary instructions to the CPU. \n\n The CPU stores this binary in memory - perhaps next to the binary code for the text!</string>
+    <string name="page10">The CPU does not know what \"bold\" means, it is only dealing with binary numbers. \n\n It is just a calculator, performing tiny computations, one at a time.  \n\n But the editor knows what the code means when it reads it in, and displays it to you as <b>bold</b>!</string>
+    <string name="page11">So, now on to me! \n\n You can talk to me with 3 instructions - increment, decrement/branch and end. \n\n I can do one of these at a time. \n\n Put them along the line on screen, and you\'ve written a program!</string>
+    <string name="page12">Increment means \"Increase the register by 1, and go onto the next instruction.\" \n\n If you wanted to increment a register by 5, you need to tell me to increment 5 times!</string>
+    <string name="page13">Simple! \n\n That box above the line tells me I need to INCREMENT the first register (teal colour) by 1. \n\n You can change it to a decrement/branch, or change the register it affects too.</string>
+   	<string name="page14">Decrement/branch means \"Decrease the register by 1, and go to the next instruction.\" \n\n (Don\'t worry, I\'ll come back to the branch part later!)</string>
+   	<string name="page15">Sometimes, you might want to repeat your instruction instead of moving to the next one. \n\n You can change the direction of the program with an arrow. </string>
+   	<string name="page16">This arrow tells me that, instead of going to the next instruction, I should return to the instruction being pointed at. \n\n In this case, the instruction it tells me to repeat is increment the first register over and over!</string>
+    <string name="page17">I can only hold positive numbers in my memory - so what happens if you tell me to decrement, and the register is already zero? \n\n That\'s why we need a branch! It is an arrow beneath the line, telling me where to go, if the register is zero! </string>
+    <string name="page18">Every decrement must have a branch, or end instruction, in case the register is zero.</string>
+    <string name="page19">End is very useful, so I know when to stop! \n\n It can be used in place of a branch - this means, if the register is zero, I will stop. \n\n Of course, you can also place it on an increment, if you want to increment a register once, then stop.</string>
+    <string name="page20">End can also be changed - when it is tapped, it moves backwards along the string of instructions.</string>
+    <string name="page21">Some final points before you start your journey! \n\n You can access this tutorial, load and save programs using the buttons at the top. When you get good at talking to me, you can try writing your own text file programs and load them! \n\n Also, X clears the screen.</string>
+    <string name="page22">I\'ve loaded a small program for you. \n\n Try and figure out what it does, and then hit \"Run\" to see if you were right. \n\n Good luck and happy programming!</string>
+
+    
+    <string-array name="showcase_text">
+        <item>@string/show1</item>
+        <item>@string/show2</item>
+        <item>@string/show3</item>
+        <item>@string/show4</item>
+        <item>@string/show5</item>
+        <item>@string/show6</item>
+        <item>@string/show7</item>
+        <item>@string/show8</item>
+    </string-array>
+    
+    <string name="show1">Here are my registers - tapping them will enter some data. Long press will zero the register - Try it! Scroll down to see my 10 registers.</string>
+    <string name="show2">Click the box to add an increment instruction</string>
+    <string name="show3">Tap me to change my register. \n\nDrag me below the line to make me a decrement/branch instruction!</string>
+    <string name="show4">Click the triangle to add an arrow</string>
+    <string name="show5">Drag me to a different instruction to loop back to. Clicking me will change me into a branch - Try it!</string>
+    <string name="show6">Click the icon to add an end</string>
+    <string name="show7">This is the clear button. It changes to a "Bin" to drop instructions into, when you drag them - Try it!</string>
+    <string name="show8">What does this program do? Try run it and find out!</string>
+    
+    <string-array name="showcase_title_text">
+        <item>@string/title1</item>
+        <item>@string/title2</item>
+        <item>@string/title3</item>
+        <item>@string/title4</item>
+        <item>@string/title5</item>
+        <item>@string/title6</item>
+        <item>@string/title7</item>
+        <item>@string/title8</item>
+    </string-array>
+    
+    <string name="title1">Memory Registers</string>
+    <string name="title2">Increment</string>
+    <string name="title3">Change the instruction</string>
+    <string name="title4">Arrow</string>
+    <string name="title5">Change the arrow</string>
+    <string name="title6">End</string>
+    <string name="title7">Clear/Bin</string>
+    <string name="title8">Run</string>
+   
+</resources>

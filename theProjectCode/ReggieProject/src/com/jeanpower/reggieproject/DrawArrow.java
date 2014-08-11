@@ -1,17 +1,23 @@
 
 package com.jeanpower.reggieproject;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.CornerPathEffect;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PathEffect;
+import android.graphics.PorterDuff.Mode;
+import android.graphics.RectF;
+import android.util.Log;
 
 public class DrawArrow {
 	Paint paint = new Paint();
-	Path path = new Path();
+	Path pathBefore = new Path();
+	Path pathAfter = new Path();
 	int startColour;
 	int endColour;
 	LinearGradient lg;
@@ -20,74 +26,103 @@ public class DrawArrow {
 	boolean loop;
 	float arrowWidth;
 	float arrowHeight;
+	Context context;
 
-	public DrawArrow(Arrow a, int width, int height){
+	public DrawArrow(Arrow a, int width, int height, Context con){
 
 		paint.setStrokeWidth(6);
 		paint.setStyle(Paint.Style.STROKE); 
+		context = con;
+		
+
 		arrow = a;
 		numberButtons = arrow.getSpaces();
 		loop = arrow.getType();
 		arrowWidth = width;
-		arrowHeight = height; //Smaller than the instruction buttons.
+		arrowHeight = height;
+	}
+	
+	public void setColours(int startC, int endC){
+		startColour = startC;
+		endColour = endC;
 	}
 
 	public Bitmap getImage(){
 
-		Bitmap bitmap = Bitmap.createBitmap(((int) arrowWidth * numberButtons), (int) arrowHeight, Bitmap.Config.ALPHA_8);
+		Bitmap bitmap = Bitmap.createBitmap(((int) arrowWidth * numberButtons), (int) arrowHeight, Bitmap.Config.ARGB_8888);
+		bitmap.setHasAlpha(true);
 		Canvas canvas = new Canvas(bitmap);
+		
+		PathEffect effect = new CornerPathEffect(3.0f);
+		paint.setPathEffect(effect);
 
 		if (loop){
 			
 			if (numberButtons <= 1){
-				path.moveTo((arrowWidth * numberButtons)/2 + arrowWidth/4, arrowHeight);
-				path.lineTo((arrowWidth * numberButtons)/2, arrowHeight/2);
-				path.lineTo((arrowWidth * numberButtons)/2 + arrowWidth/4, 0);
+				
+				pathBefore.moveTo(arrowWidth/4, 0);
+				pathBefore.lineTo(arrowWidth/2, arrowHeight);
+				pathBefore.lineTo(arrowWidth - arrowWidth/4, 0);
 			}
 
 			else {
-				path.moveTo(arrowWidth - arrowWidth/3, arrowHeight);
-				path.lineTo(arrowWidth - arrowWidth/3, arrowHeight/2);
-				path.lineTo((arrowWidth * numberButtons)/2, arrowHeight/2);
-				path.lineTo((arrowWidth * numberButtons)/2 + arrowWidth/4, arrowHeight);
-				path.lineTo((arrowWidth * numberButtons)/2, arrowHeight/2);
-				path.lineTo((arrowWidth * numberButtons)/2 + arrowWidth/4, 0);
-				path.lineTo((arrowWidth * numberButtons)/2, arrowHeight/2);
-				path.lineTo((arrowWidth * numberButtons) - arrowWidth/3, arrowHeight/2);
-				path.lineTo((arrowWidth * numberButtons) - arrowWidth/3, arrowHeight);
+				pathBefore.moveTo(arrowWidth - arrowWidth/3, arrowHeight);
+				pathBefore.lineTo(arrowWidth - arrowWidth/3, arrowHeight/2);
+				pathBefore.lineTo((arrowWidth * numberButtons)/2, arrowHeight/2);
 				
+				pathAfter.moveTo((arrowWidth * numberButtons)/2 + arrowWidth/4, arrowHeight);
+				pathAfter.lineTo((arrowWidth * numberButtons)/2, arrowHeight/2);
+				pathAfter.lineTo((arrowWidth * numberButtons)/2 + arrowWidth/4, 0);
+				pathAfter.lineTo((arrowWidth * numberButtons)/2, arrowHeight/2);
+				pathAfter.lineTo((arrowWidth * numberButtons) - arrowWidth/3, arrowHeight/2);
+				pathAfter.lineTo((arrowWidth * numberButtons) - arrowWidth/3, arrowHeight);		
 			}
-
+			
+			paint.setColor(endColour);
+			canvas.drawColor(Color.TRANSPARENT);
+			canvas.drawPath(pathBefore, paint);
+			
+			if (numberButtons > 1){
+				paint.setColor(startColour);
+				canvas.drawPath(pathAfter, paint);
+			}
 		}
 
 		else {
 
 			if (numberButtons <= 1){
-				path.moveTo((arrowWidth * numberButtons)/2, arrowHeight);
-				path.lineTo((arrowWidth * numberButtons)/2 + arrowWidth/4, arrowHeight/2);
-				path.lineTo((arrowWidth * numberButtons)/2, 0);
-
+				pathBefore.moveTo(arrowWidth/4, arrowHeight);
+				pathBefore.lineTo(arrowWidth/2, 0);
+				pathBefore.lineTo(arrowWidth - arrowWidth/4, arrowHeight);
 			}
 			
 			else {
-				path.moveTo(arrowWidth/3, 0);
-				path.lineTo(arrowWidth/3, arrowHeight/2);
-				path.lineTo((arrowWidth * numberButtons)/2 + arrowWidth/4, arrowHeight/2);
+				RectF rec = new RectF(arrowWidth/3, 0, arrowWidth - arrowWidth/3, arrowHeight);
 				
-				path.lineTo((arrowWidth * numberButtons)/2, arrowHeight);
-				path.lineTo((arrowWidth * numberButtons)/2 + arrowWidth/4, arrowHeight/2);
-				path.lineTo((arrowWidth * numberButtons)/2, 0);
-				path.lineTo((arrowWidth * numberButtons)/2 + arrowWidth/4, arrowHeight/2);
+				pathBefore.moveTo(arrowWidth - arrowWidth/3, arrowHeight/2);
+				pathBefore.addOval(rec, Path.Direction.CW);
+				pathBefore.lineTo((arrowWidth * numberButtons)/2 + arrowWidth/4, arrowHeight/2);
 				
-				path.lineTo((arrowWidth * numberButtons) - arrowWidth/3, arrowHeight/2);
-				path.lineTo((arrowWidth * numberButtons) - arrowWidth/3, 0);
+				pathAfter.moveTo((arrowWidth * numberButtons)/2, arrowHeight);
+				pathAfter.lineTo((arrowWidth * numberButtons)/2 + arrowWidth/4, arrowHeight/2);
+				pathAfter.lineTo((arrowWidth * numberButtons)/2, 0);
+				pathAfter.lineTo((arrowWidth * numberButtons)/2 + arrowWidth/4, arrowHeight/2);
+				
+				pathAfter.lineTo((arrowWidth * numberButtons) - arrowWidth/3, arrowHeight/2);
+				pathAfter.lineTo((arrowWidth * numberButtons) - arrowWidth/3, 0);
+			}
+			
+			paint.setColor(startColour);
+			
+			canvas.drawColor(Color.TRANSPARENT);
+			canvas.drawPath(pathBefore, paint);
+			
+			if (numberButtons > 1){
+				paint.setColor(endColour);
+				canvas.drawPath(pathAfter, paint);
 			}
 		}
 
-		PathEffect effect = new CornerPathEffect(3.0f);
-		paint.setPathEffect(effect);
-
-		canvas.drawPath(path, paint);
 
 		return bitmap;
 	}
