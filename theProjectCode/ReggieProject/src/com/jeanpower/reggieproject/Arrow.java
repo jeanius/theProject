@@ -1,5 +1,23 @@
 package com.jeanpower.reggieproject;
 
+
+/**
+ * Arrow model object
+ * <p>
+ * 
+ * An arrow corresponds to either an increment or decrement/branch instruction.<p>
+ * Holds attributes to relating to identity and position of Arrow within the doubly linked list 
+ * of instructions, type of Arrow, where arrow is pointing, number of instructions arrow spans and
+ *  action of Arrow when it is doing work.
+ * <p>
+ * Implements instruction interface.
+ * <p>
+ * Note: Does not hold drawing information, as this is controlled by MainActivity.
+ * <p>
+ * @author Jean Power 2014
+ * 
+ */
+
 public class Arrow implements Instruction{
 
 	private Instruction toInstruction;
@@ -9,8 +27,13 @@ public class Arrow implements Instruction{
 	private int register;
 	private int identity;
 	private boolean loop;
-	private int spaces;
-
+	private int spaces; //Corresponds to number of instructions between pred and to, allowing for correct length
+	
+	/**
+	 * Constructor.
+	 * 
+	 * @param Game - calling class.
+	 */
 	public Arrow(Game g){
 
 		caller = g;
@@ -20,6 +43,23 @@ public class Arrow implements Instruction{
 		spaces = 1;
 	}
 
+	/**
+	 * Completes work of Arrow instruction
+	 * <p>
+	 * If loop:<p>
+	 * - If predecessor is decrement/branch box, and decrement was possible, loop is followed. <p>
+	 * - If predecessor is increment, loop is followed. <p>
+	 * - Else, currPos is set to successor. Loop is skipped, if program tried to decrement past zero.<p>
+	 * 
+	 * If branch:<p>
+	 * - If predecessor is decrement/branch box, and decrement was not possible, branch is followed. <p>
+	 * - If predecessor is increment, currPos is set to successor.<p>
+	 * - Else, currPos is set to null. There has been an issue with program building.<p>
+	 * - 
+	 * <p>
+	 * @param void
+	 * @return void
+	 */
 	@Override
 	public void doWork() {
 
@@ -66,36 +106,23 @@ public class Arrow implements Instruction{
 			}
 		}
 	}
-
-	@Override
-	public void setSucc(Instruction successor) {
-		succ = successor;
-	}
-
-	@Override
-	public Instruction getSucc() {
-
-		return succ;
-	}
-
-	@Override
-	public void setPred(Instruction predecessor) {
-		pred = predecessor;
-
-		if (pred != null){
-			register = pred.getRegister();
-		}
-	}
-
+	
+	/**
+	 * Calculates span of arrow
+	 * <p>
+	* Iterates through the list of instructions, adding 1 for each Box encountered.
+	 * <p>
+	 * @param void
+	 * @return void
+	 */
 	public void calculateSpaces(){
 
 		int count = 1; 
 		Instruction currPos;
 
-		if (loop){
+		if (loop){ // Loop must iterates through predecessors of own predecessor, until reaches "To Instruction"
 
 			currPos = pred;
-
 
 			while (currPos != null && currPos.getId() != toInstruction.getId()){
 
@@ -108,7 +135,7 @@ public class Arrow implements Instruction{
 			}
 		}
 
-		else {
+		else {//Branch must iterates through successors of own predecessor, until reaches "To Instruction"
 
 			if (pred.getId() != toInstruction.getId()){
 
@@ -126,40 +153,64 @@ public class Arrow implements Instruction{
 
 		spaces = count;
 	}
+	
+	
+	//Getters/Setters
 
-	public int getSpaces(){
-		return spaces;
+	/** Set successor of this instruction
+	 * @param Instruction - new successor
+	 * @return void 
+	 */
+	@Override
+	public void setSucc(Instruction successor) {
+		succ = successor;
 	}
 
+	/** Return successor of this instruction
+	 * @param void
+	 * @return Instruction - successor 
+	 */
+	@Override
+	public Instruction getSucc() {
+
+		return succ;
+	}
+
+	/** Set predecessor of this instruction and associated register
+	 * @param Instruction - new predecessor
+	 * @return void 
+	 */
+	@Override
+	public void setPred(Instruction predecessor) {
+		pred = predecessor;
+
+		if (pred != null){
+			register = pred.getRegister();
+		}
+	}
+	
+	/** Return predecessor of this instruction
+	 * @param void
+	 * @return Instruction - predecessor
+	 */
 	@Override
 	public Instruction getPred() {
 		return pred;
 
 	}
-
-	@Override
-	public void setRegister() {
-	}
-
-	@Override
-	public int getRegister() {
-		return register;
-	}
-
-	@Override
-	public void setId(int ID) {
-		identity = ID;
-	}
-
-	@Override
-	public int getId() {
-		return identity;
-	}
-
+	
+	/** Return type of arrow - true loop, false branch
+	 * @param void
+	 * @return boolean 
+	 */
 	public boolean getType(){
 		return loop;
 	}
 
+	/** Switch type of arrow - true loop, false branch
+	 * @param void
+	 * @return void
+	 */
 	public void setType(){
 
 		if (loop)
@@ -173,10 +224,57 @@ public class Arrow implements Instruction{
 		}
 	}
 
+	/** Return spaces - span of arrow
+	 * @param void
+	 * @return int - number of Boxes spanned
+	 */
+	public int getSpaces(){
+		return spaces;
+	}
+
+	/** Return register for this instruction
+	 * <p>
+	 * @param void
+	 * @return int - register number
+	 */
+	@Override
+	public int getRegister() {
+		return register;
+	}
+
+	/** Set ID of this instruction
+	 * <p>
+	 * ID is unique to this Arrow, and connects onscreen view with Arrow
+	 * <p>
+	 * @param int - ID
+	 * @return void 
+	 */
+	@Override
+	public void setId(int ID) {
+		identity = ID;
+	}
+	
+	/** Return ID for this instruction
+	 * @param void
+	 * @return int - register number
+	 */
+	@Override
+	public int getId() {
+		return identity;
+	}
+
+	/** Set "To" for this arrow that it is pointing at
+	 * @param Instruction - new toInstruction
+	 * @return void 
+	 */
 	public void setTo(Instruction to){
 		toInstruction = to;
 	}
 
+	/** Return "To" instruction for this arrow
+	 * @param void
+	 * @return Instruction - to instruction
+	 */
 	public Instruction getTo(){
 		return toInstruction;
 	}

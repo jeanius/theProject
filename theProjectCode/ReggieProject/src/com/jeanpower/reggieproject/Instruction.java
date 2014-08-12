@@ -1,15 +1,21 @@
 package com.jeanpower.reggieproject;
+/**
+ * Instruction interface.
+ * <p>
+ * Covers actions that are required of all instructions to ensure the doubly linked list is maintained,
+ * and information about the Instruction can be taken.
+ * 
+ * @author Jean
+ *
+ */
 
 public interface Instruction {
-	
-	
 
 	public void doWork();
 	public void setSucc(Instruction successor);
 	public Instruction getSucc();
 	public void setPred(Instruction predecessor);
 	public Instruction getPred();
-	public void setRegister();
 	public int getRegister();
 	public void setId(int ID);
 	public int getId();

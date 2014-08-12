@@ -823,11 +823,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 						prevInstruction = prevInstruction.getPred();
 					}
 
-					// If previous instruction is also a box, remove the connecting arrow, to allow refresh
-					if (prevInstruction instanceof Box) {
 						prevBox = (Box) prevInstruction;
-						//container.removeView(prevBox.getConnect());
-					}
 
 					instructionParameters.addRule(RelativeLayout.RIGHT_OF, prevBox.getId()); // Right of the current instruction
 				}
@@ -842,6 +838,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 				arrow.calculateSpaces();
 				button.setBackgroundColor(Color.TRANSPARENT);
 				DrawArrow drawArrow = new DrawArrow(arrow, buttonWidth,buttonHeight, getApplicationContext());
+				//If pred is arrow/end, it does have an associated register (same as predecessor)
 				drawArrow.setColours(registerColours[arrow.getPred().getRegister()], registerColours[arrow.getTo().getRegister()]);
 
 				int marginTop = 0;

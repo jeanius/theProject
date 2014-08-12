@@ -1,0 +1,147 @@
+package com.jeanpower.reggieproject;
+
+/**
+ * Box model object
+ * <p>
+ * 
+ * A box corresponds to either an increment or decrement/branch instruction.
+ * Holds attributes to relating to identity and position of Box within the doubly linked list 
+ * of instructions, type of Box,  action of Box when it is doing work, associated register.
+ * 
+ * Implements instruction interface.
+ * 
+ * Note: Does not hold drawing information, as this is controlled by MainActivity.
+ * 
+ */
+
+public class Box implements Instruction{
+	
+	private int register;
+	private Game caller;
+	private Instruction succ;
+	private Instruction pred;
+	private boolean inc;
+	private int identity;
+	private boolean decrementDone;
+	
+	
+	  /**
+	  * Constructor.
+	  * 
+	  * @param Game, the calling class.
+	  */
+	public Box(Game g){
+		 
+		inc = true;
+		register = 0;
+		caller = g;
+		succ = null;
+		pred = null;
+	}
+
+	  /**
+	  * Completes work of Box instruction
+	  * <p>
+	  * If increment, box increments its associated register, sets currPos to its successor.
+	  * If decrement, box decrements its associated register, sets currPos to its successor.
+	  * Also captures if decrement was possible (Cannot reduce past zero). This is used to control action next instruction (branch, end)
+	  * <p>
+	  * @param void
+	  * @return void
+	  */
+
+	@Override
+	public void doWork() {
+		
+		if (inc)
+		{
+			caller.incrementReg(register);
+			caller.setCurrPos(succ);
+		}
+		
+		else 
+		{
+			decrementDone = caller.decrementReg(register); 
+			caller.setCurrPos(succ);
+		}
+	}
+
+	  /** Return if decrement was done
+	   * 
+	   * @return boolean 
+	   *  
+	   *  
+	*/
+	public boolean decDone(){
+		return decrementDone;
+	}
+	
+	@Override
+	public void setSucc(Instruction successor) {	
+		succ = successor;
+	}
+	
+	public boolean getType(){
+		return inc;
+	}
+
+	public void setType(){
+		
+		if (inc)
+		{
+			inc = false;
+		}
+		
+		else 
+		{
+			inc = true;
+		}
+	}
+
+	@Override
+	public Instruction getSucc() {
+			return succ;
+	}
+
+	@Override
+	public void setPred(Instruction predecessor) {
+		pred = predecessor;
+	}
+
+	@Override
+	public Instruction getPred() {
+			return pred;
+	}
+
+	@Override
+	public void setRegister() {
+		
+		register++;
+
+		if (register>=caller.getMaxReg()){
+			
+			register = 0;
+		}
+	}
+	
+
+	public void changeRegister(int reg) {
+		
+		register = reg;
+	}
+
+	@Override
+	public int getRegister() {
+		return register;
+	}
+
+	@Override
+	public void setId(int ID) {
+		identity = ID;
+	}
+	
+	@Override
+	public int getId() {
+		return identity;
+	}
+}

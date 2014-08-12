@@ -1,5 +1,21 @@
 package com.jeanpower.reggieproject;
 
+/**
+ * End model object
+ * <p>
+ * 
+ * And End stops the program if placed on increment, or is used in place of Branch to stop program if decrement past zero.<p>
+ * Holds attributes to relating to identity and position of Box within the doubly linked list 
+ * of instructions, action of End when it is doing work, and associated register.
+ * <p>
+ * Implements instruction interface.
+ * <p>
+ * Note: Does not hold drawing information, as this is controlled by MainActivity.
+ * <p>
+ * @author Jean Power 2014
+ * 
+ */
+
 public class End implements Instruction{
 
 	private Game caller;
@@ -8,6 +24,13 @@ public class End implements Instruction{
 	private Instruction pred;
 	private int register;
 
+	
+	/**
+	 * Constructor.
+	 * 
+	 * @param Game - calling class.
+	 */
+	
 	public End(Game g){
 
 		caller = g;
@@ -15,7 +38,16 @@ public class End implements Instruction{
 		pred = null;
 	}
 
-
+	/**
+	 * Completes work of End instruction
+	 * <p>
+	 * - If predecessor is decrement/branch box, and decrement was not possible, program is stopped (currPos set to null)<p>
+	 * - If predecessor is increment, program is stopped (currPos set to null)<p>
+	 * - Else, currPos is set to successor. <p>
+	 * <p>
+	 * @param void
+	 * @return void
+	 */
 	@Override
 	public void doWork() {
 
@@ -38,45 +70,76 @@ public class End implements Instruction{
 		}
 
 	}
+	
+	
+	//Getters/Setters
 
+	/** Set successor of this instruction
+	 * @param Instruction - new successor
+	 * @return void 
+	 */
 	@Override
 	public void setSucc(Instruction successor) {
 		succ = successor;
 	}
-
+	
+	/** Return successor of this instruction
+	 * @param void
+	 * @return Instruction - successor 
+	 */
 	@Override
 	public Instruction getSucc() {
 		return succ;
 	}
-
+	
+	/** Set predecessor of this instruction and associated register
+	 * @param Instruction - new predecessor
+	 * @return void 
+	 */
 	@Override
 	public void setPred(Instruction predecessor) {
 		pred = predecessor;
+		
 		if (pred != null){
 			register = pred.getRegister();
 		}
 	}
 
+	/** Return predecessor of this instruction
+	 * @param void
+	 * @return Instruction - predecessor
+	 */
 	@Override
 	public Instruction getPred() {
 		return pred;
 	}
 
-	@Override
-	public void setRegister() {		
-	}
-
+	/** Return register for this instruction
+	 * <p>
+	 * @param void
+	 * @return int - register number
+	 */
 	@Override
 	public int getRegister() {
 		return register;
 	}
 
-
+	/** Set ID of this instruction
+	 * <p>
+	 * ID is unique to this End, and connects onscreen view with End
+	 * <p>
+	 * @param int - ID
+	 * @return void 
+	 */
 	@Override
 	public void setId(int ID) {
 		identity = ID;
 	}
-
+	
+	/** Return ID for this instruction
+	 * @param void
+	 * @return int - register number
+	 */
 	@Override
 	public int getId() {
 		return identity;

@@ -1,4 +1,3 @@
-
 package com.jeanpower.reggieproject;
 
 import android.content.Context;
