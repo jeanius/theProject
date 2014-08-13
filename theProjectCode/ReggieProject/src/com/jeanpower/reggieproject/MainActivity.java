@@ -837,7 +837,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 				Arrow arrow = (Arrow) inst;
 				arrow.calculateSpaces();
 				button.setBackgroundColor(Color.TRANSPARENT);
-				DrawArrow drawArrow = new DrawArrow(arrow, buttonWidth,buttonHeight, getApplicationContext());
+				DrawArrow drawArrow = new DrawArrow(arrow, buttonWidth,buttonHeight);
 				//If pred is arrow/end, it does have an associated register (same as predecessor)
 				drawArrow.setColours(registerColours[arrow.getPred().getRegister()], registerColours[arrow.getTo().getRegister()]);
 

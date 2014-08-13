@@ -5,8 +5,8 @@ package com.jeanpower.reggieproject;
  * <p>
  * 
  * A box corresponds to either an increment or decrement/branch instruction.<p>
- * Holds attributes to relating to identity and position of Box within the doubly linked list 
- * of instructions, type of Box, action of Box when it is doing work, and associated register.
+ * Holds attributes to relating to identity and position of Box within the doubly linked list <p>
+ * of instructions, type of Box, action of Box when it is doing work, and associated register.<p>
  * <p>
  * Implements instruction interface.
  * <p>
@@ -44,14 +44,13 @@ public class Box implements Instruction{
 	/**
 	 * Completes work of Box instruction
 	 * <p>
-	 * If increment, box increments its associated register, sets currPos to its successor.
-	 * If decrement/branch, box decrements its associated register, sets currPos to its successor.
-	 * Also captures if decrement was possible (Cannot reduce past zero). This is used to control action next instruction (branch, end)
+	 * If increment, box increments its associated register, sets currPos to its successor.<p>
+	 * If decrement/branch, box decrements its associated register, sets currPos to its successor.<p>
+	 * Also captures if decrement was possible (Cannot reduce past zero). This is used to control action next instruction (branch, end)<p>
 	 * <p>
 	 * @param void
 	 * @return void
 	 */
-
 	@Override
 	public void doWork() {
 
@@ -68,9 +67,9 @@ public class Box implements Instruction{
 		}
 	}
 
-	
+
 	//Getters/Setters
-	
+
 	/** Return if decrement was done
 	 * @param void
 	 * @return boolean 
@@ -114,7 +113,7 @@ public class Box implements Instruction{
 	public Instruction getPred() {
 		return pred;
 	}
-	
+
 	/** Return type of box - true increment, false decrement/branch
 	 * @param void
 	 * @return boolean 
@@ -142,8 +141,8 @@ public class Box implements Instruction{
 
 	/** Set associated register for this instruction
 	 * <p>
-	 * As on screen view of Box is tapped, the associated register is updated
-	 * to the next register.
+	 * As on screen view of Box is tapped, the associated register is updated<p>
+	 * to the next register.<p>
 	 * <p>
 	 * @param void
 	 * @return void 
@@ -169,7 +168,7 @@ public class Box implements Instruction{
 
 	/** Set associated register for this instruction
 	 * <p>
-	 * Direct setting of register, not iteration
+	 * Direct setting of register, not iteration<p>
 	 * @param int - register number
 	 * @return void
 	 */
@@ -177,7 +176,7 @@ public class Box implements Instruction{
 		register = reg;
 	}
 
-	
+
 	/** Set ID of this instruction
 	 * <p>
 	 * ID is unique to this Box, and connects onscreen view with Box.

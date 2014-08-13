@@ -5,8 +5,8 @@ package com.jeanpower.reggieproject;
  * <p>
  * 
  * And End stops the program if placed on increment, or is used in place of Branch to stop program if decrement past zero.<p>
- * Holds attributes to relating to identity and position of Box within the doubly linked list 
- * of instructions, action of End when it is doing work, and associated register.
+ * Holds attributes to relating to identity and position of Box within the doubly linked list <p>
+ * of instructions, action of End when it is doing work, and associated register.<p>
  * <p>
  * Implements instruction interface.
  * <p>
@@ -126,7 +126,7 @@ public class End implements Instruction{
 
 	/** Set ID of this instruction
 	 * <p>
-	 * ID is unique to this End, and connects onscreen view with End
+	 * ID is unique to this End, and connects onscreen view with End<p>
 	 * <p>
 	 * @param int - ID
 	 * @return void 

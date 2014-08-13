@@ -1,14 +1,13 @@
 package com.jeanpower.reggieproject;
 
-
 /**
  * Arrow model object
  * <p>
  * 
  * An arrow corresponds to either an increment or decrement/branch instruction.<p>
- * Holds attributes to relating to identity and position of Arrow within the doubly linked list 
- * of instructions, type of Arrow, where arrow is pointing, number of instructions arrow spans and
- *  action of Arrow when it is doing work.
+ * Holds attributes to relating to identity and position of Arrow within the doubly linked list <p>
+ * of instructions, type of Arrow, where arrow is pointing, number of instructions arrow spans and<p>
+ * action of Arrow when it is doing work.
  * <p>
  * Implements instruction interface.
  * <p>
@@ -28,7 +27,7 @@ public class Arrow implements Instruction{
 	private int identity;
 	private boolean loop;
 	private int spaces; //Corresponds to number of instructions between pred and to, allowing for correct length
-	
+
 	/**
 	 * Constructor.
 	 * 
@@ -106,11 +105,11 @@ public class Arrow implements Instruction{
 			}
 		}
 	}
-	
+
 	/**
 	 * Calculates span of arrow
 	 * <p>
-	* Iterates through the list of instructions, adding 1 for each Box encountered.
+	 * Iterates through the list of instructions, adding 1 for each Box encountered.
 	 * <p>
 	 * @param void
 	 * @return void
@@ -153,8 +152,8 @@ public class Arrow implements Instruction{
 
 		spaces = count;
 	}
-	
-	
+
+
 	//Getters/Setters
 
 	/** Set successor of this instruction
@@ -188,7 +187,7 @@ public class Arrow implements Instruction{
 			register = pred.getRegister();
 		}
 	}
-	
+
 	/** Return predecessor of this instruction
 	 * @param void
 	 * @return Instruction - predecessor
@@ -198,7 +197,7 @@ public class Arrow implements Instruction{
 		return pred;
 
 	}
-	
+
 	/** Return type of arrow - true loop, false branch
 	 * @param void
 	 * @return boolean 
@@ -244,7 +243,7 @@ public class Arrow implements Instruction{
 
 	/** Set ID of this instruction
 	 * <p>
-	 * ID is unique to this Arrow, and connects onscreen view with Arrow
+	 * ID is unique to this Arrow, and connects onscreen view with Arrow<p>
 	 * <p>
 	 * @param int - ID
 	 * @return void 
@@ -253,7 +252,7 @@ public class Arrow implements Instruction{
 	public void setId(int ID) {
 		identity = ID;
 	}
-	
+
 	/** Return ID for this instruction
 	 * @param void
 	 * @return int - register number

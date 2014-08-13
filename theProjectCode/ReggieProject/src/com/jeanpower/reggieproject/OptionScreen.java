@@ -3,7 +3,10 @@ package com.jeanpower.reggieproject;
 /**
  * Option Screen for Reggie. 
  *<p>
- * Currently holds "Start Game" but allows for extension to hold "Load Game" in future
+ * Currently holds "Start Game" but allows for extension to hold "Load Game" in future<p>
+ * 
+ * Font from:
+ * http://www.fontspace.com/qbotype/zian
  * 
  */
 
@@ -29,9 +32,9 @@ public class OptionScreen extends Activity implements View.OnClickListener{
 		newButton.setOnClickListener(this);
 
 	}
-/**
- * When "New Game" button is clicked, the option screen activity is finished, and the MainActivity is started 
- */
+	/**
+	 * When "New Game" button is clicked, the option screen activity is finished, and the MainActivity is started 
+	 */
 	@Override
 	public void onClick(View v) {
 
