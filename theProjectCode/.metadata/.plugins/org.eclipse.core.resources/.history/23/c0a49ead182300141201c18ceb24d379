@@ -41,6 +41,7 @@ public class Arrow implements Instruction{
 		pred = null;
 		loop = true;
 		spaces = 1;
+		setSucc = false;
 	}
 
 	/**
@@ -62,8 +63,6 @@ public class Arrow implements Instruction{
 	 */
 	@Override
 	public void doWork() {
-		
-		setSucc = false;
 
 		if (loop)
 		{
@@ -87,7 +86,6 @@ public class Arrow implements Instruction{
 					caller.setCurrPos(toInstruction);
 				}
 			}
-			
 			else {
 				caller.setCurrPos(toInstruction);
 			}

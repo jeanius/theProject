@@ -773,9 +773,9 @@ public class Game {
 		protected Void doInBackground(Void... params) {
 
 			while (null != currPos){
-
+				
 				if (currPos instanceof Box){
-
+					
 					prevPos = currPos;
 					currPos.doWork();
 
@@ -788,35 +788,30 @@ public class Game {
 					catch (Exception e){
 						Log.d("This was interrupted", "interrupted");
 					}	
-
-				}
-
-				else if (currPos instanceof Arrow){
-
-					Arrow currArrow = (Arrow) currPos;
-
-					prevPos = currPos;
-					currPos.doWork();
-
-					boolean setSucc = currArrow.getIfSet();
-
-					if (currArrow.getType() && !setSucc || !currArrow.getType() && !setSucc){
-						
-						activity.updateInstructionDisplay(prevPos);
-
-						try {
-							Thread.sleep(1000);
-							activity.updateInstructionDisplay(prevPos);
-						}
-						catch (Exception e){
-							Log.d("This was interrupted", "interrupted");
-						}	
-
-					}
+					
 				}
 				
-				else {
+				else if (currPos instanceof Arrow){
+					
+					Arrow currArrow = (Arrow) currPos;
+					
+					prevPos = currPos;
 					currPos.doWork();
+					
+					if (null != currPos){
+					if (currArrow.getType()){
+						
+						if (currPos.getId() == currArrow.getTo().getId()){
+							
+						}
+						
+					}
+					
+					else {
+						
+					}
+
+					}
 				}
 			}
 			activity.resetRunButton();

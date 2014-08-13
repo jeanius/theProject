@@ -800,9 +800,8 @@ public class Game {
 
 					boolean setSucc = currArrow.getIfSet();
 
-					if (currArrow.getType() && !setSucc || !currArrow.getType() && !setSucc){
-						
-						activity.updateInstructionDisplay(prevPos);
+
+					if (currArrow.getType() && !setSucc || currArrow.getType() && setSucc){
 
 						try {
 							Thread.sleep(1000);
@@ -813,10 +812,6 @@ public class Game {
 						}	
 
 					}
-				}
-				
-				else {
-					currPos.doWork();
 				}
 			}
 			activity.resetRunButton();

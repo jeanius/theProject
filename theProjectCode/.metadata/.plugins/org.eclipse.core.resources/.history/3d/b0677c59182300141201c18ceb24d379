@@ -27,7 +27,6 @@ public class Arrow implements Instruction{
 	private int identity;
 	private boolean loop;
 	private int spaces; //Corresponds to number of instructions between pred and to, allowing for correct length
-	private boolean setSucc; //For highlighting on screen
 
 	/**
 	 * Constructor.
@@ -62,8 +61,6 @@ public class Arrow implements Instruction{
 	 */
 	@Override
 	public void doWork() {
-		
-		setSucc = false;
 
 		if (loop)
 		{
@@ -74,7 +71,6 @@ public class Arrow implements Instruction{
 
 					if (!box.decDone()){
 						caller.setCurrPos(succ);
-						setSucc = true;
 					}
 
 					else
@@ -87,7 +83,6 @@ public class Arrow implements Instruction{
 					caller.setCurrPos(toInstruction);
 				}
 			}
-			
 			else {
 				caller.setCurrPos(toInstruction);
 			}
@@ -106,12 +101,11 @@ public class Arrow implements Instruction{
 				else
 				{
 					caller.setCurrPos(succ);
-					setSucc = true;
 				}
 			}
 
 			else {
-				caller.setCurrPos(null); //Branches come before loops and ends, so issue if not.
+				caller.setCurrPos(null);
 			}
 		}
 	}
@@ -286,13 +280,5 @@ public class Arrow implements Instruction{
 	 */
 	public Instruction getTo(){
 		return toInstruction;
-	}
-	
-	/** Return if this arrow has set to its successor 
-	 * @param void
-	 * @return boolean - if set to successor
-	 */
-	public boolean getIfSet(){
-		return setSucc;
 	}
 }

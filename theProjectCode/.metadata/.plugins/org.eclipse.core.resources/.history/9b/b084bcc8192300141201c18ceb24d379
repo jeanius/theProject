@@ -800,7 +800,7 @@ public class Game {
 
 					boolean setSucc = currArrow.getIfSet();
 
-					if (currArrow.getType() && !setSucc || !currArrow.getType() && !setSucc){
+					if (currArrow.getType() && !setSucc || currArrow.getType() && setSucc){
 						
 						activity.updateInstructionDisplay(prevPos);
 
