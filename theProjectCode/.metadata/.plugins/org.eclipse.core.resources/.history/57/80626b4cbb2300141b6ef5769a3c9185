@@ -42,6 +42,8 @@ public class SaveLoad{
 	private int [] boxEndIDs;
 	private int numIns;
 
+
+
 	/**
 	 * Constructor.
 	 * <p>
@@ -53,6 +55,7 @@ public class SaveLoad{
 		main = ma;
 		game = g;
 	}
+
 
 	/**
 	 * Shows the FileDialog
@@ -112,6 +115,7 @@ public class SaveLoad{
 		dialog.show();
 	}
 
+
 	/**
 	 * Creates text from instruction list for output
 	 * <p>
@@ -128,6 +132,7 @@ public class SaveLoad{
 
 		strings = new String[numIns];
 		boxEndIDs = new int[numIns];
+
 
 		/*
 		 * Iterates through instruction list
@@ -173,14 +178,10 @@ public class SaveLoad{
 					sb.append(counter + 1 + ",");
 				}
 
-				else if (!box.getType() && successor instanceof Arrow){ //If decrement, successor will always be Arrow
-					Arrow successorArrow = (Arrow) successor;
+				else if (!box.getType() && successor instanceof Arrow){ //If decrement, successor will always be Arrow, but "Go To" will be successor of Arrow.
 
-					if (!successorArrow.getType()){ //If the arrow is a branch - go to is successor of arrow
-
-						if (succOfSucc instanceof Box || succOfSucc instanceof End){ //Go To is just next instruction/step, if Box or End
-							sb.append(counter + 1 + ",");
-						}
+					if (succOfSucc instanceof Box || succOfSucc instanceof End){ //Go To is just next instruction/step, if Box or End
+						sb.append(counter + 1 + ",");
 					}
 				}
 
@@ -316,35 +317,18 @@ public class SaveLoad{
 			}
 		}
 
-		String predString = strings[predIndex];
-		StringBuilder sb = new StringBuilder();
-		
 		//If more than one arrow out of same box, ignored as one will never be reached.
 		if ((curr.getPred() instanceof Box || curr.getPred() instanceof End) ||  (null != pred && (curr.getType() != pred.getType()))){ 
 
+			String predString = strings[predIndex];
+
+			StringBuilder sb = new StringBuilder();
+
 			sb.append(predString);
-			sb.append(goToIndex + ",");	
-		}
+			sb.append(goToIndex + ",");
 
-		//And if loop followed by end, add End step number
-		if (curr.getType() && curr.getSucc() instanceof End){
-			
-			int endID = curr.getSucc().getId();
-			int endIndex = -1;
+			strings[predIndex] = sb.toString();
 
-			for (int j = 0; j<numIns; j++){
-
-				int checkID = boxEndIDs[j]; //Iterate through Box/End IDs and compare to Arrow's goto/Branch IDs
-
-				if (endID == checkID){
-					endIndex = j;
-				}
-			}
-			sb.append(endIndex + ",");
-		}
-		
-		if (sb.toString().length() >0){
-			strings[predIndex] = sb.toString();	
 		}
 	}
 
@@ -405,7 +389,7 @@ public class SaveLoad{
 				main.showMessage("Incorrect data on line" + i + ". Each line should have no more than 5 pieces of data, separated by commas");
 				done = false;
 			}	
-
+			
 			try {
 				int step = Integer.parseInt(tokens[0]);
 
@@ -491,8 +475,8 @@ public class SaveLoad{
 					}
 					instructionArray[i] = box;
 				}	
-
-
+				
+				
 				//Start off as predecessors and successors of each other. Arrows are then inserted
 				if (i-1 >= 0){
 					Instruction predIns = instructionArray[i-1];
@@ -588,9 +572,9 @@ public class SaveLoad{
 					else {
 						inst.setId(Util.generateViewId());
 					}
-
+					
 					//Arrows are needed if goTo is not the immediate successor, except in case of END 
-					if (goTo >= 0 && goTo != (i+1) && (inst.getSucc() instanceof Box || inst.getSucc() == null)){ //TODO - aaaa file
+					if (goTo >= 0 && goTo != (i+1) && (inst.getSucc() instanceof Box || inst.getSucc() == null)){ 
 						Arrow arrow = new Arrow (game);
 
 						if (Build.VERSION.SDK_INT >= 17) {
@@ -619,7 +603,7 @@ public class SaveLoad{
 						succ = arrow;
 					}
 
-					//Any branch requires an arrow, except those that branch to END
+					 //Any branch requires an arrow, except those that branch to END
 					if (branch >= 0 && instructionArray[branch] instanceof Box){
 
 						Arrow arrow = new Arrow (game);

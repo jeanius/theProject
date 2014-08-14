@@ -177,7 +177,7 @@ public class SaveLoad{
 					Arrow successorArrow = (Arrow) successor;
 
 					if (!successorArrow.getType()){ //If the arrow is a branch - go to is successor of arrow
-
+						
 						if (succOfSucc instanceof Box || succOfSucc instanceof End){ //Go To is just next instruction/step, if Box or End
 							sb.append(counter + 1 + ",");
 						}
@@ -295,6 +295,9 @@ public class SaveLoad{
 		int predIndex = 0; //To be the index in array of the arrow's predecessor
 		int goToIndex = 0; //To be the index in array of arrow's goto
 
+		Log.d("My pred is", predID +"");
+		Log.d("My goTo is", goToId + "");
+
 		if (curr.getPred() instanceof Arrow){
 			pred = (Arrow) curr.getPred();	
 		}
@@ -315,36 +318,37 @@ public class SaveLoad{
 				goToIndex = j;
 			}
 		}
-
-		String predString = strings[predIndex];
-		StringBuilder sb = new StringBuilder();
 		
+		String predString = strings[predIndex];
+
+		StringBuilder sb = new StringBuilder();
+
 		//If more than one arrow out of same box, ignored as one will never be reached.
 		if ((curr.getPred() instanceof Box || curr.getPred() instanceof End) ||  (null != pred && (curr.getType() != pred.getType()))){ 
-
+			
 			sb.append(predString);
-			sb.append(goToIndex + ",");	
-		}
+			sb.append(goToIndex + ",");
 
+			strings[predIndex] = sb.toString();
+
+		}
+		
 		//And if loop followed by end, add End step number
 		if (curr.getType() && curr.getSucc() instanceof End){
-			
+			 
 			int endID = curr.getSucc().getId();
 			int endIndex = -1;
-
+			
 			for (int j = 0; j<numIns; j++){
 
 				int checkID = boxEndIDs[j]; //Iterate through Box/End IDs and compare to Arrow's goto/Branch IDs
 
 				if (endID == checkID){
-					endIndex = j;
+					 endIndex = j;
 				}
 			}
+			
 			sb.append(endIndex + ",");
-		}
-		
-		if (sb.toString().length() >0){
-			strings[predIndex] = sb.toString();	
 		}
 	}
 
@@ -590,7 +594,7 @@ public class SaveLoad{
 					}
 
 					//Arrows are needed if goTo is not the immediate successor, except in case of END 
-					if (goTo >= 0 && goTo != (i+1) && (inst.getSucc() instanceof Box || inst.getSucc() == null)){ //TODO - aaaa file
+					if (goTo >= 0 && goTo != (i+1) && (inst.getSucc() instanceof Box || inst.getSucc() == null)){ 
 						Arrow arrow = new Arrow (game);
 
 						if (Build.VERSION.SDK_INT >= 17) {

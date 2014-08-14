@@ -590,7 +590,7 @@ public class SaveLoad{
 					}
 
 					//Arrows are needed if goTo is not the immediate successor, except in case of END 
-					if (goTo >= 0 && goTo != (i+1) && (inst.getSucc() instanceof Box || inst.getSucc() == null)){ //TODO - aaaa file
+					if (goTo >= 0 && goTo != (i+1) && (inst.getSucc() instanceof Box || inst.getSucc() == null)){ 
 						Arrow arrow = new Arrow (game);
 
 						if (Build.VERSION.SDK_INT >= 17) {

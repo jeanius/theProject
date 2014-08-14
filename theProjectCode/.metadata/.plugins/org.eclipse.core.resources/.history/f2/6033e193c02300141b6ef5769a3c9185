@@ -903,7 +903,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 								// If there is any overlap in the lists
 								if (sizeList != newSizeList) {
 									
-									if (null != findViewById(check.getId())){
+									if (null != findViewById(check.getId()).getLayoutParams()){
 									RelativeLayout.LayoutParams par = (RelativeLayout.LayoutParams) findViewById(check.getId()).getLayoutParams();
 									marginTop = -par.topMargin + buttonHeight;
 									}
@@ -951,7 +951,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 								// If there is any overlap in the lists
 								if (sizeList != newSizeList) {
 									 
-									if(null != findViewById(check.getId())){
+									if(null != findViewById(check.getId()).getLayoutParams()){
 									
 									RelativeLayout.LayoutParams par = (RelativeLayout.LayoutParams) findViewById(check.getId()).getLayoutParams();
 									marginTop = par.topMargin + buttonHeight;
