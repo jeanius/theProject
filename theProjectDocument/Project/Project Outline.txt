@@ -1,0 +1,91 @@
+1. Introduction
+- As before
+2. Statement of Problem
+- As before
+3. Background Survey
+- As before
+4. Evaluation of current solutions
+- As before
+5. Proposed Approach and Risks (?)
+- As before
+6. Work Plan (?)
+- As before
+
+7. Design and Implementation
+- Functional + Non-Functional Requirements
+- Technology used (Eclipse, HierarchyViewer, Xperia Ray, GitHub etc)
+- Informal testing (JUnit functional testing), followed by user testing
+
+8. Interface Design Process + Implementation
+- Original design, with explanation for original decisions
+- Functional + Non-Functional Requirements
+- Feedback received from users (pre evaluation)
+- Decisions made during programming process and impact on layout
+	- XML layout overview
+	- RelativeLayout with margins for program layout (makes sense for app, as creating a visual representation of the program each time the program is being opened/edited, in relation to each other)
+	- Setting specific size of screen - customview 2Dscrollview issue, extends framelayout, not scroll view, no fillviewport. Also impacted custom connectLine.
+	- Using buttons for instructions for arrows, not a custom view (due to customview issues which could not be resolved in time)
+	- ImageButtons instead of Buttons, as borders on buttons required second layout (incorrect, should have as few layouts as possible)
+	- DrawArrow method (which creates bitmap arrow to be placed on arrow)
+	- Android menu items used for Save/Help/Exit, as per user expectations
+
+- Evaluation section
+	- Objective
+	- Tested design screenshot
+	- Questionnaire + methodology
+	- Results + Feedback
+
+- Final design screenshots
+- User Interaction allowed
+- Sequence diagram, to show flow of application
+
+9. Java Design + Implementation
+- Final class diagram (as do not foresee user evaluation having major impacts on Java, so iterations of the previous class diagrams not required)
+- Design discussion
+	- MVC in android, and associated issues - MainActivity is VC, and Game is C. Others are M.
+	- OO best practices which would be used
+		- Interfaces
+		- Getters/Setters
+		- Methods in general are not controlled by input
+		- Models are dumb, only hold own data
+		- MainActivity V/C controls all placement
+		- Game controls all updates to models
+		- Android resources for colours, strings, etc
+		- Singleton Util class to give unique IDs.
+		- Push and Pull of model data (update currPos, etc)
+		- Threads
+	- MainActivity brief overview
+		- Static Layout separate (XML) from dynamic (Java)
+		- UpdateDisplay() method
+		- onTouch() and onDrag() methods
+		- Extensibility decision - models are connected to Android components, instead of extending Android components
+	- Instruction interface
+		- Allows for MainActivity and Game to interact with the instructions, without having to know their exact type
+		- Brief overview of Box/Arrow/End
+	- Game
+		- UpdateTail() method + associated helper method
+		- Decision re. making pred == goTo if switch.
+		- UpdateHead() method + associated helper method
+		- RunGame() method + how screen is updated using threads
+	- File Input/Output
+		- TBD
+	- Help + Error Checking/User assistance
+		- Game error checking (head cannot go behind tail, etc)
+		- TBD
+	- Gameification Elements
+		- TBD
+	- Overview of JUnit tests to show good scope
+
+10. Conculsions
+- Success Parameters
+- Discussion of risks
+- Outstanding issues
+	- Automatic scaling of screen for program size
+	- Tested on x number of devices, but needs more
+- Future extensibility
+	- Allowing for breakpoints - when register reaches certain value, or specific instruction - and "stepping"
+	- Many registers
+	- How to display in the most efficient/pretty way
+	- Entire layout should be custom view
+	- Subroutines which can be loaded in
+	- Social sharing - FB/Twitter
