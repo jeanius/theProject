@@ -619,6 +619,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 					}
 
 					else {
+						Log.d("In update head", "head");
 						game.updateHead(currentArrow, currentlyIn);
 					}
 				}
@@ -646,6 +647,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 					}
 
 					else {
+						Log.d("In updatetail", "tail");
 						game.updateTail(currentArrow, currentlyIn);
 					}
 				}
@@ -661,6 +663,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 
 		case DragEvent.ACTION_DRAG_ENDED:
 			if (!deleteInstruction){
+				
 				if (draggingBox) {
 
 					float newY = v.getY();
@@ -671,6 +674,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 				}
 
 				if (draggingArrow){
+					Log.d("In dragging arrow", "arrow");
 					View arrowView = findViewById(currentlyDragging.getId());
 					arrowView.setBackgroundColor(Color.TRANSPARENT);
 				}

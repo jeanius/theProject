@@ -28,6 +28,8 @@ import android.widget.TextView;
  * <p>
  * Interacts with Game object to add new instructions to screen, and MainActivity/Context to show Dialog/Showcaseview
  * <p>
+ * ShowcaseView Copyright 2014 Alex Curran
+ * <p>
  * @author Jean Power 2014
  * 
  */

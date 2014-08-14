@@ -27,7 +27,7 @@ public class Arrow implements Instruction{
 	private int identity;
 	private boolean loop;
 	private int spaces; //Corresponds to number of instructions between pred and to, allowing for correct length
-	private boolean setSucc; //For highlighting on screen
+	private boolean setSucc; //For indicating if arrow should be highlighted on screen (not always followed)
 
 	/**
 	 * Constructor.
@@ -62,7 +62,7 @@ public class Arrow implements Instruction{
 	 */
 	@Override
 	public void doWork() {
-		
+
 		setSucc = false;
 
 		if (loop)
@@ -70,24 +70,16 @@ public class Arrow implements Instruction{
 			if (pred instanceof Box){
 				Box box = (Box) pred;
 
-				if (!box.getType()){
+				if (!box.getType() && !box.decDone()){
 
-					if (!box.decDone()){
-						caller.setCurrPos(succ);
-						setSucc = true;
-					}
-
-					else
-					{
-						caller.setCurrPos(toInstruction);
-					}
+					caller.setCurrPos(succ);
+					setSucc = true;
 				}
-				
 				else {
 					caller.setCurrPos(toInstruction);
 				}
 			}
-			
+
 			else {
 				caller.setCurrPos(toInstruction);
 			}
@@ -102,7 +94,6 @@ public class Arrow implements Instruction{
 				if (!box.decDone()){
 					caller.setCurrPos(toInstruction);
 				}
-
 				else
 				{
 					caller.setCurrPos(succ);
@@ -150,7 +141,7 @@ public class Arrow implements Instruction{
 
 				currPos = pred;
 
-				while (currPos != null && currPos.getId() != toInstruction.getId()){
+				while (null != currPos && currPos.getId() != toInstruction.getId()){
 					currPos = currPos.getSucc();
 
 					if (currPos instanceof Box) {
@@ -193,7 +184,7 @@ public class Arrow implements Instruction{
 	public void setPred(Instruction predecessor) {
 		pred = predecessor;
 
-		if (pred != null){
+		if (null != pred){
 			register = pred.getRegister();
 		}
 	}
@@ -287,7 +278,7 @@ public class Arrow implements Instruction{
 	public Instruction getTo(){
 		return toInstruction;
 	}
-	
+
 	/** Return if this arrow has set to its successor 
 	 * @param void
 	 * @return boolean - if set to successor

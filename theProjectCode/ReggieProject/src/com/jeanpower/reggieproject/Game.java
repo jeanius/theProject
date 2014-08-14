@@ -84,7 +84,7 @@ public class Game {
 
 					Instruction instruction = box.getSucc();
 
-					while (instruction != null && instruction instanceof Arrow){
+					while (null != instruction && instruction instanceof Arrow){
 						Arrow arrow = (Arrow) instruction;
 
 						if (!arrow.getType()){
@@ -199,7 +199,7 @@ public class Game {
 	}
 
 	public Instruction getInstruction(int ID) {
-
+		
 		Instruction currentPosition = first;
 		int targetInstruction = ID;
 		boolean found = false;
@@ -284,7 +284,6 @@ public class Game {
 			else if (instruction instanceof End){
 
 				if (last instanceof Arrow || last instanceof Box){ //If there is already an end, will not be added
-					Log.d("Got here", "yes");
 					last.setSucc(instruction);
 					instruction.setPred(last);
 					last = instruction;
@@ -476,7 +475,7 @@ public class Game {
 				}
 			}
 		}
-
+		
 		return move;
 	}
 
@@ -499,7 +498,7 @@ public class Game {
 
 			arrowPred.setSucc(arrowSucc);
 
-			if (arrowSucc != null) {
+			if (null != arrowSucc) {
 				arrowSucc.setPred(arrowPred);
 			}
 
@@ -508,12 +507,12 @@ public class Game {
 			}
 
 			//Branch will always move in before a loop
-			if (!arrow.getType() || boxSucc instanceof Box || boxSucc instanceof End || boxSucc == null || (arrow.getType() && boxSuccArrow != null && boxSuccArrow.getType())){
+			if (!arrow.getType() || boxSucc instanceof Box || boxSucc instanceof End || null == boxSucc || (arrow.getType() && null!= boxSuccArrow && boxSuccArrow.getType())){
 				arrow.setPred(move);
 				move.setSucc(arrow);
 				arrow.setSucc(boxSucc); //Instruction inserts before successor - arrow will not move past end, or after an end instruction
 
-				if (boxSucc != null) {
+				if (null != boxSucc) {
 					boxSucc.setPred(arrow); 
 				}
 			}
@@ -523,8 +522,8 @@ public class Game {
 				arrow.setPred(boxSuccArrow);
 				arrow.setSucc(boxSuccArrow.getSucc());
 
-				if (boxSuccArrow.getSucc() != null){
-					boxSuccArrow.setPred(arrow);
+				if (null != boxSuccArrow.getSucc()){
+					boxSuccArrow.getSucc().setPred(arrow);
 				}
 				boxSuccArrow.setSucc(arrow);	
 			}
@@ -532,6 +531,7 @@ public class Game {
 			if (null == arrow.getSucc()){
 				last = arrow;
 			}
+			
 			arrow.calculateSpaces();
 		}
 	}
@@ -563,7 +563,7 @@ public class Game {
 
 			arrow.setType();
 
-			if (goToSucc instanceof End || goToSucc instanceof Box || goToSucc == null || !arrow.getType() || (arrow.getType() && null != succArrow && succArrow.getType())){
+			if (goToSucc instanceof End || goToSucc instanceof Box || null == goToSucc || !arrow.getType() || (arrow.getType() && null != succArrow && succArrow.getType())){
 
 				if (pred.getId() != goTo.getId()){
 
@@ -572,12 +572,12 @@ public class Game {
 					arrow.setSucc(goToSucc);
 					pred.setSucc(succ);
 
-					if (goToSucc != null) {
+					if (null != goToSucc) {
 
 						goToSucc.setPred(arrow);
 					}
 
-					if (succ != null) {
+					if (null != succ) {
 
 						succ.setPred(pred);
 					}
@@ -593,7 +593,7 @@ public class Game {
 				arrow.setPred(succArrow);
 				arrow.setSucc(succArrow.getSucc());
 
-				if (succArrow.getSucc() != null){
+				if (null != succArrow.getSucc()){
 					succArrow.setPred(arrow);
 				}
 
@@ -665,7 +665,7 @@ public class Game {
 				}
 			}
 
-			if (succ != null){
+			if (null != succ){
 				succ.setPred(pred);
 			}
 
@@ -673,7 +673,7 @@ public class Game {
 				last = pred;			
 			}
 
-			if (pred != null){
+			if (null != pred){
 				pred.setSucc(succ);
 
 			}
