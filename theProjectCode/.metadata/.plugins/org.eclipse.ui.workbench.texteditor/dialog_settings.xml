@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
-		<item value="583" key="DIALOG_WIDTH"/>
-		<item value="341" key="DIALOG_Y_ORIGIN"/>
-		<item value="643" key="DIALOG_X_ORIGIN"/>
-		<item value="301" key="DIALOG_HEIGHT"/>
+		<item value="800" key="DIALOG_WIDTH"/>
+		<item value="8" key="DIALOG_Y_ORIGIN"/>
+		<item value="860" key="DIALOG_HEIGHT"/>
+		<item value="808" key="DIALOG_X_ORIGIN"/>
 		<item value="1|Segoe UI|9.0|0|WINDOWS|1|-12|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI" key="DIALOG_FONT_NAME"/>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="true" key="wrap"/>
-		<item value="true" key="casesensitive"/>
 		<item value="false" key="isRegEx"/>
+		<item value="true" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="false" key="wholeword"/>
-		<item value="Log.d" key="selection"/>
+		<item value="game.getM" key="selection"/>
 		<list key="findhistory">
-			<item value="Log.d"/>
-			<item value="overall"/>
-			<item value="Overall"/>
-			<item value="log."/>
-			<item value="getIns"/>
-			<item value="getI"/>
-			<item value="End"/>
-			<item value="= null"/>
+			<item value="game.getM"/>
+			<item value="register"/>
+			<item value="1"/>
+			<item value="-1"/>
+			<item value="updateCo"/>
+			<item value="updateTa"/>
+			<item value="updateHead"/>
+			<item value="shortC"/>
 		</list>
 		<list key="replacehistory">
 			<item value="match_parent"/>

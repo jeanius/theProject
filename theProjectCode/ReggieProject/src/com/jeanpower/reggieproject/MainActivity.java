@@ -1,6 +1,17 @@
-//View - handles UI components and events
-
 package com.jeanpower.reggieproject;
+
+/**
+ * MainActivity View 
+ * <p>
+ * Deals with all layout of static and dynamic elements<p>
+ * Routes user interaction to correct methods in Game<p>
+ * Instantiates Tutorial, as required.<p>
+ * Instantiates Game<p>
+ * Instantiates SaveLoad as required.<p>
+ * <p>
+ * @author Jean Power 2014
+ * 
+ */
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -12,11 +23,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.DragEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,7 +37,6 @@ import android.view.View.DragShadowBuilder;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.LinearLayout.LayoutParams;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -42,7 +50,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 	private ImageButton runButton;
 	private ImageButton binButton;
 	private ImageButton boxButton;
-	private double theLineX;
+	private double theLineY;
 	private int maxRegisters; // Duplication, but constant get is inefficient
 	private double origX;
 	private double origY;
@@ -53,29 +61,29 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 	private boolean draggingArrow;
 	private boolean draggingBox;
 	private Box currentlyIn;
-	private static int glow;
-	private int boxAbove;
-	private int boxBelow;
-	ImageButton sizer;
-	private final int MAX_DURATION = 200;
+	private ImageButton sizer;
+	private final int MAX_DURATION = 200; //Sensitivity of either click, or start drag operation
 	private long startClickTime;
 	private float screenDensity;
 	private boolean changingButton = false;
-	private final int THRESHOLD = (int) (buttonWidth * screenDensity);
-	private boolean running = false;
+	private final int THRESHOLD = (int) (buttonWidth * screenDensity); //Sensitivity of drag operation.
+	private boolean running = false; //For correct action of "Run" button
 	private RelativeLayout container;
-	private boolean deleteInstruction = false;
+	private boolean deleteInstruction = false; //For correct action after drag ends
 	private ArrayList<Instruction> instructionList;
-	private int instructionCounter;
+	private int instructionCounter; //Iteration through list.
 	private Tutorial tutorial;
-	
+	private int standardMargin = 1;
+
 	/**
 	 * Called when application is opened.
 	 * <p>
-	 * Sets the view to first screen, adds register buttons Adds listeners to
-	 * activity buttons
+	 * Sets up constants (maximum registers, find action frame, etc)<p>
+	 * Places invisible sizer on screen for button width/height constant<p>
+	 * Adds registers to screen, with colours and action listeners
+	 * Adds static icons to screen with action listeners.
 	 * <p>
-	 * 
+	 * @param void
 	 * @return void
 	 */
 	@Override
@@ -85,22 +93,21 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 		setContentView(R.layout.activity_main);
 		game = new Game(this);
 		maxRegisters = game.getMaxReg();
-		glow = Color.argb(120, 255, 255, 0);
 		screenDensity = this.getResources().getDisplayMetrics().density;
 		container = (RelativeLayout) findViewById(R.id.actionFrame);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		LinearLayout registerFrame = (LinearLayout) findViewById(R.id.register_frame);
 		LinearLayout.LayoutParams regParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-		
+
 		sizer = new ImageButton(getApplicationContext());
 		sizer.setBackgroundColor(Color.TRANSPARENT);
 		sizer.setImageResource(R.drawable.teal);
 		sizer.setPadding(0, 0, 0, 0);
 		container.addView(sizer);
 		sizer.setVisibility(View.INVISIBLE);
-		
+
 		// To give black border
-		regParams.setMargins(1, 1, 1, 1);
+		regParams.setMargins(standardMargin, standardMargin, standardMargin, standardMargin);
 		registerFrame.setBackgroundColor(Color.BLACK);
 
 		// Array of colours, from color.xml
@@ -158,9 +165,8 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 	}
 
 	/**
-	 * Inflates the menu and adds items
+	 * Inflates the menu and adds items (Save/Load and Tutorial)
 	 * <p>
-	 * 
 	 * @param Menu. Menu which has items added
 	 * @return boolean
 	 */
@@ -168,7 +174,6 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 	public boolean onCreateOptionsMenu(Menu menu) {
 
 		// Inflate the menu
-
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.main_activity_actions, menu);
 
@@ -177,28 +182,19 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 
 		loadButton.setOnMenuItemClickListener(this);
 		tutorialButton.setOnMenuItemClickListener(this);
-
 		return true;
 	}
 
-
 	/**
-	 * To ignore orientation change, so UI is horizontal
+	 * Sets layout constants
 	 * <p>
-	 * 
+	 * Finds the width and height to be used for arrows, and the Y axis measurement of the line
+	 * Also sets above/below in Game for arrow placement.
+	 * <p>
+	 * @param void
 	 * @return void
 	 */
-	@Override
-	public void onConfigurationChanged(Configuration newConfig) {
-		super.onConfigurationChanged(newConfig);
-	}
-
-	@Override
-	public void onStart() {
-		super.onStart();
-	}
-
-	public void setLayoutConstants(List<Instruction> list) {
+	public void setLayoutConstants() {
 
 		if (buttonWidth <= 0) {
 			buttonWidth = sizer.getWidth();
@@ -208,73 +204,28 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 			buttonHeight = sizer.getHeight();
 		}
 
-		if (theLineX <= 0) {
+		if (theLineY <= 0) {
 			View parent = (View) findViewById(R.id.theLine).getParent();
-			theLineX = parent.getHeight() / 2;
+			theLineY = parent.getHeight() / 2;
 		}
 
-		if (list.size() > 0){
-
-			Instruction curr = list.get(0);
-
-			boolean doneAbove = false;
-			boolean doneBelow = false;
-			boxAbove = -1;
-			boxBelow = -1;
-
-			while (null != curr && !doneAbove) {
-
-				if (curr instanceof Box) {
-
-					Box b = (Box) curr;
-
-					if (b.getType()) {
-
-						boxAbove = b.getId();
-						doneAbove = true;
-					}
-				}
-
-				curr = curr.getSucc();
-			}
-
-			curr = list.get(0);
-
-			while (null != curr && !doneBelow) {
-
-				if (curr instanceof Box) {
-
-					Box b = (Box) curr;
-
-					if (!b.getType()) {
-
-						boxBelow = b.getId();
-						doneBelow = true;
-					}
-				}
-				curr = curr.getSucc();
-			}
-		}
+		game.setAboveBelow();
 	}
 
 	/**
-	 * Updates action frame with instructions - boxes and arrows
+	 * Gets the instruction list and passes to Thread to create instruction
 	 * <p>
-	 * Iterates through list of instructions, and adds to action frame as
-	 * appropriate. To be efficient, only redraws from specific position
-	 * Above/below the line, backwards/forwards arrows.
+	 * Thread then calls itself to add next instruction, and so on
 	 * <p>
-	 * 
-	 * @param Instruction The instruction that was updated
+	 * @param void
 	 * @return void
 	 */
-
 	public void updateDisplay() {
 
 		instructionList = game.getInstructionList();
-		this.setLayoutConstants(instructionList);
+		this.setLayoutConstants();
 		instructionCounter = 0;
-		Instruction [] instructions = new Instruction[1];
+		Instruction [] instructions = new Instruction[1]; //ASyncTask only accepts array.
 
 		if (instructionList.size() > 0){
 
@@ -285,10 +236,15 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 			instructions[0] = instructionList.get(instructionCounter);
 			CreateInstruction ci = new CreateInstruction();
 			ci.execute(instructions);
-
 		}
 	}
 
+	/**
+	 * Helper method to add final instruction to screen, on UI thread
+	 * <p>
+	 * @param ImageButton - the instruction, with all parameters/text/drawables attached.
+	 * @return void
+	 */
 	public void addToScreen(ImageButton b){
 
 		final ImageButton button = b;
@@ -307,28 +263,23 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 	}
 
 	/**
-	 * Update the colour of the instruction, as per the register colours, when
-	 * clicked
+	 * Update the colour of the instruction, as per the register colours, when clicked
 	 * <p>
-	 * 
-	 * @param Instruction int ID of instruction
+	 * @param int - ID of instruction, int - register number
 	 * @return void
 	 */
-
-	public void updateColour(Instruction instruction) {
+	public void updateColour(int ID, int register) {
 
 		TypedArray instructionIcons = getResources().obtainTypedArray(R.array.instruction_icons);
-
-		ImageButton button = (ImageButton) findViewById(instruction.getId());
-		Box inst = (Box) instruction;
-		button.setImageResource(instructionIcons.getResourceId(inst.getRegister(), -1));
+		ImageButton button = (ImageButton) findViewById(ID);
+		button.setImageResource(instructionIcons.getResourceId(register, -1));
 		instructionIcons.recycle();
 	}
 
 	/**
-	 * Iterates through register buttons, getting their data from Game class.
+	 * Iterates through register buttons, getting data from Game class.
 	 * <p>
-	 * 
+	 * @param void
 	 * @return void
 	 */
 	public void setRegisters() {
@@ -343,9 +294,13 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 	}
 
 	/**
-	 * Takes click on register button and increments register
+	 * Deals with clicks on registers and clicks on icons
 	 * <p>
-	 * 
+	 * Click on register increments register by 1.<p>
+	 * Click on icon creates a new instruction<p>
+	 * Click on "Run" causes game to run<p>
+	 * Click on Bin/Clear clears the screen and registers.<p>
+	 * <p>
 	 * @param View. The button which has been clicked
 	 * @return void
 	 */
@@ -363,10 +318,9 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 			}
 		}
 
-		if (!done) {
+		if (!done) { //If it was not a click on a register.
 
 			switch (resid) {
-
 			case R.id.new_arrow_button:
 			case R.id.new_box_button:
 			case R.id.new_end_button:
@@ -375,15 +329,13 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 				break;
 
 			case R.id.run_button:
-
 				if (!running) {
 					running = true;
 					runButton.setImageResource(R.drawable.ic_stop);
-					arrowButton.setVisibility(View.INVISIBLE);
+					arrowButton.setVisibility(View.INVISIBLE); //Prevent them adding new instructions while game is running
 					endButton.setVisibility(View.INVISIBLE);
 					boxButton.setVisibility(View.INVISIBLE);
 					binButton.setVisibility(View.INVISIBLE);
-
 					game.runGame();
 				}
 
@@ -407,7 +359,6 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 					endButton.setVisibility(View.INVISIBLE);
 					runButton.setVisibility(View.INVISIBLE);
 					binButton.setVisibility(View.INVISIBLE);
-					this.clearScreen ();
 				}
 				break;
 
@@ -417,8 +368,14 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 		}
 	}
 
+	/**
+	 * Clears the screen, resets the registers
+	 * <p>
+	 * @param void
+	 * @return void
+	 */
 	public void clearScreen(){
-		
+
 		int childCount = container.getChildCount();
 
 		for (int i = 1; i < childCount; i++) {
@@ -426,16 +383,16 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 			View child = container.getChildAt(1);
 			container.removeView(child);
 		}
-		
-		for (int i = 0; i<game.getMaxReg(); i++){
-			game.zeroReg(i);
-		}
-		
 		this.setRegisters();
 	}
 
+	/**
+	 * Removes one instruction
+	 * <p>
+	 * @param int - instruction ID to be remove
+	 * @return void
+	 */
 	public void removeInstruction(int ID){
-
 		View child = findViewById(ID);
 		container.removeView(child);
 	}
@@ -443,7 +400,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 	/**
 	 * Takes long click on register button and zeros register
 	 * <p>
-	 * @param View Button which has been clicked
+	 * @param View - Button which has been clicked
 	 * @return boolean
 	 */
 	@Override
@@ -459,6 +416,15 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 		return true;
 	}
 
+	/**
+	 * Deals with touch listeners
+	 * <p>
+	 * If short click, boxes update colour, arrows become branch/arrow, end moves back along instruction list
+	 * If long + dragging, starts drag event
+	 * <p>
+	 * @param View - Button which has been touched, MotionEvent
+	 * @return boolean
+	 */
 	@Override
 	public boolean onTouch(View v, MotionEvent me) {
 
@@ -466,7 +432,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 		Instruction instruction = game.getInstruction(resid);
 		v.setBackgroundColor(Color.YELLOW);
 
-		switch (me.getAction() & MotionEvent.ACTION_MASK) { //Motionevent	contains pointer data too - bitwise and to leave just action
+		switch (me.getAction() & MotionEvent.ACTION_MASK) { //Motioneventcontains pointer data too - bitwise AND to leave just action
 
 		case MotionEvent.ACTION_DOWN:
 			draggingArrow = false;
@@ -487,7 +453,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 
 				int relativeLeft = viewLocation[0] - rootLocation[0];
 
-				if ((origX < (relativeLeft + v.getWidth()/2) && v.getY() < theLineX) || (origX > (relativeLeft + v.getWidth()/2) && v.getY() >= theLineX)) {
+				if ((origX < (relativeLeft + v.getWidth()/2) && v.getY() < theLineY) || (origX > (relativeLeft + v.getWidth()/2) && v.getY() >= theLineY)) {
 					arrowHead = true;
 				}
 
@@ -505,27 +471,24 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 		case MotionEvent.ACTION_UP:
 			long clickDuration = Calendar.getInstance().getTimeInMillis() - startClickTime;
 
-			if (clickDuration < MAX_DURATION) {
+			if (clickDuration < MAX_DURATION) { //Just a click
 
 				if (instruction instanceof Box) {
-
 					game.updateInstruction(instruction);
-					this.updateColour(instruction);
-					this.updateDisplay();
 				}
 
 				else if (instruction instanceof End) {
 					game.updateInstruction(instruction);
-					this.updateDisplay();
 				}
 
 				else if (instruction instanceof Arrow) {
 					game.changeInstruction(instruction);
-					this.updateDisplay();
 				}
+
+				this.updateDisplay();
 			}
 
-			if (null != v){
+			if (null != v){ //Reset visibility of view when drag ends if not in instruction.
 				v.setVisibility(View.VISIBLE);
 			}
 
@@ -533,13 +496,13 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 			break;
 
 		case MotionEvent.ACTION_MOVE:
-
 			float newY = me.getRawY();
 
 			if (Math.abs(newY - origY) > THRESHOLD && !draggingArrow && !draggingBox) {
 
 				binButton.setImageResource(R.drawable.ic_bin);
 
+				//Keep account if arrow or box is being dragged.
 				if (instruction instanceof Arrow) {
 					draggingArrow = true;
 				}
@@ -548,9 +511,9 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 					draggingBox = true;
 				}
 
-				currentlyDragging = instruction;
+				currentlyDragging = instruction; //Keep account of instruction being dragged
 				v.setVisibility(View.INVISIBLE);
-				DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(v); // TODO - 2 different shadow builders?
+				DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(v);
 				v.startDrag(null, shadowBuilder, v, 0);
 			}
 
@@ -559,16 +522,26 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 		default:
 			break;
 		}
-
 		return true;
 	}
 
+	/**
+	 * Deals with drag operation
+	 * <p>
+	 * When drag enters a view, if bin, deletes instruction. 
+	 * If enters Box, and arrow is being dragged, changes head/tail of arrow as appropriate.
+	 * If dragging Box, changes to deb or inc, depending.
+	 * <p>
+	 * @param View - Button which has been touched, dragevent
+	 * @return boolean
+	 */
 	@Override
 	public boolean onDrag(View v, DragEvent de) {
 
 		int resid = v.getId();
 		Instruction instruction = null;
 
+		//If not dropped into bin, get instruction.
 		if (resid != R.id.bin_clear_button) {
 			instruction = game.getInstruction(resid);
 		}
@@ -582,74 +555,23 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 
 			if (resid == R.id.bin_clear_button) {
 				game.deleteInstruction(currentlyDragging);
-				deleteInstruction = true;
-
-				Context context = getApplicationContext();
-				CharSequence text = "Instruction deleted";
-				int duration = Toast.LENGTH_SHORT;
-
-				Toast toast = Toast.makeText(context, text, duration);
-				toast.show();
+				deleteInstruction = true; 
+				this.showMessage(getString(R.string.deleted));
 			}
 
-			else if (instruction instanceof Box && currentlyDragging != null && draggingArrow) {
+			else if (instruction instanceof Box && currentlyDragging != null && draggingArrow) { //If an arrow enters a box.
 
 				currentlyIn = (Box) instruction;
 				Arrow currentArrow = (Arrow) currentlyDragging;
 
 				if (arrowHead){
 
-					if (currentlyIn.getId() == currentArrow.getTo().getId()){
-						Context context = getApplicationContext();
-						CharSequence text = "I'm already pointing here!";
-						int duration = Toast.LENGTH_SHORT;
-
-						Toast toast = Toast.makeText(context, text, duration);
-						toast.show();
-					}
-
-					else if (!currentArrow.getType() && currentArrow.getPred().getId() == currentlyIn.getId()){
-
-						Context context = getApplicationContext();
-						CharSequence text = "I can't branch to the same instruction!";
-						int duration = Toast.LENGTH_SHORT;
-
-						Toast toast = Toast.makeText(context, text, duration);
-						toast.show();
-					}
-
-					else {
-						Log.d("In update head", "head");
-						game.updateHead(currentArrow, currentlyIn);
-					}
+					game.updateHead(currentArrow, currentlyIn);
 				}
 
 				else if (!arrowHead){
 
-					if (currentlyIn.getId() == currentlyDragging.getPred().getId()){
-
-						Context context = getApplicationContext();
-						CharSequence text = "I'm already coming from here!";
-						int duration = Toast.LENGTH_SHORT;
-
-						Toast toast = Toast.makeText(context, text, duration);
-						toast.show();
-					}
-
-					else if (!currentArrow.getType() && currentArrow.getTo().getId() == currentlyIn.getId()){
-
-						Context context = getApplicationContext();
-						CharSequence text = "I can't branch to the same instruction!";
-						int duration = Toast.LENGTH_SHORT;
-
-						Toast toast = Toast.makeText(context, text, duration);
-						toast.show();
-					}
-
-					else {
-						Log.d("In updatetail", "tail");
-						game.updateTail(currentArrow, currentlyIn);
-					}
+					game.updateTail(currentArrow, currentlyIn);
 				}
 			}
 
@@ -663,18 +585,17 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 
 		case DragEvent.ACTION_DRAG_ENDED:
 			if (!deleteInstruction){
-				
-				if (draggingBox) {
+
+				if (draggingBox) { //If dragging a Box, update to inc/deb
 
 					float newY = v.getY();
 
 					if ((newY - origY > THRESHOLD) || (origY - newY > THRESHOLD)) {
-						game.changeInstruction(currentlyDragging);
+						game.changeInstruction(currentlyDragging); 
 					}
 				}
 
 				if (draggingArrow){
-					Log.d("In dragging arrow", "arrow");
 					View arrowView = findViewById(currentlyDragging.getId());
 					arrowView.setBackgroundColor(Color.TRANSPARENT);
 				}
@@ -689,21 +610,24 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 
 			break;
 		}
-
 		return true;
 	}
-
+	
+	/**Respond to the action bar's Up button - finishes main activity and goes back to option screen
+	 * <p>
+	 * @param MenuItem - clicked
+	 * @return boolean
+	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 
 		switch (item.getItemId()) {
-		// Respond to the action bar's Up button - finishes main activity and goes back to option screen
 		case android.R.id.home:
-			
-			if (tutorial.getDialog() != null){
+
+			if (tutorial.getDialog() != null){ //Ensures all dialogs are closed
 				tutorial.getDialog().dismiss();	
 			}
-			
+
 			Intent intent = new Intent(this, OptionScreen.class);
 			startActivity(intent);
 			this.finish();
@@ -712,6 +636,14 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 		return true;
 	}
 
+	/**
+	 * Helper method reset the Run button back to "Run" as must be called on main UI thread
+	 * <p>
+	 * Also resets visibility of icons
+	 * <p>
+	 * @param void
+	 * @return void
+	 */
 	public void resetRunButton(){
 
 		runOnUiThread(new Runnable() {
@@ -727,58 +659,60 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 		});
 	}
 
-	public synchronized void updateInstructionDisplay(Instruction ins) {
+	/**
+	 * As Game iterates through instructions, method highlights these on screen
+	 * <p>
+	 * @param int - ID of instruction, int - register
+	 * @return void
+	 */
+	public synchronized void updateInstructionDisplay(int ID, int reg) {
 
-		final Instruction i = ins;
+		final int identity = ID;
+		final int register = reg;
 
 		runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
 
 				setRegisters();
-				ImageButton currentlyChanging = (ImageButton) findViewById(i.getId());
+				ImageButton currentlyChanging = (ImageButton) findViewById(identity);
 
 				if (!changingButton) {
-					
+
 					currentlyChanging.getDrawable().setAlpha(100);
 
-					if (i instanceof Box) {
-						Box box = (Box) i;
-						Button register = (Button) findViewById(registerIds[box.getRegister()]);
-						register.getBackground().setAlpha(128);
+					if (register > 0){
+						int regID = registerIds[register];
+						Button register = (Button) findViewById(regID);
+						register.getBackground().setAlpha(100);
 					}
-
-					else if (i instanceof Arrow) {
-						Arrow arrow = (Arrow) i;
-						ImageButton goTo = (ImageButton) findViewById(arrow.getTo().getId());
-						goTo.getBackground().setAlpha(128);
-					}
-
 					changingButton = true;
 				}
 
 				else if (changingButton) {
 
 					currentlyChanging.getDrawable().setAlpha(255);
-					
-					if (i instanceof Box) {
-						Box box = (Box) i;
-						Button register = (Button) findViewById(registerIds[box.getRegister()]);
+
+					if (register > 0){
+						int regID = registerIds[register];
+						Button register = (Button) findViewById(regID);
 						register.getBackground().setAlpha(255);
 					}
-
-					else if (i instanceof Arrow) {
-						Arrow arrow = (Arrow) i;
-						ImageButton goTo = (ImageButton) findViewById(arrow.getTo().getId());
-						goTo.getBackground().setAlpha(255);
-					}
-
 					changingButton = false;
 				}
 			}
 		});
-
 	}
+
+	/**
+	 * CreateInstruction anonymous inner presenter/view class
+	 * <p>
+	 * Is given the first instruction, creates a thread and sets all display parameters for this instruction.<p>
+	 * Passes back ImageButton with correct parameters to MainActivity<p>
+	 * ASyncTask allows for threading<p>
+	 * <p>
+	 */
+	
 	private class CreateInstruction extends AsyncTask<Instruction, Void, ImageButton>{
 
 		@Override
@@ -786,26 +720,24 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 
 			TypedArray instructionIcons = getResources().obtainTypedArray(R.array.instruction_icons);
 
-			Instruction inst = params[0];
+			Instruction inst = params[0]; 
 
 			ImageButton button = new ImageButton(getApplicationContext());
 			button.setPadding(0,0,0,0);
-			int instructionID = inst.getId();
-			button.setId(instructionID);
+			int instructionID = inst.getId(); 
+			button.setId(instructionID); //Button has same ID as instruction, connecting the two
 			RelativeLayout.LayoutParams instructionParameters = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 
 			if (inst instanceof Box) {
 				Box box = (Box) inst;
 				Instruction prevInstruction = null;
-				Box prevBox = null;
 
 				if (box.getPred() != null) {
 					prevInstruction = box.getPred();
 				}
-				
-				button.setBackgroundColor(Color.TRANSPARENT);
 
-				button.setImageResource(instructionIcons.getResourceId(box.getRegister(), -1));
+				button.setBackgroundColor(Color.TRANSPARENT);
+				button.setImageResource(instructionIcons.getResourceId(box.getRegister(), -1)); //Set colour to associated register
 
 				if (box.getType()) // If Increment
 				{
@@ -817,31 +749,28 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 				}
 
 				if (prevInstruction == null) {
-					instructionParameters.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+					instructionParameters.addRule(RelativeLayout.ALIGN_PARENT_LEFT); //First box always aligns to left of parent
 				}
 
 				else {
 					// To add next to previous box
 					while (prevInstruction instanceof Arrow || prevInstruction instanceof End) {
-
 						prevInstruction = prevInstruction.getPred();
 					}
-
-						prevBox = (Box) prevInstruction;
-
-					instructionParameters.addRule(RelativeLayout.RIGHT_OF, prevBox.getId()); // Right of the current instruction
+					instructionParameters.addRule(RelativeLayout.RIGHT_OF, prevInstruction.getId()); // Right of the current instruction
 				}
-
-				instructionParameters.leftMargin = 1;
-				instructionParameters.topMargin = 1;
+				
+				//Margins required due
+				instructionParameters.leftMargin = standardMargin;
+				instructionParameters.topMargin = standardMargin;
 				button.setLayoutParams(instructionParameters);
 			}
 
 			else if (inst instanceof Arrow) {
 				Arrow arrow = (Arrow) inst;
-				arrow.calculateSpaces();
+				arrow.calculateSpaces(); //Span required of arrow
 				button.setBackgroundColor(Color.TRANSPARENT);
-				DrawArrow drawArrow = new DrawArrow(arrow, buttonWidth,buttonHeight);
+				DrawArrow drawArrow = new DrawArrow(arrow, buttonWidth, buttonHeight);
 				//If pred is arrow/end, it does have an associated register (same as predecessor)
 				drawArrow.setColours(registerColours[arrow.getPred().getRegister()], registerColours[arrow.getTo().getRegister()]);
 
@@ -854,12 +783,10 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 				Instruction prevBox = arrow.getPred();
 
 				while (prevBox instanceof Arrow || prevBox instanceof End) {
-
 					prevBox = prevBox.getPred();
 				}
 
 				if (arrow.getType()) {
-
 					instructionParameters.addRule(RelativeLayout.ALIGN_RIGHT, prevBox.getId());
 				}
 
@@ -872,7 +799,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 
 				if (arrow.getType()) {
 
-					if (boxAbove >= 0) {
+					if (game.getAbove() >= 0) {
 						marginTop = buttonHeight * 2;
 					}
 
@@ -884,6 +811,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 					int pointer = 0;
 					Instruction currentPosition = instructionList.get(pointer);
 
+					//Compares the list of instructions spanned by arrow to the list of instructions spanned by all other arrows.
 					while (currentPosition != null && currentPosition.getId() != arrow.getId()) {
 
 						if (currentPosition instanceof Arrow) {
@@ -900,27 +828,26 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 
 								int newSizeList = instructList.size();
 
-								// If there is any overlap in the lists
+								// If there is any overlap in the lists, increase the margin.
 								if (sizeList != newSizeList) {
-									
+
 									if (null != findViewById(check.getId())){
-									RelativeLayout.LayoutParams par = (RelativeLayout.LayoutParams) findViewById(check.getId()).getLayoutParams();
-									marginTop = -par.topMargin + buttonHeight;
+										RelativeLayout.LayoutParams par = (RelativeLayout.LayoutParams) findViewById(check.getId()).getLayoutParams();
+										marginTop = -par.topMargin + buttonHeight;
 									}
 								}
 							}
 						}
-
 						pointer++;
 						currentPosition = instructionList.get(pointer);
 					}
-					
+
 					instructionParameters.topMargin = -marginTop;
 				}
 
 				else {
-					
-					if (boxBelow >= 0) {
+
+					if (game.getBelow() >= 0) {
 						marginTop = buttonHeight;
 					}
 
@@ -929,10 +856,11 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 					}
 
 					instructionBetween = game.getToFrom(arrow.getPred(), arrow.getTo().getId());
-					
+
 					int pointer = 0;
 					Instruction currentPosition = instructionList.get(pointer);
 
+					//Compares the list of instructions spanned by arrow to the list of instructions spanned by all other arrows.
 					while (currentPosition != null && currentPosition.getId() != arrow.getId()) {
 
 						if (currentPosition instanceof Arrow) {
@@ -948,14 +876,14 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 
 								int newSizeList = instructList.size();
 
-								// If there is any overlap in the lists
+								// If there is any overlap in the lists, increase the margin.
 								if (sizeList != newSizeList) {
-									 
+
 									if(null != findViewById(check.getId())){
-									
-									RelativeLayout.LayoutParams par = (RelativeLayout.LayoutParams) findViewById(check.getId()).getLayoutParams();
-									marginTop = par.topMargin + buttonHeight;
-									
+
+										RelativeLayout.LayoutParams par = (RelativeLayout.LayoutParams) findViewById(check.getId()).getLayoutParams();
+										marginTop = par.topMargin + buttonHeight;
+
 									}
 								}
 							}
@@ -969,7 +897,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 				}
 
 				button.setLayoutParams(instructionParameters);
-				
+
 			}
 
 			else if (inst instanceof End) {
@@ -1006,6 +934,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 			return button;
 		}
 
+		//When doInBackGround is done, this executes, getting the next instruction to create
 		protected void onPostExecute(ImageButton result) {
 
 			addToScreen(result);
@@ -1022,6 +951,12 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 		}
 	}
 
+	/**
+	 * Deals with clicks on Save/Load and Tutorial
+	 * 
+	 * @param MenuItem clicked
+	 * @return boolean
+	 */
 	@Override
 	public boolean onMenuItemClick(MenuItem item) {
 
@@ -1042,14 +977,18 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 		return true;
 	}
 
+	/**
+	 * Shows messages on screen to user
+	 * 
+	 * @param String - message
+	 * @return void
+	 */
 	public void showMessage(String message){
 
 		Context context = getApplicationContext();
 		CharSequence text = message;
 		int duration = Toast.LENGTH_LONG;
-
 		Toast toast = Toast.makeText(context, text, duration);
 		toast.show();
-
 	}
 }

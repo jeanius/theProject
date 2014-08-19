@@ -21,6 +21,8 @@ public class Game {
 	private final MainActivity activity;
 	private final int MAXREGISTERS = 10;
 	private Instruction prevPos = null;
+	private int boxAbove;
+	private int boxBelow;
 
 	/**
 	 * Constructor. Zeros all registers, instantiates instance variables.
@@ -64,8 +66,12 @@ public class Game {
 		lastBox = null;
 		currPos = null;
 		prevPos = null;
-		activity.clearScreen();
-		activity.updateDisplay();
+
+		for (int i = 0; i<MAXREGISTERS; i++){
+			this.zeroReg(i);
+		}
+
+		activity.clearScreen();		
 	}
 
 	public boolean errorChecking(){
@@ -89,7 +95,7 @@ public class Game {
 
 						if (!arrow.getType()){
 
-							activity.showMessage("Branching doesn't work on increment instructions!");
+							activity.showMessage(activity.getString(R.string.error1));
 							instructionsOk = false;
 						}
 						instruction = instruction.getSucc();
@@ -99,7 +105,7 @@ public class Game {
 				else {
 
 					if (box.getSucc() instanceof Box){
-						activity.showMessage("All decrement instructions must have a branch arrow, or end!");
+						activity.showMessage(activity.getString(R.string.error2));
 						instructionsOk = false;
 					}
 
@@ -121,7 +127,7 @@ public class Game {
 						}
 
 						if (arrow.getType() && !next){
-							activity.showMessage("All decrement instructions must have a branch arrow, or end!");
+							activity.showMessage(activity.getString(R.string.error2));
 							instructionsOk = false;
 
 						}
@@ -135,7 +141,7 @@ public class Game {
 				if (!arrow.getType()){
 
 					if (arrow.getTo().getId() == arrow.getPred().getId()){
-						activity.showMessage("Branches cannot branch to the same instruction!");
+						activity.showMessage(activity.getString(R.string.error3));
 						instructionsOk = false;
 					}
 				}
@@ -144,7 +150,7 @@ public class Game {
 			if (i.getId() == last.getId()){
 
 				if (i instanceof Box){
-					activity.showMessage("There is no End, Loop or Branch instruction at the end!");
+					activity.showMessage(activity.getString(R.string.error4));
 					instructionsOk = false;
 				}
 			}
@@ -199,7 +205,7 @@ public class Game {
 	}
 
 	public Instruction getInstruction(int ID) {
-		
+
 		Instruction currentPosition = first;
 		int targetInstruction = ID;
 		boolean found = false;
@@ -301,6 +307,8 @@ public class Game {
 
 		return instruction;
 	}
+
+
 	/**
 	 * Updates Box instruction to new register. Updates End instruction to a new Box.
 	 * <p>
@@ -313,6 +321,7 @@ public class Game {
 		if (i instanceof Box) {
 			Box box = (Box) i;
 			box.setRegister();
+			activity.updateColour(box.getId(), box.getRegister());
 		}
 
 		else if (i instanceof End){
@@ -431,11 +440,21 @@ public class Game {
 
 	public void updateHead(Arrow arrow, Box move) {
 
-		boolean canMove = this.headMove(arrow, move.getId());
-		if (canMove) {
+		if (move.getId() == arrow.getTo().getId()){
+			activity.showMessage(activity.getString(R.string.already)); //Error check for already pointing 
+		}
 
-			arrow.setTo(move);
-			arrow.calculateSpaces();
+		else if (!arrow.getType() && arrow.getPred().getId() == move.getId()){
+			activity.showMessage(activity.getString(R.string.error3)); //Error check for trying to make branch to itself
+		}
+
+		else {
+			boolean canMove = this.headMove(arrow, move.getId());
+			if (canMove) {
+
+				arrow.setTo(move);
+				arrow.calculateSpaces();
+			}
 		}
 	}
 
@@ -475,64 +494,75 @@ public class Game {
 				}
 			}
 		}
-		
+
 		return move;
 	}
 
 
 	public void updateTail(Arrow arrow, Box move) {
 
-		boolean canMove = this.tailMove(arrow, move.getId()); // Is the box before the head of arrow?
+		if (move.getId() == arrow.getPred().getId()){
+			activity.showMessage(activity.getString(R.string.coming));
+		}
 
-		if (canMove) {
+		else if (!arrow.getType() && arrow.getTo().getId() == move.getId()){
+			activity.showMessage(activity.getString(R.string.error3));
+		}
 
-			Instruction arrowPred = arrow.getPred();
-			Instruction arrowSucc = arrow.getSucc();
-			Instruction boxSucc = move.getSucc();
-			Arrow boxSuccArrow = null;
+		else {	
 
-			if (boxSucc instanceof Arrow){
+			boolean canMove = this.tailMove(arrow, move.getId()); // Is the box before the head of arrow?
 
-				boxSuccArrow = (Arrow) boxSucc;
-			}
+			if (canMove) {
 
-			arrowPred.setSucc(arrowSucc);
+				Instruction arrowPred = arrow.getPred();
+				Instruction arrowSucc = arrow.getSucc();
+				Instruction boxSucc = move.getSucc();
+				Arrow boxSuccArrow = null;
 
-			if (null != arrowSucc) {
-				arrowSucc.setPred(arrowPred);
-			}
+				if (boxSucc instanceof Arrow){
 
-			else {
-				last = arrowPred;
-			}
-
-			//Branch will always move in before a loop
-			if (!arrow.getType() || boxSucc instanceof Box || boxSucc instanceof End || null == boxSucc || (arrow.getType() && null!= boxSuccArrow && boxSuccArrow.getType())){
-				arrow.setPred(move);
-				move.setSucc(arrow);
-				arrow.setSucc(boxSucc); //Instruction inserts before successor - arrow will not move past end, or after an end instruction
-
-				if (null != boxSucc) {
-					boxSucc.setPred(arrow); 
+					boxSuccArrow = (Arrow) boxSucc;
 				}
-			}
 
-			else if (arrow.getType() && null != boxSuccArrow && !boxSuccArrow.getType()){ //Loops come after branches
+				arrowPred.setSucc(arrowSucc);
 
-				arrow.setPred(boxSuccArrow);
-				arrow.setSucc(boxSuccArrow.getSucc());
-
-				if (null != boxSuccArrow.getSucc()){
-					boxSuccArrow.getSucc().setPred(arrow);
+				if (null != arrowSucc) {
+					arrowSucc.setPred(arrowPred);
 				}
-				boxSuccArrow.setSucc(arrow);	
-			}
 
-			if (null == arrow.getSucc()){
-				last = arrow;
+				else {
+					last = arrowPred;
+				}
+
+				//Branch will always move in before a loop
+				if (!arrow.getType() || boxSucc instanceof Box || boxSucc instanceof End || null == boxSucc || (arrow.getType() && null!= boxSuccArrow && boxSuccArrow.getType())){
+					arrow.setPred(move);
+					move.setSucc(arrow);
+					arrow.setSucc(boxSucc); //Instruction inserts before successor - arrow will not move past end, or after an end instruction
+
+					if (null != boxSucc) {
+						boxSucc.setPred(arrow); 
+					}
+				}
+
+				else if (arrow.getType() && null != boxSuccArrow && !boxSuccArrow.getType()){ //Loops come after branches
+
+					arrow.setPred(boxSuccArrow);
+					arrow.setSucc(boxSuccArrow.getSucc());
+
+					if (null != boxSuccArrow.getSucc()){
+						boxSuccArrow.getSucc().setPred(arrow);
+					}
+					boxSuccArrow.setSucc(arrow);	
+				}
+
+				if (null == arrow.getSucc()){
+					last = arrow;
+				}
+
+				arrow.calculateSpaces();
 			}
-			
-			arrow.calculateSpaces();
 		}
 	}
 	/**
@@ -779,11 +809,11 @@ public class Game {
 					prevPos = currPos;
 					currPos.doWork();
 
-					activity.updateInstructionDisplay(prevPos);
+					activity.updateInstructionDisplay(prevPos.getId(), prevPos.getRegister());
 
 					try {
 						Thread.sleep(1000);
-						activity.updateInstructionDisplay(prevPos);
+						activity.updateInstructionDisplay(prevPos.getId(), prevPos.getRegister());
 					}
 					catch (Exception e){
 						Log.d("This was interrupted", "interrupted");
@@ -801,12 +831,12 @@ public class Game {
 					boolean setSucc = currArrow.getIfSet();
 
 					if (currArrow.getType() && !setSucc || !currArrow.getType() && !setSucc){
-						
-						activity.updateInstructionDisplay(prevPos);
+
+						activity.updateInstructionDisplay(prevPos.getId(), -1); //Arrow does not have associated register
 
 						try {
 							Thread.sleep(1000);
-							activity.updateInstructionDisplay(prevPos);
+							activity.updateInstructionDisplay(prevPos.getId(), -1);
 						}
 						catch (Exception e){
 							Log.d("This was interrupted", "interrupted");
@@ -814,7 +844,7 @@ public class Game {
 
 					}
 				}
-				
+
 				else {
 					currPos.doWork();
 				}
@@ -833,5 +863,43 @@ public class Game {
 	}
 	public void setLastBox(Instruction lb){
 		lastBox = lb;
+	}
+
+	public int getAbove(){
+		return boxAbove;
+	}
+
+	public int getBelow(){
+		return boxBelow;
+	}
+
+	public void setAboveBelow(){
+
+		Instruction curr = first;
+
+		boxAbove = -1;
+		boxBelow = -1;
+		boolean doneAbove = false;
+		boolean doneBelow = false;
+
+		while (null != curr && (!doneAbove || !doneBelow)){
+
+			if (curr instanceof Box) {
+
+				Box b = (Box) curr;
+
+				if (b.getType()) {
+
+					boxAbove = b.getId();
+					doneAbove = true;
+				}
+
+				if (!b.getType()) {
+					boxBelow = b.getId();
+					doneBelow = true;
+				}
+			}
+			curr = curr.getSucc();
+		}
 	}
 }

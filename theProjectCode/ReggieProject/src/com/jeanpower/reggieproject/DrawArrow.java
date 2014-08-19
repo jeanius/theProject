@@ -39,7 +39,6 @@ public class DrawArrow {
 	 * 
 	 * @param Arrow - to be drawn, int - width of ImageButton, height - height of ImageButton
 	 */
-	
 	public DrawArrow(Arrow a, int width, int height){
 
 		paint.setStrokeWidth(6);

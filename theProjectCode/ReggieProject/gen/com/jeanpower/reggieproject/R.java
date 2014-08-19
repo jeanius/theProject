@@ -9,6 +9,8 @@ package com.jeanpower.reggieproject;
 
 public final class R {
     public static final class array {
+        /**  Array of box icon drawables 
+         */
         public static final int instruction_icons=0x7f0a0002;
         public static final int rainbow=0x7f0a0000;
         public static final int register_names=0x7f0a0001;
@@ -216,22 +218,28 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int main_activity_actions=0x7f0b0001;
     }
     public static final class string {
-        public static final int Register0=0x7f070022;
-        public static final int Register1=0x7f070023;
-        public static final int Register2=0x7f070024;
-        public static final int Register3=0x7f070025;
-        public static final int Register4=0x7f070026;
-        public static final int Register5=0x7f070027;
-        public static final int Register6=0x7f070028;
-        public static final int Register7=0x7f070029;
-        public static final int Register8=0x7f07002a;
-        public static final int Register9=0x7f07002b;
+        /**  Register Names 
+         */
+        public static final int Register0=0x7f070025;
+        public static final int Register1=0x7f070026;
+        public static final int Register2=0x7f070027;
+        public static final int Register3=0x7f070028;
+        public static final int Register4=0x7f070029;
+        public static final int Register5=0x7f07002a;
+        public static final int Register6=0x7f07002b;
+        public static final int Register7=0x7f07002c;
+        public static final int Register8=0x7f07002d;
+        public static final int Register9=0x7f07002e;
         public static final int action_settings=0x7f070002;
+        public static final int already=0x7f070023;
+        /**  General Strings 
+         */
         public static final int app_name=0x7f070001;
         public static final int arrow=0x7f070015;
         public static final int back=0x7f07001e;
         public static final int bin=0x7f070019;
         public static final int box=0x7f070016;
+        public static final int coming=0x7f070024;
         public static final int cont=0x7f07001f;
         public static final int daidalos_accept=0x7f07000c;
         public static final int daidalos_app_name=0x7f070005;
@@ -250,53 +258,72 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int daidalos_ok=0x7f070008;
         public static final int daidalos_select=0x7f070006;
         public static final int daidalos_yes=0x7f07000f;
+        public static final int deb=0x7f070062;
+        public static final int deleted=0x7f070022;
         public static final int end=0x7f070017;
+        public static final int endText=0x7f070063;
+        /**  Error Messages 
+         */
+        public static final int error1=0x7f070056;
+        public static final int error10=0x7f07005f;
+        public static final int error11=0x7f070060;
+        public static final int error2=0x7f070057;
+        public static final int error3=0x7f070058;
+        public static final int error4=0x7f070059;
+        public static final int error5=0x7f07005a;
+        public static final int error6=0x7f07005b;
+        public static final int error7=0x7f07005c;
+        public static final int error8=0x7f07005d;
+        public static final int error9=0x7f07005e;
         public static final int hello_world=0x7f070003;
+        /**  File text 
+         */
+        public static final int inc=0x7f070061;
         public static final int loadmenu=0x7f07001b;
         public static final int newgame=0x7f07001a;
         public static final int no=0x7f07001d;
         public static final int ok=0x7f070000;
-        public static final int page1=0x7f07002c;
-        public static final int page10=0x7f070035;
-        public static final int page11=0x7f070036;
-        public static final int page12=0x7f070037;
-        public static final int page13=0x7f070038;
-        public static final int page14=0x7f070039;
-        public static final int page15=0x7f07003a;
-        public static final int page16=0x7f07003b;
-        public static final int page17=0x7f07003c;
-        public static final int page18=0x7f07003d;
-        public static final int page19=0x7f07003e;
-        public static final int page2=0x7f07002d;
-        public static final int page20=0x7f07003f;
-        public static final int page21=0x7f070040;
-        public static final int page22=0x7f070041;
-        public static final int page23=0x7f070042;
-        public static final int page3=0x7f07002e;
-        public static final int page4=0x7f07002f;
-        public static final int page5=0x7f070030;
-        public static final int page6=0x7f070031;
-        public static final int page7=0x7f070032;
-        public static final int page8=0x7f070033;
-        public static final int page9=0x7f070034;
+        public static final int page1=0x7f07002f;
+        public static final int page10=0x7f070038;
+        public static final int page11=0x7f070039;
+        public static final int page12=0x7f07003a;
+        public static final int page13=0x7f07003b;
+        public static final int page14=0x7f07003c;
+        public static final int page15=0x7f07003d;
+        public static final int page16=0x7f07003e;
+        public static final int page17=0x7f07003f;
+        public static final int page18=0x7f070040;
+        public static final int page19=0x7f070041;
+        public static final int page2=0x7f070030;
+        public static final int page20=0x7f070042;
+        public static final int page21=0x7f070043;
+        public static final int page22=0x7f070044;
+        public static final int page23=0x7f070045;
+        public static final int page3=0x7f070031;
+        public static final int page4=0x7f070032;
+        public static final int page5=0x7f070033;
+        public static final int page6=0x7f070034;
+        public static final int page7=0x7f070035;
+        public static final int page8=0x7f070036;
+        public static final int page9=0x7f070037;
         public static final int run=0x7f070018;
-        public static final int show1=0x7f070043;
-        public static final int show2=0x7f070044;
-        public static final int show3=0x7f070045;
-        public static final int show4=0x7f070046;
-        public static final int show5=0x7f070047;
-        public static final int show6=0x7f070048;
-        public static final int show7=0x7f070049;
-        public static final int show8=0x7f07004a;
+        public static final int show1=0x7f070046;
+        public static final int show2=0x7f070047;
+        public static final int show3=0x7f070048;
+        public static final int show4=0x7f070049;
+        public static final int show5=0x7f07004a;
+        public static final int show6=0x7f07004b;
+        public static final int show7=0x7f07004c;
+        public static final int show8=0x7f07004d;
         public static final int stop=0x7f070020;
-        public static final int title1=0x7f07004b;
-        public static final int title2=0x7f07004c;
-        public static final int title3=0x7f07004d;
-        public static final int title4=0x7f07004e;
-        public static final int title5=0x7f07004f;
-        public static final int title6=0x7f070050;
-        public static final int title7=0x7f070051;
-        public static final int title8=0x7f070052;
+        public static final int title1=0x7f07004e;
+        public static final int title2=0x7f07004f;
+        public static final int title3=0x7f070050;
+        public static final int title4=0x7f070051;
+        public static final int title5=0x7f070052;
+        public static final int title6=0x7f070053;
+        public static final int title7=0x7f070054;
+        public static final int title8=0x7f070055;
         public static final int tutorial=0x7f070021;
         public static final int yes=0x7f07001c;
     }

@@ -36,8 +36,6 @@ public class SaveLoad{
 	private int counter = 0;
 	private String [] instructionInput;
 	private Instruction [] instructionArray;
-	private final String inc = "INC,";
-	private final String deb = "DEB,";
 	private String [] strings;
 	private int [] boxEndIDs;
 	private int numIns;
@@ -153,11 +151,11 @@ public class SaveLoad{
 				sb.append(counter + ","); //Step number
 
 				if (box.getType()){ //Type of instruction
-					sb.append(inc);
+					sb.append(main.getString(R.string.inc));
 				}
 
 				else {
-					sb.append(deb);
+					sb.append(main.getString(R.string.deb));
 				}
 
 				sb.append(box.getRegister() + ",");
@@ -209,7 +207,7 @@ public class SaveLoad{
 
 				sb.append(counter + ",");
 
-				sb.append("END");
+				sb.append(main.getString(R.string.endText));
 				strings[counter] = sb.toString();
 				boxEndIDs[counter] = i.getId();
 
@@ -401,8 +399,10 @@ public class SaveLoad{
 			String [] tokens = instructionText.split(",");
 
 			if (tokens.length > 5 || tokens.length < 1){
+				
+				String error = main.getString(R.string.error5, i); 
 
-				main.showMessage("Incorrect data on line" + i + ". Each line should have no more than 5 pieces of data, separated by commas");
+				main.showMessage(error);
 				done = false;
 			}	
 
@@ -411,12 +411,15 @@ public class SaveLoad{
 
 				if (step != i){ //If step does not equal the row number/index number
 					done = false;
-					main.showMessage("Incorrect data for step " + i + ". Steps must be consecutive numbers, starting at 0.");
+					
+					String error = main.getString(R.string.error6, i); 
+					main.showMessage(error);
 				}
 			}
 			catch (Exception e) {
 				done = false;
-				main.showMessage("Incorrect data for step " + i + ". Step must be a number.");
+				String error = main.getString(R.string.error7, i); 
+				main.showMessage(error);
 			}
 		}
 
@@ -453,7 +456,8 @@ public class SaveLoad{
 			if (!instruction.equals("INC") && !instruction.equals("DEB") && !instruction.equals("END")){
 				done = false;	
 				ok = false;
-				main.showMessage("Incorrect data for step " + i + ". Must use a INC, DEB or END as instruction type");
+				String error = main.getString(R.string.error8, i); 
+				main.showMessage(error);
 			}
 
 			if (instruction.equals("INC") || instruction.equals("DEB")){
@@ -464,13 +468,15 @@ public class SaveLoad{
 					if (register >= game.getMaxReg() || register<0){
 						done = false;
 						ok = false;
-						main.showMessage("Incorrect data for step " + i + ". Register must be a number between 0 and 9.");
+						String error = main.getString(R.string.error9, i);
+						main.showMessage(error);
 					}
 				}
 				catch(Exception e){
 					done = false;
 					ok = false;
-					main.showMessage("Incorrect data for step " + i + ". Register must be a number.");
+					String error = main.getString(R.string.error9, i);
+					main.showMessage(error);
 				}			
 			}
 
@@ -541,13 +547,15 @@ public class SaveLoad{
 					goTo = Integer.parseInt(tokens[3]); //Both types of box will have a "GoTo"
 
 					if (goTo >= counter || goTo < 0){
-						main.showMessage("Incorrect data for step" + i + ". Go To must be a real step number.");
+						String error = main.getString(R.string.error10, i);
+						main.showMessage(error);
 						done = false;
 						ok = false;
 					}
 				}
 				catch(Exception e){
-					main.showMessage("Incorrect data for step" + i + ". Go To step must be a number.");
+					String error = main.getString(R.string.error10, i);
+					main.showMessage(error);
 					done = false;
 					ok = false;
 				}			
@@ -558,14 +566,16 @@ public class SaveLoad{
 						branch = Integer.parseInt(tokens[4]); //Only DEB will have a branch
 
 						if (branch >= counter || branch < 0){
-							main.showMessage("Incorrect data for step" + i + ". Branch must be a real step number.");
+							String error = main.getString(R.string.error11, i);
+							main.showMessage(error);
 							done = false;
 							ok = false;
 						}
 					}
 
 					catch(Exception e){
-						main.showMessage("Incorrect data for step" + i + ". Branch step must be a number.");
+						String error = main.getString(R.string.error11, i);
+						main.showMessage(error);
 						done = false;
 						ok = false;
 					}	
