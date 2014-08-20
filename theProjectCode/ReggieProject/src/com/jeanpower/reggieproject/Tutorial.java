@@ -2,7 +2,6 @@ package com.jeanpower.reggieproject;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.ArrayList;
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import android.app.Dialog;
@@ -20,10 +19,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 /**
- * Tutorial Controller/View Class
+ * Tutorial View Class
  * <p>
  * Handles all actions related to Tutorial.
- * This includes showing Dialogs, ShowcaseViews, handling user interaction with the tutorial <p>
+ * This includes showing Dialogs, ShowcaseViews, handling user interaction with the tutorial
  * and setting up a program on screen after the tutorial for the user to interact with.<p>
  * <p>
  * Interacts with Game object to add new instructions to screen, and MainActivity/Context to show Dialog/Showcaseview
@@ -49,7 +48,6 @@ public class Tutorial implements View.OnClickListener{
 	private ShowcaseView sv;
 	private ViewTarget target; //Showcaseview target
 	private Game game;
-	private ArrayList<Instruction> instructions;
 	private RelativeLayout.LayoutParams okParams;
 	private ImageView tutImage;
 	private Drawable tutDraw;
@@ -159,17 +157,10 @@ public class Tutorial implements View.OnClickListener{
 			}
 
 			if (counter == 17){
-				instructions = game.getInstructionList();
-				Arrow arrow = null;
-
-				for(Instruction i: instructions){
-
-					if (i instanceof Arrow){
-						arrow = (Arrow) i;
-					}
-				}
-				if (null == arrow){ //If no arrow on screen, add one for highlight
-
+				
+				int arrowID = game.findArrow();
+				
+				if (arrowID < 0){ //If no arrow on screen, add one for highlight
 					game.newInstruction(R.id.new_arrow_button);
 					main.updateDisplay();
 				}
@@ -260,16 +251,9 @@ public class Tutorial implements View.OnClickListener{
 			tutImage.setImageDrawable(tutDraw);
 			tutImage.setVisibility(View.VISIBLE);
 
-			Box box = null;
-			instructions = game.getInstructionList();
-			for(Instruction i: instructions){
+			int boxId = game.findBox();
 
-				if (i instanceof Box){
-					box = (Box) i; //Get Box on screen to focus on
-				}
-			}
-
-			target = new ViewTarget(box.getId(), main);
+			target = new ViewTarget(boxId, main);
 			this.showSV();
 			break;
 
@@ -305,16 +289,9 @@ public class Tutorial implements View.OnClickListener{
 			tutImage.setImageDrawable(tutDraw);
 			tutImage.setVisibility(View.VISIBLE);
 
-			Arrow arrow = null;
-			instructions = game.getInstructionList();
-			for(Instruction i: instructions){
-
-				if (i instanceof Arrow){
-					arrow = (Arrow) i; //Get Arrow on screen to focus on
-				}
-			}
-
-			target = new ViewTarget(arrow.getId(), main);
+			int arrowId = game.findArrow();
+			
+			target = new ViewTarget(arrowId, main);
 			this.showSV();
 			break;
 
@@ -344,9 +321,7 @@ public class Tutorial implements View.OnClickListener{
 			try {
 				fw = new FileOutputStream(temporary);
 				fw.write(l1);
-
-				SaveLoad sl = new SaveLoad(main, main, game);  //SaveLoad also handles clearing screen
-				sl.readFile(temporary);
+				game.readInFile(temporary);
 			} 
 			catch (Exception e) {
 				Log.d("exception", e +"");

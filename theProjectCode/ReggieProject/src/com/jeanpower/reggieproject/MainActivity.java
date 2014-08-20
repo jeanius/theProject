@@ -16,7 +16,6 @@ package com.jeanpower.reggieproject;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
@@ -245,9 +244,9 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 	 * @param ImageButton - the instruction, with all parameters/text/drawables attached.
 	 * @return void
 	 */
-	public void addToScreen(ImageButton b){
+	public void addToScreen(ImageButton ib){
 
-		final ImageButton button = b;
+		final ImageButton button = ib;
 
 		button.setOnTouchListener(this);
 		button.setOnDragListener(this);
@@ -332,7 +331,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 				if (!running) {
 					running = true;
 					runButton.setImageResource(R.drawable.ic_stop);
-					arrowButton.setVisibility(View.INVISIBLE); //Prevent them adding new instructions while game is running
+					arrowButton.setVisibility(View.INVISIBLE); //Prevent users adding new instructions while game is running
 					endButton.setVisibility(View.INVISIBLE);
 					boxButton.setVisibility(View.INVISIBLE);
 					binButton.setVisibility(View.INVISIBLE);
@@ -353,12 +352,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 
 			case R.id.bin_clear_button:
 				if (!running) {
-
 					game.clearAll();
-					arrowButton.setVisibility(View.INVISIBLE);
-					endButton.setVisibility(View.INVISIBLE);
-					runButton.setVisibility(View.INVISIBLE);
-					binButton.setVisibility(View.INVISIBLE);
 				}
 				break;
 
@@ -369,7 +363,9 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 	}
 
 	/**
-	 * Clears the screen, resets the registers
+	 * Clears the screen, resets the registers and icons
+	 * <p>
+	 * Allows for clearing of screen without losing Game data
 	 * <p>
 	 * @param void
 	 * @return void
@@ -383,6 +379,12 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 			View child = container.getChildAt(1);
 			container.removeView(child);
 		}
+		
+		arrowButton.setVisibility(View.INVISIBLE);
+		endButton.setVisibility(View.INVISIBLE);
+		runButton.setVisibility(View.INVISIBLE);
+		binButton.setVisibility(View.INVISIBLE);
+		
 		this.setRegisters();
 	}
 
@@ -411,6 +413,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 		for (int i = 0; i < maxRegisters; i++) {
 			if (resid == registerIds[i]) {
 				game.zeroReg(i);
+				this.setRegisters();
 			}
 		}
 		return true;
@@ -612,7 +615,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 		}
 		return true;
 	}
-	
+
 	/**Respond to the action bar's Up button - finishes main activity and goes back to option screen
 	 * <p>
 	 * @param MenuItem - clicked
@@ -624,15 +627,13 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 		switch (item.getItemId()) {
 		case android.R.id.home:
 
-			if (tutorial.getDialog() != null){ //Ensures all dialogs are closed
+			if (null != tutorial && null != tutorial.getDialog()){ //Ensures all dialogs are closed
 				tutorial.getDialog().dismiss();	
 			}
-
 			Intent intent = new Intent(this, OptionScreen.class);
 			startActivity(intent);
 			this.finish();
 		}
-
 		return true;
 	}
 
@@ -662,7 +663,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 	/**
 	 * As Game iterates through instructions, method highlights these on screen
 	 * <p>
-	 * @param int - ID of instruction, int - register
+	 * @param int - ID of instruction, int - associated register
 	 * @return void
 	 */
 	public synchronized void updateInstructionDisplay(int ID, int reg) {
@@ -682,7 +683,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 					currentlyChanging.getDrawable().setAlpha(100);
 
 					if (register > 0){
-						int regID = registerIds[register];
+						int regID = registerIds[register]; //Get View ID from array of register IDs
 						Button register = (Button) findViewById(regID);
 						register.getBackground().setAlpha(100);
 					}
@@ -712,7 +713,6 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 	 * ASyncTask allows for threading<p>
 	 * <p>
 	 */
-	
 	private class CreateInstruction extends AsyncTask<Instruction, Void, ImageButton>{
 
 		@Override
@@ -759,7 +759,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 					}
 					instructionParameters.addRule(RelativeLayout.RIGHT_OF, prevInstruction.getId()); // Right of the current instruction
 				}
-				
+
 				//Margins required due
 				instructionParameters.leftMargin = standardMargin;
 				instructionParameters.topMargin = standardMargin;
@@ -770,7 +770,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 				Arrow arrow = (Arrow) inst;
 				arrow.calculateSpaces(); //Span required of arrow
 				button.setBackgroundColor(Color.TRANSPARENT);
-				DrawArrow drawArrow = new DrawArrow(arrow, buttonWidth, buttonHeight);
+				DrawArrow drawArrow = new DrawArrow(arrow.getSpaces(), arrow.getType(), buttonWidth, buttonHeight);
 				//If pred is arrow/end, it does have an associated register (same as predecessor)
 				drawArrow.setColours(registerColours[arrow.getPred().getRegister()], registerColours[arrow.getTo().getRegister()]);
 
@@ -953,7 +953,6 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 
 	/**
 	 * Deals with clicks on Save/Load and Tutorial
-	 * 
 	 * @param MenuItem clicked
 	 * @return boolean
 	 */
@@ -963,11 +962,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 		switch (item.getItemId()) {
 
 		case R.id.load_menu_button:
-			boolean canRun = game.errorChecking();
-			if (canRun){
-				SaveLoad sl = new SaveLoad(this, this, game);
-				sl.saveLoad();
-			}
+			game.saveLoadClick();
 			break;
 
 		case R.id.tutorial_menu_button:
@@ -979,7 +974,6 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 
 	/**
 	 * Shows messages on screen to user
-	 * 
 	 * @param String - message
 	 * @return void
 	 */

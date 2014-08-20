@@ -32,7 +32,7 @@ public class Arrow implements Instruction{
 	/**
 	 * Constructor.
 	 * 
-	 * @param Game - calling class.
+	 * @param Game calling class.
 	 */
 	public Arrow(Game g){
 
@@ -111,11 +111,16 @@ public class Arrow implements Instruction{
 	 * Calculates span of arrow
 	 * <p>
 	 * Iterates through the list of instructions, adding 1 for each Box encountered.
+	 * Also sets the associated register, ensuring timely update for display.
 	 * <p>
 	 * @param void
 	 * @return void
 	 */
 	public void calculateSpaces(){
+		
+		if (null != pred){
+			register = pred.getRegister();
+		}
 
 		int count = 1; 
 		Instruction currPos;
@@ -150,7 +155,6 @@ public class Arrow implements Instruction{
 				}
 			}
 		}
-
 		spaces = count;
 	}
 
@@ -158,7 +162,7 @@ public class Arrow implements Instruction{
 	//Getters/Setters
 
 	/** Set successor of this instruction
-	 * @param Instruction - new successor
+	 * @param Instruction new successor
 	 * @return void 
 	 */
 	@Override
@@ -168,7 +172,7 @@ public class Arrow implements Instruction{
 
 	/** Return successor of this instruction
 	 * @param void
-	 * @return Instruction - successor 
+	 * @return Instruction successor 
 	 */
 	@Override
 	public Instruction getSucc() {
@@ -176,17 +180,13 @@ public class Arrow implements Instruction{
 		return succ;
 	}
 
-	/** Set predecessor of this instruction and associated register
-	 * @param Instruction - new predecessor
+	/** Set predecessor of this instruction
+	 * @param Instruction new predecessor
 	 * @return void 
 	 */
 	@Override
 	public void setPred(Instruction predecessor) {
 		pred = predecessor;
-
-		if (null != pred){
-			register = pred.getRegister();
-		}
 	}
 
 	/** Return predecessor of this instruction
@@ -196,7 +196,6 @@ public class Arrow implements Instruction{
 	@Override
 	public Instruction getPred() {
 		return pred;
-
 	}
 
 	/** Return type of arrow - true loop, false branch
@@ -226,7 +225,7 @@ public class Arrow implements Instruction{
 
 	/** Return spaces - span of arrow
 	 * @param void
-	 * @return int - number of Boxes spanned
+	 * @return int number of Boxes spanned
 	 */
 	public int getSpaces(){
 		return spaces;
@@ -235,7 +234,7 @@ public class Arrow implements Instruction{
 	/** Return register for this instruction
 	 * <p>
 	 * @param void
-	 * @return int - register number
+	 * @return int register number
 	 */
 	@Override
 	public int getRegister() {
@@ -246,7 +245,7 @@ public class Arrow implements Instruction{
 	 * <p>
 	 * ID is unique to this Arrow, and connects onscreen view with Arrow<p>
 	 * <p>
-	 * @param int - ID
+	 * @param int ID
 	 * @return void 
 	 */
 	@Override
@@ -256,7 +255,7 @@ public class Arrow implements Instruction{
 
 	/** Return ID for this instruction
 	 * @param void
-	 * @return int - register number
+	 * @return int register number
 	 */
 	@Override
 	public int getId() {
@@ -264,7 +263,7 @@ public class Arrow implements Instruction{
 	}
 
 	/** Set "To" for this arrow that it is pointing at
-	 * @param Instruction - new toInstruction
+	 * @param Instruction new toInstruction
 	 * @return void 
 	 */
 	public void setTo(Instruction to){
@@ -273,7 +272,7 @@ public class Arrow implements Instruction{
 
 	/** Return "To" instruction for this arrow
 	 * @param void
-	 * @return Instruction - to instruction
+	 * @return Instruction to instruction
 	 */
 	public Instruction getTo(){
 		return toInstruction;
@@ -281,7 +280,7 @@ public class Arrow implements Instruction{
 
 	/** Return if this arrow has set to its successor 
 	 * @param void
-	 * @return boolean - if set to successor
+	 * @return boolean if set to successor
 	 */
 	public boolean getIfSet(){
 		return setSucc;

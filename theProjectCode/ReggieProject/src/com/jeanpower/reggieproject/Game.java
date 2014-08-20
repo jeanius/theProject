@@ -1,7 +1,15 @@
-//Presenter - Gateway to model, provides View with data it needs.
-
 package com.jeanpower.reggieproject;
 
+/**
+ * Game Presenter
+ * <p>
+ * Deals with game logic, creating instructions, editing instructions, running game<p>
+ * 
+ * <p>
+ * @author Jean Power 2014
+ */
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +19,7 @@ import android.os.Build;
 import android.util.Log;
 import android.view.View;
 
-public class Game {
+public class Game{
 
 	private Instruction first;
 	private Instruction last;
@@ -23,12 +31,12 @@ public class Game {
 	private Instruction prevPos = null;
 	private int boxAbove;
 	private int boxBelow;
+	private Game game = this;
 
 	/**
 	 * Constructor. Zeros all registers, instantiates instance variables.
 	 * <p>
-	 * 
-	 * @return void
+	 * @param MainActivity 
 	 */
 	public Game(MainActivity a) {
 		activity = a;
@@ -41,10 +49,14 @@ public class Game {
 		}
 	}
 
-	public Instruction getPrevPos(){
-		return prevPos;
-	}
-
+	/**
+	 * Checks if errors in program on screen and runs game
+	 * <p>
+	 * Uses anonymous inner class RunGame
+	 * <p>
+	 * @param void
+	 * @return void
+	 */
 	public void runGame() {
 
 		boolean canRun = this.errorChecking();
@@ -56,10 +68,77 @@ public class Game {
 		}
 
 		else {
-			activity.resetRunButton();
+			this.resetButton(); //Reset the run button back to "Run" if game cannot run
 		}
 	}
 
+
+	public void resetButton(){
+		activity.resetRunButton();
+	}
+	
+	public void saveLoadClick(){
+
+		boolean canRun = this.errorChecking();
+
+		if (canRun){
+			SaveLoad sl = new SaveLoad(activity, this);
+			sl.saveLoad();
+		}
+	}
+
+	public void readInFile(File file){
+		
+		SaveLoad sl = new SaveLoad(activity, game);
+		sl.readFile(file);	
+	}
+	
+	public boolean errorChecking(){
+
+		ErrorCheck ec = new ErrorCheck(this, activity);
+		boolean ok = ec.checkErrors();
+
+		return ok;
+	}
+
+	public int findArrow(){
+
+		ArrayList<Instruction> instructions = getInstructionList();
+
+		int arrowId = -1;
+
+		for(Instruction i: instructions){
+
+			if (i instanceof Arrow){
+				arrowId = i.getId();
+			}
+		}
+
+		return arrowId;
+	}
+
+	public int findBox(){
+
+		ArrayList<Instruction> instructions = getInstructionList();
+
+		int boxId = -1;
+
+		for(Instruction i: instructions){
+
+			if (i instanceof Box){
+				boxId = i.getId();
+			}
+		}
+
+		return boxId;
+	}
+
+	/**
+	 * Wipes Game data and resets registers to zero
+	 * <p>
+	 * @param void
+	 * @return void
+	 */
 	public void clearAll(){
 		first = null;
 		last = null;
@@ -70,92 +149,13 @@ public class Game {
 		for (int i = 0; i<MAXREGISTERS; i++){
 			this.zeroReg(i);
 		}
-
-		activity.clearScreen();		
+		activity.clearScreen();
 	}
-
-	public boolean errorChecking(){
-
-		boolean instructionsOk = true;
-
-		ArrayList<Instruction> instructionList = this.getInstructionList();
-
-		for (Instruction i: instructionList){
-
-			if (i instanceof Box){
-
-				Box box = (Box) i;
-
-				if (box.getType()){
-
-					Instruction instruction = box.getSucc();
-
-					while (null != instruction && instruction instanceof Arrow){
-						Arrow arrow = (Arrow) instruction;
-
-						if (!arrow.getType()){
-
-							activity.showMessage(activity.getString(R.string.error1));
-							instructionsOk = false;
-						}
-						instruction = instruction.getSucc();
-					}
-				}
-
-				else {
-
-					if (box.getSucc() instanceof Box){
-						activity.showMessage(activity.getString(R.string.error2));
-						instructionsOk = false;
-					}
-
-					else if (box.getSucc() instanceof Arrow){
-						Arrow arrow = (Arrow) box.getSucc();
-						Instruction succSucc = arrow.getSucc();
-						boolean next = false;
-
-						if (succSucc instanceof Arrow){
-
-							Arrow succArrow = (Arrow) succSucc;
-							if (!succArrow.getType()){
-								next = true;
-							}
-						}
-
-						if (succSucc instanceof End){
-							next = true;
-						}
-
-						if (arrow.getType() && !next){
-							activity.showMessage(activity.getString(R.string.error2));
-							instructionsOk = false;
-
-						}
-					}
-				}
-			}
-
-			else if (i instanceof Arrow){
-				Arrow arrow = (Arrow) i;
-
-				if (!arrow.getType()){
-
-					if (arrow.getTo().getId() == arrow.getPred().getId()){
-						activity.showMessage(activity.getString(R.string.error3));
-						instructionsOk = false;
-					}
-				}
-			}
-
-			if (i.getId() == last.getId()){
-
-				if (i instanceof Box){
-					activity.showMessage(activity.getString(R.string.error4));
-					instructionsOk = false;
-				}
-			}
-		}
-		return instructionsOk;
+	
+	public void clearActivityScreen(){
+		
+		activity.clearScreen();
+		activity.updateDisplay();
 	}
 
 	/**
@@ -251,6 +251,7 @@ public class Game {
 		}
 
 		else {
+
 
 			if (instruction instanceof Box){ //No instruction before a box impacts box
 
@@ -730,7 +731,6 @@ public class Game {
 	/**
 	 * Returns data held in specific register
 	 * <p>
-	 * 
 	 * @param int. Index/number of register.
 	 * @return int
 	 */
@@ -780,22 +780,33 @@ public class Game {
 	/**
 	 * Zeros a specific register
 	 * <p>
-	 * Zeros, then calls method in activity to pull data and update UI
-	 * <p>
-	 * 
 	 * @param int. Index/number of register.
 	 * @return void
 	 */
 	public void zeroReg(int registerNum) {
 
 		registers[registerNum] = 0;
-		activity.setRegisters();
 	}
 
 	public int getMaxReg() {
 		return MAXREGISTERS;
 	}
 
+
+	public Instruction getPrevPos(){
+		return prevPos;
+	}
+
+
+	private void updateActivityDisplay(){
+
+		if (prevPos instanceof Box){
+			activity.updateInstructionDisplay(prevPos.getId(), prevPos.getRegister());
+		}
+		else if (prevPos instanceof Arrow){
+			activity.updateInstructionDisplay(prevPos.getId(), -1);//Arrow does not have associated register
+		}
+	}
 
 	private class RunGame extends AsyncTask<Void, Void, Void>{
 
@@ -809,11 +820,11 @@ public class Game {
 					prevPos = currPos;
 					currPos.doWork();
 
-					activity.updateInstructionDisplay(prevPos.getId(), prevPos.getRegister());
+					game.updateActivityDisplay();
 
 					try {
 						Thread.sleep(1000);
-						activity.updateInstructionDisplay(prevPos.getId(), prevPos.getRegister());
+						game.updateActivityDisplay();
 					}
 					catch (Exception e){
 						Log.d("This was interrupted", "interrupted");
@@ -832,11 +843,11 @@ public class Game {
 
 					if (currArrow.getType() && !setSucc || !currArrow.getType() && !setSucc){
 
-						activity.updateInstructionDisplay(prevPos.getId(), -1); //Arrow does not have associated register
+						game.updateActivityDisplay(); 
 
 						try {
 							Thread.sleep(1000);
-							activity.updateInstructionDisplay(prevPos.getId(), -1);
+							game.updateActivityDisplay();
 						}
 						catch (Exception e){
 							Log.d("This was interrupted", "interrupted");
@@ -849,7 +860,7 @@ public class Game {
 					currPos.doWork();
 				}
 			}
-			activity.resetRunButton();
+			game.resetButton();
 			return null;
 		}
 	}
@@ -861,6 +872,15 @@ public class Game {
 	public void setLast(Instruction l){
 		last = l;
 	}
+
+	public int getFirst(){
+		return first.getId();
+	}
+
+	public int getLast(){
+		return last.getId();
+	}
+
 	public void setLastBox(Instruction lb){
 		lastBox = lb;
 	}
@@ -871,6 +891,10 @@ public class Game {
 
 	public int getBelow(){
 		return boxBelow;
+	}
+
+	public void showActivityMessage(String message){
+		activity.showMessage(message);
 	}
 
 	public void setAboveBelow(){

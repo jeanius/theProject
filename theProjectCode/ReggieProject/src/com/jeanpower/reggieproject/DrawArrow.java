@@ -15,11 +15,8 @@ package com.jeanpower.reggieproject;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.CornerPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.PathEffect;
 import android.graphics.RectF;
 
 public class DrawArrow {
@@ -29,7 +26,6 @@ public class DrawArrow {
 	int beforeColour;
 	int afterColour;
 	int numberButtons;
-	Arrow arrow;
 	boolean loop;
 	float arrowWidth;
 	float arrowHeight;
@@ -37,15 +33,14 @@ public class DrawArrow {
 	/**
 	 * Constructor.
 	 * 
-	 * @param Arrow - to be drawn, int - width of ImageButton, height - height of ImageButton
+	 * @param int - spaces, length of arrow, boolean - type of arrow, int - width of ImageButton, height - height of ImageButton
 	 */
-	public DrawArrow(Arrow a, int width, int height){
+	public DrawArrow(int spaces, boolean type, int width, int height){
 
 		paint.setStrokeWidth(6);
 		paint.setStyle(Paint.Style.STROKE); 
-		arrow = a;
-		numberButtons = arrow.getSpaces(); //Get span required
-		loop = arrow.getType();
+		numberButtons = spaces; //Get span required
+		loop = type;
 		arrowWidth = width;
 		arrowHeight = height;
 	}

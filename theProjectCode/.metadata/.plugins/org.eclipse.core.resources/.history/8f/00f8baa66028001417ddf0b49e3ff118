@@ -1,0 +1,14 @@
+package com.jeanpower.reggieproject;
+
+public class ErrorCheck {
+
+	private Game game;
+	private MainActivity main;
+	
+	public ErrorCheck(Game g, MainActivity ma){
+		
+		game = g;
+		main = ma;
+	}
+
+}

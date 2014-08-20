@@ -26,7 +26,6 @@ public class Box implements Instruction{
 	private int identity;
 	private boolean decrementDone;
 
-
 	/**
 	 * Constructor.
 	 * 
