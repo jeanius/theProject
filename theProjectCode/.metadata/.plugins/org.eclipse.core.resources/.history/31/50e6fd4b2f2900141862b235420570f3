@@ -1,0 +1,116 @@
+package com.jeanpower.reggieproject;
+
+/**
+ * Set of checks run by Game over program before it is saved, or run.
+ * Errors are:
+ * 1) Increment Box with a branch arrow
+ * 2) Decrement Box without a branch arrow, or End instruction
+ * 3) Branch arrow branching to the same instruction
+ * 4) The last instruction is a Box without an Arrow or End
+ * 
+ * 
+ */
+
+import java.util.ArrayList;
+import android.content.Context;
+
+public class ErrorCheck {
+
+	private Game game;
+	private Context context;
+	
+	public ErrorCheck(Game g, Context con){
+		
+		game = g;
+		context = con;
+	}
+	
+	public boolean checkErrors(){
+		
+		boolean instructionsOk = true;
+
+		ArrayList<Instruction> instructionList = game.getInstructionList();
+
+		for (Instruction i: instructionList){
+
+			if (i instanceof Box){
+
+				Box box = (Box) i;
+
+				if (box.getType()){
+
+					Instruction instruction = box.getSucc();
+
+					while (null != instruction && instruction instanceof Arrow){
+						Arrow arrow = (Arrow) instruction;
+
+						if (!arrow.getType()){
+
+							game.showActivityMessage(context.getString(R.string.error1));
+							instructionsOk = false;
+						}
+						instruction = instruction.getSucc();
+					}
+				}
+
+				else {
+
+					if (box.getSucc() instanceof Box){
+						game.showActivityMessage(context.getString(R.string.error2));
+						instructionsOk = false;
+					}
+
+					else if (box.getSucc() instanceof Arrow){
+						Arrow arrow = (Arrow) box.getSucc();
+						Instruction succSucc = arrow.getSucc();
+						boolean next = false;
+
+						if (succSucc instanceof Arrow){
+
+							Arrow succArrow = (Arrow) succSucc;
+							if (!succArrow.getType()){
+								next = true;
+							}
+						}
+
+						if (succSucc instanceof End){
+							next = true;
+						}
+
+						if (arrow.getType() && !next){
+							game.showActivityMessage(context.getString(R.string.error2));
+							instructionsOk = false;
+						}
+					}
+				}
+			}
+
+			else if (i instanceof Arrow){
+				Arrow arrow = (Arrow) i;
+
+				if (!arrow.getType()){
+
+					if (arrow.getTo().getId() == arrow.getPred().getId()){
+						game.showActivityMessage(context.getString(R.string.error3));
+						instructionsOk = false;
+					}
+					
+					if (arrow.getSucc() instanceof End){
+						game.showActivityMessage(context.getString(R.string.error12));
+						instructionsOk = false;
+					}
+				}
+			}
+
+			if (i.getId() == game.getLast()){
+
+				if (i instanceof Box){
+					game.showActivityMessage(context.getString(R.string.error4));
+					instructionsOk = false;
+				}
+			}
+		}
+		return instructionsOk;
+	}
+
+}

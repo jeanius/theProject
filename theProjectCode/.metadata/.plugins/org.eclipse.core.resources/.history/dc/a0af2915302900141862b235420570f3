@@ -1,0 +1,141 @@
+package com.jeanpower.reggieproject;
+
+
+
+
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.RectF;
+
+/**
+ * Arrow drawing helper class
+ * <p>
+ * Class creates and returns bitmap Arrow to use on ImageButton on screen.
+ * Arrow differs depending on if loop/branch, the predecessor and "to" instruction, 
+ * and in length. Length is determined by number of increment/decrement instructions it spans.
+ * <p>
+ * @author Jean Power 2014
+ */
+public class DrawArrow {
+	Paint paint = new Paint();
+	Path pathBefore = new Path(); //Before head (>)
+	Path pathAfter = new Path(); //After head (>)
+	int beforeColour;
+	int afterColour;
+	int numberButtons;
+	boolean loop;
+	float arrowWidth;
+	float arrowHeight;
+	
+	/**
+	 * Constructor.
+	 * 
+	 * @param spaces - int length of arrow
+	 * @param type - boolean type of arrow
+	 * @param width - int width of ImageButton
+	 * @param height - int height of ImageButton
+	 */
+	public DrawArrow(int spaces, boolean type, int width, int height){
+
+		paint.setStrokeWidth(6);
+		paint.setStyle(Paint.Style.STROKE); 
+		numberButtons = spaces; //Get span required
+		loop = type;
+		arrowWidth = width;
+		arrowHeight = height;
+	}
+	
+	
+	/**
+	 * Method sets colours of before, and after the head of arrow (>)
+	 * <p>
+	 * @param startC - int start colour
+	 * @param endC - int end colour
+	 * @return void
+	 */
+	public void setColours(int startC, int endC){
+		beforeColour = startC;
+		afterColour = endC;
+	}
+
+	/**
+	 * Method draws path of Arrow, returns Bitmap
+	 * <p>
+	 * Colours are register colours, associated with predecessor and "to" instructions.
+	 * <p>
+	 * @param void
+	 * @return Bitmap - arrow path
+	 */
+	
+	public Bitmap getImage(){
+
+		Bitmap bitmap = Bitmap.createBitmap(((int) arrowWidth * numberButtons), (int) arrowHeight, Bitmap.Config.ARGB_8888);
+		Canvas canvas = new Canvas(bitmap);
+
+		if (loop){
+			
+			if (numberButtons <= 1){ //If arrow span of 1 box, need V
+				
+				pathBefore.moveTo(arrowWidth/4, 0);
+				pathBefore.lineTo(arrowWidth/2, arrowHeight);
+				pathBefore.lineTo(arrowWidth - arrowWidth/4, 0);
+			}
+
+			else { //Need |---<---|
+				pathBefore.moveTo(arrowWidth - arrowWidth/3, arrowHeight);
+				pathBefore.lineTo(arrowWidth - arrowWidth/3, arrowHeight/2);
+				pathBefore.lineTo((arrowWidth * numberButtons)/2, arrowHeight/2);
+				
+				pathAfter.moveTo((arrowWidth * numberButtons)/2 + arrowWidth/4, arrowHeight);
+				pathAfter.lineTo((arrowWidth * numberButtons)/2, arrowHeight/2);
+				pathAfter.lineTo((arrowWidth * numberButtons)/2 + arrowWidth/4, 0);
+				pathAfter.lineTo((arrowWidth * numberButtons)/2, arrowHeight/2);
+				pathAfter.lineTo((arrowWidth * numberButtons) - arrowWidth/3, arrowHeight/2);
+				pathAfter.lineTo((arrowWidth * numberButtons) - arrowWidth/3, arrowHeight);		
+			}
+			
+			paint.setColor(afterColour);
+			canvas.drawPath(pathBefore, paint);
+			
+			if (numberButtons > 1){
+				paint.setColor(beforeColour);
+				canvas.drawPath(pathAfter, paint);
+			}
+		}
+
+		else { //If branch
+			if (numberButtons <= 1){  //If arrow span of 1 box, need /\
+				pathBefore.moveTo(arrowWidth/4, arrowHeight);
+				pathBefore.lineTo(arrowWidth/2, 0);
+				pathBefore.lineTo(arrowWidth - arrowWidth/4, arrowHeight);
+			}
+			
+			else { //Need O--->---|
+				RectF rec = new RectF(arrowWidth/3, 0, arrowWidth - arrowWidth/3, arrowHeight);
+				
+				pathBefore.moveTo(arrowWidth - arrowWidth/3, arrowHeight/2);
+				pathBefore.addOval(rec, Path.Direction.CW);
+				pathBefore.lineTo((arrowWidth * numberButtons)/2 + arrowWidth/4, arrowHeight/2);
+				
+				pathAfter.moveTo((arrowWidth * numberButtons)/2, arrowHeight);
+				pathAfter.lineTo((arrowWidth * numberButtons)/2 + arrowWidth/4, arrowHeight/2);
+				pathAfter.lineTo((arrowWidth * numberButtons)/2, 0);
+				pathAfter.lineTo((arrowWidth * numberButtons)/2 + arrowWidth/4, arrowHeight/2);
+				
+				pathAfter.lineTo((arrowWidth * numberButtons) - arrowWidth/3, arrowHeight/2);
+				pathAfter.lineTo((arrowWidth * numberButtons) - arrowWidth/3, 0);
+			}
+			
+			paint.setColor(beforeColour);
+			canvas.drawPath(pathBefore, paint);
+			
+			if (numberButtons > 1){
+				paint.setColor(afterColour);
+				canvas.drawPath(pathAfter, paint);
+			}
+		}
+		return bitmap;
+	}
+}

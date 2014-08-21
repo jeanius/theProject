@@ -4,7 +4,6 @@ package com.jeanpower.reggieproject;
  * Provides unique IDs for dynamically added views for APIs prior to 17
  * 
  * Code from:
- * 
  * http://stackoverflow.com/questions/1714297/android-view-setidint-id-programmatically-how-to-avoid-id-conflicts/15442898#15442898
  *
  * @author - xdevelopery 15Mar2013 (http://stackoverflow.com/users/727768/xdevelopery)
@@ -18,7 +17,7 @@ public class Util {
 
 	/**
 	 * Dynamically Generate a value suitable for use in as ID
-	 * @return a generated ID value
+	 * @return int - unique generated ID
 	 */
 	public static int generateViewId() {
 	    for (;;) {
@@ -31,5 +30,4 @@ public class Util {
 	        }
 	    }
 	}
-
 }

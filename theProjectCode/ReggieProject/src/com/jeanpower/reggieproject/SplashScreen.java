@@ -1,15 +1,5 @@
 package com.jeanpower.reggieproject;
 
-/**
- * Splash screen for Reggie
- * 
- * Launch activity of Splash Screen which delays, and then starts the option screen
- * 
- * Font from:
- * http://www.fontspace.com/qbotype/zian
- * 
- **/
-
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -17,10 +7,25 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.widget.TextView;
 
+/**
+ * Splash screen for Reggie<p>
+ * 
+ * Launch activity of Splash Screen which delays, and then starts the option screen<br>
+ * Font from:
+ * http://www.fontspace.com/qbotype/zian
+ * 
+ **/
 public class SplashScreen extends Activity {
 
 	private final int TIME = 3000;
 
+	/**
+	 * Called when activity is created<p>
+	 * Sets typeface, delays showing option screen for 3 seconds.
+	 * <p>
+	 * @param savedInstanceState - Bundle contains previous state information
+	 * @return void
+	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -40,11 +45,9 @@ public class SplashScreen extends Activity {
 				//Start option screen
 				Intent i = new Intent(SplashScreen.this, OptionScreen.class);
 				startActivity(i);
-
 				// close splash screen
 				finish();
 			}
 		}, TIME);
 	}
-
 }

@@ -3,10 +3,9 @@ package com.jeanpower.reggieproject;
 /**
  * Arrow model object
  * <p>
- * 
- * An arrow corresponds to either an increment or decrement/branch instruction.<p>
- * Holds attributes to relating to identity and position of Arrow within the doubly linked list <p>
- * of instructions, type of Arrow, where arrow is pointing, number of instructions arrow spans and<p>
+ * An arrow corresponds to either a loop or a branch.<p>
+ * Holds attributes to relating to identity and position of Arrow within the doubly linked list
+ * of instructions, type of Arrow, where arrow is pointing, number of instructions arrow spans and
  * action of Arrow when it is doing work.
  * <p>
  * Implements instruction interface.
@@ -16,7 +15,6 @@ package com.jeanpower.reggieproject;
  * @author Jean Power 2014
  * 
  */
-
 public class Arrow implements Instruction{
 
 	private Instruction toInstruction;
@@ -32,11 +30,11 @@ public class Arrow implements Instruction{
 	/**
 	 * Constructor.
 	 * 
-	 * @param Game calling class.
+	 * @param game - calling class.
 	 */
-	public Arrow(Game g){
+	public Arrow(Game game){
 
-		caller = g;
+		caller = game;
 		succ = null;
 		pred = null;
 		loop = true;
@@ -46,16 +44,15 @@ public class Arrow implements Instruction{
 	/**
 	 * Completes work of Arrow instruction
 	 * <p>
-	 * If loop:<p>
-	 * - If predecessor is decrement/branch box, and decrement was possible, loop is followed. <p>
-	 * - If predecessor is increment, loop is followed. <p>
-	 * - Else, currPos is set to successor. Loop is skipped, if program tried to decrement past zero.<p>
-	 * 
-	 * If branch:<p>
-	 * - If predecessor is decrement/branch box, and decrement was not possible, branch is followed. <p>
-	 * - If predecessor is increment, currPos is set to successor.<p>
-	 * - Else, currPos is set to null. There has been an issue with program building.<p>
-	 * - 
+	 * If loop:<br>
+	 * - If predecessor is decrement/branch box, and decrement was possible, loop is followed.<br>
+	 * - If predecessor is increment, loop is followed.<br>
+	 * - Else, currPos is set to successor. Loop is skipped, if program tried to decrement past zero.<br>
+	 * <p>
+	 * If branch:<br>
+	 * - If predecessor is decrement/branch box, and decrement was not possible, branch is followed.<br>
+	 * - If predecessor is increment, currPos is set to successor.<br>
+	 * - Else, currPos is set to null. There has been an issue with program building.<br>
 	 * <p>
 	 * @param void
 	 * @return void
@@ -110,7 +107,7 @@ public class Arrow implements Instruction{
 	/**
 	 * Calculates span of arrow
 	 * <p>
-	 * Iterates through the list of instructions, adding 1 for each Box encountered.
+	 * Iterates through the list of instructions, adding 1 for each Box encountered.<br>
 	 * Also sets the associated register, ensuring timely update for display.
 	 * <p>
 	 * @param void
@@ -162,7 +159,7 @@ public class Arrow implements Instruction{
 	//Getters/Setters
 
 	/** Set successor of this instruction
-	 * @param Instruction new successor
+	 * @param successor - new Instruction successor
 	 * @return void 
 	 */
 	@Override
@@ -172,16 +169,15 @@ public class Arrow implements Instruction{
 
 	/** Return successor of this instruction
 	 * @param void
-	 * @return Instruction successor 
+	 * @return Instruction - successor 
 	 */
 	@Override
 	public Instruction getSucc() {
-
 		return succ;
 	}
 
 	/** Set predecessor of this instruction
-	 * @param Instruction new predecessor
+	 * @param predecessor - new Instruction predecessor
 	 * @return void 
 	 */
 	@Override
@@ -200,7 +196,7 @@ public class Arrow implements Instruction{
 
 	/** Return type of arrow - true loop, false branch
 	 * @param void
-	 * @return boolean 
+	 * @return boolean - type
 	 */
 	public boolean getType(){
 		return loop;
@@ -225,7 +221,7 @@ public class Arrow implements Instruction{
 
 	/** Return spaces - span of arrow
 	 * @param void
-	 * @return int number of Boxes spanned
+	 * @return int - number of Boxes spanned
 	 */
 	public int getSpaces(){
 		return spaces;
@@ -234,7 +230,7 @@ public class Arrow implements Instruction{
 	/** Return register for this instruction
 	 * <p>
 	 * @param void
-	 * @return int register number
+	 * @return int - register number
 	 */
 	@Override
 	public int getRegister() {
@@ -245,7 +241,7 @@ public class Arrow implements Instruction{
 	 * <p>
 	 * ID is unique to this Arrow, and connects onscreen view with Arrow<p>
 	 * <p>
-	 * @param int ID
+	 * @param ID - int unique ID
 	 * @return void 
 	 */
 	@Override
@@ -255,7 +251,7 @@ public class Arrow implements Instruction{
 
 	/** Return ID for this instruction
 	 * @param void
-	 * @return int register number
+	 * @return int - unique identity
 	 */
 	@Override
 	public int getId() {
@@ -263,7 +259,7 @@ public class Arrow implements Instruction{
 	}
 
 	/** Set "To" for this arrow that it is pointing at
-	 * @param Instruction new toInstruction
+	 * @param to - new to Instruction
 	 * @return void 
 	 */
 	public void setTo(Instruction to){
@@ -272,7 +268,7 @@ public class Arrow implements Instruction{
 
 	/** Return "To" instruction for this arrow
 	 * @param void
-	 * @return Instruction to instruction
+	 * @return Instruction - to instruction
 	 */
 	public Instruction getTo(){
 		return toInstruction;
@@ -280,7 +276,7 @@ public class Arrow implements Instruction{
 
 	/** Return if this arrow has set to its successor 
 	 * @param void
-	 * @return boolean if set to successor
+	 * @return boolean - if doWork action has set to this successor
 	 */
 	public boolean getIfSet(){
 		return setSucc;

@@ -3,10 +3,9 @@ package com.jeanpower.reggieproject;
 /**
  * Box model object
  * <p>
- * 
  * A box corresponds to either an increment or decrement/branch instruction.<p>
- * Holds attributes to relating to identity and position of Box within the doubly linked list <p>
- * of instructions, type of Box, action of Box when it is doing work, and associated register.<p>
+ * Holds attributes to relating to identity and position of Box within the doubly linked list 
+ * of instructions, type of Box, action of Box when it is doing work, and associated register.
  * <p>
  * Implements instruction interface.
  * <p>
@@ -15,7 +14,6 @@ package com.jeanpower.reggieproject;
  * @author Jean Power 2014
  * 
  */
-
 public class Box implements Instruction{
 
 	private int register;
@@ -29,13 +27,13 @@ public class Box implements Instruction{
 	/**
 	 * Constructor.
 	 * 
-	 * @param Game - calling class.
+	 * @param game - calling class.
 	 */
-	public Box(Game g){
+	public Box(Game game){
 
 		inc = true;
 		register = 0;
-		caller = g;
+		caller = game;
 		succ = null;
 		pred = null;
 	}
@@ -43,9 +41,9 @@ public class Box implements Instruction{
 	/**
 	 * Completes work of Box instruction
 	 * <p>
-	 * If increment, box increments its associated register, sets currPos to its successor.<p>
-	 * If decrement/branch, box decrements its associated register, sets currPos to its successor.<p>
-	 * Also captures if decrement was possible (Cannot reduce past zero). This is used to control action next instruction (branch, end)<p>
+	 * If increment, box increments its associated register, sets currPos to its successor.<br>
+	 * If decrement/branch, box decrements its associated register, sets currPos to its successor.<br>
+	 * Also captures if decrement was possible (Cannot reduce past zero). This is used to control action of next instruction (branch, end)<br>
 	 * <p>
 	 * @param void
 	 * @return void
@@ -71,14 +69,14 @@ public class Box implements Instruction{
 
 	/** Return if decrement was done
 	 * @param void
-	 * @return boolean 
+	 * @return boolean - decrement done
 	 */
 	public boolean decDone(){
 		return decrementDone;
 	}
 
 	/** Set successor of this instruction
-	 * @param Instruction - new successor
+	 * @param successor - new Instruction successor
 	 * @return void 
 	 */
 	@Override
@@ -96,7 +94,7 @@ public class Box implements Instruction{
 	}
 
 	/** Set predecessor of this instruction
-	 * @param Instruction - new predecessor
+	 * @param predecessor - new Instruction predecessor
 	 * @return void 
 	 */
 	@Override
@@ -115,7 +113,7 @@ public class Box implements Instruction{
 
 	/** Return type of box - true increment, false decrement/branch
 	 * @param void
-	 * @return boolean 
+	 * @return boolean - type
 	 */
 	public boolean getType(){
 		return inc;
@@ -140,8 +138,8 @@ public class Box implements Instruction{
 
 	/** Set associated register for this instruction
 	 * <p>
-	 * As on screen view of Box is tapped, the associated register is updated<p>
-	 * to the next register.<p>
+	 * As on screen view of Box is tapped, the associated register is updated
+	 * to the next register.
 	 * <p>
 	 * @param void
 	 * @return void 
@@ -167,20 +165,19 @@ public class Box implements Instruction{
 
 	/** Set associated register for this instruction
 	 * <p>
-	 * Direct setting of register, not iteration<p>
-	 * @param int - register number
+	 * Direct setting of register, not iteration, for loading of files directly<p>
+	 * @param reg - register number
 	 * @return void
 	 */
 	public void changeRegister(int reg) {
 		register = reg;
 	}
 
-
 	/** Set ID of this instruction
 	 * <p>
 	 * ID is unique to this Box, and connects onscreen view with Box.
 	 * <p>
-	 * @param int - ID
+	 * @param ID - unique int ID
 	 * @return void 
 	 */
 	@Override
@@ -190,7 +187,7 @@ public class Box implements Instruction{
 
 	/** Return ID for this instruction
 	 * @param void
-	 * @return int - register number
+	 * @return int - unique ID
 	 */
 	@Override
 	public int getId() {

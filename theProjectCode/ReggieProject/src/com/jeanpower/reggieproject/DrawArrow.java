@@ -1,5 +1,10 @@
 package com.jeanpower.reggieproject;
 
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.RectF;
 
 /**
  * Arrow drawing helper class
@@ -7,18 +12,9 @@ package com.jeanpower.reggieproject;
  * Class creates and returns bitmap Arrow to use on ImageButton on screen.
  * Arrow differs depending on if loop/branch, the predecessor and "to" instruction, 
  * and in length. Length is determined by number of increment/decrement instructions it spans.
- * 
  * <p>
  * @author Jean Power 2014
- * 
  */
-
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.RectF;
-
 public class DrawArrow {
 	Paint paint = new Paint();
 	Path pathBefore = new Path(); //Before head (>)
@@ -33,7 +29,10 @@ public class DrawArrow {
 	/**
 	 * Constructor.
 	 * 
-	 * @param int - spaces, length of arrow, boolean - type of arrow, int - width of ImageButton, height - height of ImageButton
+	 * @param spaces - int length of arrow
+	 * @param type - boolean type of arrow
+	 * @param width - int width of ImageButton
+	 * @param height - int height of ImageButton
 	 */
 	public DrawArrow(int spaces, boolean type, int width, int height){
 
@@ -49,7 +48,8 @@ public class DrawArrow {
 	/**
 	 * Method sets colours of before, and after the head of arrow (>)
 	 * <p>
-	 * @param int - Start Colour, int - End Colour
+	 * @param startC - int start colour
+	 * @param endC - int end colour
 	 * @return void
 	 */
 	public void setColours(int startC, int endC){
@@ -57,7 +57,6 @@ public class DrawArrow {
 		afterColour = endC;
 	}
 
-	
 	/**
 	 * Method draws path of Arrow, returns Bitmap
 	 * <p>

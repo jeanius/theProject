@@ -1,19 +1,5 @@
 package com.jeanpower.reggieproject;
 
-/**
- * File Save/Load View class
- * <p>
- * Handles all actions related to saving and loading files. <p>
- * This includes getting user input for name, exporting program to a file, importing files and error checking <p>
- * <p>
- * Interacts with Game object to get the instruction list, and create an instruction list, and MainActivity to send error messages
- * <p>
- * aFileDialog Copyright 2013 Jose F. Maldonado
- * <p>
- * @author Jean Power 2014
- * 
- */
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
@@ -29,6 +15,19 @@ import android.view.View;
 import ar.com.daidalos.afiledialog.FileChooserDialog;
 import ar.com.daidalos.afiledialog.FileChooserLabels;
 
+/**
+ * File Save/Load View class
+ * <p>
+ * Handles all actions related to saving and loading files. <br>
+ * This includes getting user input for name, exporting program to a file, importing files and error checking 
+ * <p>
+ * Interacts with Game object to get the instruction list, create an instruction list, and to send error messages
+ * <p>
+ * aFileDialog Copyright 2013 Jose F. Maldonado
+ * <p>
+ * @author Jean Power 2014
+ * 
+ */
 public class SaveLoad{
 
 	private Game game;
@@ -43,8 +42,8 @@ public class SaveLoad{
 	/**
 	 * Constructor.
 	 * <p>
-	 * <p>
-	 * @param Context - application context, MainActivity - calling class, Game - current game
+	 * @param c - application context
+	 * @param g - game
 	 */
 	public SaveLoad(Context c, Game g){
 		context = c;
@@ -275,12 +274,10 @@ public class SaveLoad{
 		return resultSB.toString();
 	}
 
-
-
 	/**
 	 * Appends goto/branch steps to strings, as per the Arrows
 	 * <p>
-	 * @param Arrow - current arrow to be added
+	 * @param curr - current Arrow that is being created
 	 * @return void
 	 */
 	public void arrowHelper(Arrow curr){
@@ -348,7 +345,7 @@ public class SaveLoad{
 	/**
 	 * Reads in file, creates String array, checking strings for length and checking step numbers
 	 * <p>
-	 * @param void
+	 * @param file - File to be read in
 	 * @return void
 	 */
 	public void readFile(File file){
@@ -421,7 +418,7 @@ public class SaveLoad{
 			}
 		}
 
-		//If all the strings have at least one, and no more than 5 tokens, the instruction can be created on screen
+		//If all the strings have at least one, and no more than 5 tokens, and the steps are consecutive the instruction can be created on screen
 		if (done){
 			this.createInstruction();
 		}	
@@ -430,7 +427,7 @@ public class SaveLoad{
 	/**
 	 * From String array of instruction texts, creates all Boxes/Ends
 	 * <p>
-	 * Includes error checking of instruction and register number
+	 * Includes error checking of instruction and register number<br>
 	 * Adds instructions to an array of Instructions
 	 * <p>
 	 * @param void
@@ -515,7 +512,7 @@ public class SaveLoad{
 	/**
 	 * From String array of instruction texts, creates all Arrows
 	 * <p>
-	 * Includes error checking of step numbers, 
+	 * Includes error checking of step numbers against GoTo/Branch numbers
 	 * <p>
 	 * @param void
 	 * @return void
@@ -667,7 +664,6 @@ public class SaveLoad{
 				game.setLast(last);
 				last = last.getSucc();
 			}
-
 			game.clearActivityScreen();
 		}
 	}

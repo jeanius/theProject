@@ -3,10 +3,9 @@ package com.jeanpower.reggieproject;
 /**
  * End model object
  * <p>
- * 
  * And End stops the program if placed on increment, or is used in place of Branch to stop program if decrement past zero.<p>
- * Holds attributes to relating to identity and position of Box within the doubly linked list <p>
- * of instructions, action of End when it is doing work, and associated register.<p>
+ * Holds attributes to relating to identity and position of Box within the doubly linked list
+ * of instructions, action of End when it is doing work, and associated register.
  * <p>
  * Implements instruction interface.
  * <p>
@@ -15,7 +14,6 @@ package com.jeanpower.reggieproject;
  * @author Jean Power 2014
  * 
  */
-
 public class End implements Instruction{
 
 	private Game caller;
@@ -28,12 +26,12 @@ public class End implements Instruction{
 	/**
 	 * Constructor.
 	 * 
-	 * @param Game - calling class.
+	 * @param game - calling class.
 	 */
 	
-	public End(Game g){
+	public End(Game game){
 
-		caller = g;
+		caller = game;
 		succ = null;
 		pred = null;
 	}
@@ -41,9 +39,9 @@ public class End implements Instruction{
 	/**
 	 * Completes work of End instruction
 	 * <p>
-	 * - If predecessor is decrement/branch box, and decrement was not possible, program is stopped (currPos set to null)<p>
-	 * - If predecessor is increment, program is stopped (currPos set to null)<p>
-	 * - Else, currPos is set to successor. <p>
+	 * - If predecessor is decrement/branch box, and decrement was not possible, program is stopped (currPos set to null)<br>
+	 * - If predecessor is increment, program is stopped (currPos set to null)<br>
+	 * - Else, currPos is set to successor. <br>
 	 * <p>
 	 * @param void
 	 * @return void
@@ -68,14 +66,12 @@ public class End implements Instruction{
 		else {
 			caller.setCurrPos(null);
 		}
-
 	}
-	
 	
 	//Getters/Setters
 
 	/** Set successor of this instruction
-	 * @param Instruction - new successor
+	 * @param successor - new Instruction successor
 	 * @return void 
 	 */
 	@Override
@@ -93,7 +89,7 @@ public class End implements Instruction{
 	}
 	
 	/** Set predecessor of this instruction and associated register
-	 * @param Instruction - new predecessor
+	 * @param predecessor - new Instruction predecessor
 	 * @return void 
 	 */
 	@Override
@@ -126,9 +122,9 @@ public class End implements Instruction{
 
 	/** Set ID of this instruction
 	 * <p>
-	 * ID is unique to this End, and connects onscreen view with End<p>
+	 * ID is unique to this End, and connects onscreen view with End.
 	 * <p>
-	 * @param int - ID
+	 * @param ID - unique int identity
 	 * @return void 
 	 */
 	@Override
@@ -138,7 +134,7 @@ public class End implements Instruction{
 	
 	/** Return ID for this instruction
 	 * @param void
-	 * @return int - register number
+	 * @return int - unique ID
 	 */
 	@Override
 	public int getId() {

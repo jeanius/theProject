@@ -1,4 +1,5 @@
 package com.jeanpower.reggieproject;
+
 /**
  * Instruction interface.
  * <p>
@@ -8,7 +9,6 @@ package com.jeanpower.reggieproject;
  * @author Jean
  *
  */
-
 public interface Instruction {
 
 	public void doWork();

@@ -258,15 +258,17 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int daidalos_ok=0x7f070008;
         public static final int daidalos_select=0x7f070006;
         public static final int daidalos_yes=0x7f07000f;
-        public static final int deb=0x7f070062;
+        public static final int deb=0x7f070064;
         public static final int deleted=0x7f070022;
         public static final int end=0x7f070017;
-        public static final int endText=0x7f070063;
+        public static final int endText=0x7f070065;
         /**  Error Messages 
          */
         public static final int error1=0x7f070056;
         public static final int error10=0x7f07005f;
         public static final int error11=0x7f070060;
+        public static final int error12=0x7f070061;
+        public static final int error13=0x7f070062;
         public static final int error2=0x7f070057;
         public static final int error3=0x7f070058;
         public static final int error4=0x7f070059;
@@ -278,7 +280,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int hello_world=0x7f070003;
         /**  File text 
          */
-        public static final int inc=0x7f070061;
+        public static final int inc=0x7f070063;
         public static final int loadmenu=0x7f07001b;
         public static final int newgame=0x7f07001a;
         public static final int no=0x7f07001d;

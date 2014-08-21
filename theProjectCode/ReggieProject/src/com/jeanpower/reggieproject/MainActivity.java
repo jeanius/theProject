@@ -1,18 +1,5 @@
 package com.jeanpower.reggieproject;
 
-/**
- * MainActivity View 
- * <p>
- * Deals with all layout of static and dynamic elements<p>
- * Routes user interaction to correct methods in Game<p>
- * Instantiates Tutorial, as required.<p>
- * Instantiates Game<p>
- * Instantiates SaveLoad as required.<p>
- * <p>
- * @author Jean Power 2014
- * 
- */
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -39,6 +26,16 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+/**
+ * MainActivity View 
+ * <p>
+ * Deals with all layout of static and dynamic elements<br>
+ * Routes user interaction to correct methods in Game<br>
+ * Instantiates Tutorial, as required.<br>
+ * Instantiates Game<br>
+ * <p>
+ * @author Jean Power 2014
+ */
 public class MainActivity extends Activity implements View.OnClickListener, OnMenuItemClickListener, View.OnLongClickListener, View.OnTouchListener, View.OnDragListener {
 
 	private Game game;
@@ -70,19 +67,19 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 	private RelativeLayout container;
 	private boolean deleteInstruction = false; //For correct action after drag ends
 	private ArrayList<Instruction> instructionList;
-	private int instructionCounter; //Iteration through list.
+	private int instructionCounter; //Iteration through list of instructions
 	private Tutorial tutorial;
 	private int standardMargin = 1;
 
 	/**
-	 * Called when application is opened.
+	 * Called when activity is created.
 	 * <p>
-	 * Sets up constants (maximum registers, find action frame, etc)<p>
-	 * Places invisible sizer on screen for button width/height constant<p>
-	 * Adds registers to screen, with colours and action listeners
+	 * Sets up constants (maximum registers, find action frame, etc)<br>
+	 * Places invisible sizer on screen for button width/height constant<br>
+	 * Adds registers to screen, with colours and action listeners<br>
 	 * Adds static icons to screen with action listeners.
 	 * <p>
-	 * @param void
+	 * @param savedInstanceState - Bundle contains previous state information
 	 * @return void
 	 */
 	@Override
@@ -166,7 +163,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 	/**
 	 * Inflates the menu and adds items (Save/Load and Tutorial)
 	 * <p>
-	 * @param Menu. Menu which has items added
+	 * @param menu - Menu which has items added
 	 * @return boolean
 	 */
 	@Override
@@ -228,6 +225,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 
 		if (instructionList.size() > 0){
 
+			//User can add arrows, ends, bin instructions and run program, if there is an instruction on screen
 			arrowButton.setVisibility(View.VISIBLE);
 			endButton.setVisibility(View.VISIBLE);
 			runButton.setVisibility(View.VISIBLE);
@@ -241,12 +239,12 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 	/**
 	 * Helper method to add final instruction to screen, on UI thread
 	 * <p>
-	 * @param ImageButton - the instruction, with all parameters/text/drawables attached.
+	 * @param ibutton -  ImageButton of the Instruction, with all parameters/text/drawables attached.
 	 * @return void
 	 */
-	public void addToScreen(ImageButton ib){
+	public void addToScreen(ImageButton ibutton){
 
-		final ImageButton button = ib;
+		final ImageButton button = ibutton;
 
 		button.setOnTouchListener(this);
 		button.setOnDragListener(this);
@@ -264,7 +262,8 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 	/**
 	 * Update the colour of the instruction, as per the register colours, when clicked
 	 * <p>
-	 * @param int - ID of instruction, int - register number
+	 * @param ID - identity of instruction, and therefore on screen ImageButton
+	 * @param register - new associated register
 	 * @return void
 	 */
 	public void updateColour(int ID, int register) {
@@ -276,7 +275,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 	}
 
 	/**
-	 * Iterates through register buttons, getting data from Game class.
+	 * Iterates through register buttons, getting data from Game class and setting
 	 * <p>
 	 * @param void
 	 * @return void
@@ -295,12 +294,12 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 	/**
 	 * Deals with clicks on registers and clicks on icons
 	 * <p>
-	 * Click on register increments register by 1.<p>
-	 * Click on icon creates a new instruction<p>
-	 * Click on "Run" causes game to run<p>
-	 * Click on Bin/Clear clears the screen and registers.<p>
+	 * Click on register increments register by 1.<br>
+	 * Click on icon creates a new instruction<br>
+	 * Click on "Run" causes game to run<br>
+	 * Click on Bin/Clear clears the screen and registers.<br>
 	 * <p>
-	 * @param View. The button which has been clicked
+	 * @param v - View, the clicked button
 	 * @return void
 	 */
 	@Override
@@ -365,7 +364,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 	/**
 	 * Clears the screen, resets the registers and icons
 	 * <p>
-	 * Allows for clearing of screen without losing Game data
+	 * Allows for clearing of screen without losing Game data, for file loading
 	 * <p>
 	 * @param void
 	 * @return void
@@ -384,14 +383,13 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 		endButton.setVisibility(View.INVISIBLE);
 		runButton.setVisibility(View.INVISIBLE);
 		binButton.setVisibility(View.INVISIBLE);
-		
 		this.setRegisters();
 	}
 
 	/**
 	 * Removes one instruction
 	 * <p>
-	 * @param int - instruction ID to be remove
+	 * @param ID - int identity of instruction to be removed, therefore ID of ImageButton
 	 * @return void
 	 */
 	public void removeInstruction(int ID){
@@ -402,7 +400,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 	/**
 	 * Takes long click on register button and zeros register
 	 * <p>
-	 * @param View - Button which has been clicked
+	 * @param v - View that was clicked
 	 * @return boolean
 	 */
 	@Override
@@ -422,10 +420,11 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 	/**
 	 * Deals with touch listeners
 	 * <p>
-	 * If short click, boxes update colour, arrows become branch/arrow, end moves back along instruction list
-	 * If long + dragging, starts drag event
+	 * If short click, boxes update colour, arrows become branch/arrow, end moves back along instruction list<br>
+	 * If long and user starts dragging, starts drag event
 	 * <p>
-	 * @param View - Button which has been touched, MotionEvent
+	 * @param v - View that has been clicked
+	 * @param me - MotionEvent of action on View
 	 * @return boolean
 	 */
 	@Override
@@ -531,11 +530,12 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 	/**
 	 * Deals with drag operation
 	 * <p>
-	 * When drag enters a view, if bin, deletes instruction. 
-	 * If enters Box, and arrow is being dragged, changes head/tail of arrow as appropriate.
-	 * If dragging Box, changes to deb or inc, depending.
+	 * When drag enters a view, if bin, deletes instruction. <br>
+	 * If enters Box, and arrow is being dragged, changes head/tail of arrow as appropriate.<br>
+	 * If dragging Box, changes to deb or inc.<br>
 	 * <p>
-	 * @param View - Button which has been touched, dragevent
+	 * @param v - View that is being dragged
+	 * @param de - DragEvent with drag/location information
 	 * @return boolean
 	 */
 	@Override
@@ -618,7 +618,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 
 	/**Respond to the action bar's Up button - finishes main activity and goes back to option screen
 	 * <p>
-	 * @param MenuItem - clicked
+	 * @param item - clicked MenuItem
 	 * @return boolean
 	 */
 	@Override
@@ -638,8 +638,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 	}
 
 	/**
-	 * Helper method reset the Run button back to "Run" as must be called on main UI thread
-	 * <p>
+	 * Helper method reset the Run button back to "Run" as must be called on main UI thread<br>
 	 * Also resets visibility of icons
 	 * <p>
 	 * @param void
@@ -661,9 +660,11 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 	}
 
 	/**
-	 * As Game iterates through instructions, method highlights these on screen
+	 * As Game iterates through instructions, call this to highlights on screen<br>
+	 * Also highlights register, if inc/deb instruction
 	 * <p>
-	 * @param int - ID of instruction, int - associated register
+	 * @param ID - identity of instruction, and therefore on screen ImageButton
+	 * @param reg - associated register
 	 * @return void
 	 */
 	public synchronized void updateInstructionDisplay(int ID, int reg) {
@@ -680,7 +681,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 
 				if (!changingButton) {
 
-					currentlyChanging.getDrawable().setAlpha(100);
+					currentlyChanging.getDrawable().setAlpha(100); //Alpha sets opaque value between 0 (transparent) and 255 (fully opaque)
 
 					if (register > 0){
 						int regID = registerIds[register]; //Get View ID from array of register IDs
@@ -706,15 +707,23 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 	}
 
 	/**
-	 * CreateInstruction anonymous inner presenter/view class
+	 * CreateInstruction anonymous inner hybrid View/Presenter class
 	 * <p>
-	 * Is given the first instruction, creates a thread and sets all display parameters for this instruction.<p>
-	 * Passes back ImageButton with correct parameters to MainActivity<p>
-	 * ASyncTask allows for threading<p>
+	 * Is given the first instruction, creates a thread and sets all display parameters for this instruction.<br>
+	 * Passes back ImageButton with correct parameters to MainActivity<br>
+	 * Interacts directly with Instruction to get information to create correct display parameters<br>
+	 * Uses DrawArrow to create arrow Bitmaps<br>
+	 * ASyncTask allows for threading - this class is a helper class, performing all the calculations in the background<br>
 	 * <p>
 	 */
 	private class CreateInstruction extends AsyncTask<Instruction, Void, ImageButton>{
 
+		/**
+		 * Actions completed on background thread, stopping UI from freezing
+		 * 
+		 *  @param params - Array of one Instruction, to have all display parameters created
+		 *  @return ImageButton - Instruction's onscreen ImageButton with display parameters
+		 */
 		@Override
 		protected ImageButton doInBackground(Instruction... params) {
 
@@ -915,10 +924,12 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 				Box prevBox = (Box) prev;
 
 				if (prevBox.getType()) {
-					topMargin = -(int) (buttonHeight/1.4);
+					instructionParameters.addRule(RelativeLayout.ABOVE,	R.id.theLine);
+					topMargin = - buttonHeight;
 
 				} 
 				else {
+					instructionParameters.addRule(RelativeLayout.BELOW,	R.id.theLine);
 					topMargin = 0;
 				}
 
@@ -934,7 +945,13 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 			return button;
 		}
 
-		//When doInBackGround is done, this executes, getting the next instruction to create
+		/**
+		 * Called directly after doInBackground is completed.<p>
+		 * Passes the ImageButton to MainActivity<br>
+		 * Creates a new AsyncTask with the next instruction<br>
+		 *  @param result - ImageButton result of doInBackground
+		 *  @return void
+		 */
 		protected void onPostExecute(ImageButton result) {
 
 			addToScreen(result);
@@ -953,7 +970,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 
 	/**
 	 * Deals with clicks on Save/Load and Tutorial
-	 * @param MenuItem clicked
+	 * @param item - MenuItem clicked
 	 * @return boolean
 	 */
 	@Override
@@ -974,7 +991,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 
 	/**
 	 * Shows messages on screen to user
-	 * @param String - message
+	 * @param message - String message
 	 * @return void
 	 */
 	public void showMessage(String message){
@@ -984,5 +1001,23 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 		int duration = Toast.LENGTH_LONG;
 		Toast toast = Toast.makeText(context, text, duration);
 		toast.show();
+	}
+	
+	/**
+	 * Get ButtonHeight
+	 * @return int buttonHeight
+	 */
+	public int getHeight(){
+		this.setLayoutConstants();
+		return buttonHeight;
+	}
+	
+	/**
+	 * Get ButtonWidth
+	 * @return int buttonWidth
+	 */
+	public int getWidth(){
+		this.setLayoutConstants();
+		return buttonWidth;
 	}
 }

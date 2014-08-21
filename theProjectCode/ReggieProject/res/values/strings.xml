@@ -154,17 +154,19 @@
     
     <!-- Error Messages -->
     
-    <string name="error1">Branch arrows (under the line) don\'t work on increment. They are only used when I try decrement a register with zero. </string>
-   	<string name="error2">All decrement (under the line) must have a branch arrow (under the line), or end, so I know what to do when I try decrement a register with zero.</string>
+    <string name="error1">Branch arrows (under the line) don\'t work on increment. They are used when I try decrement a register with zero. Delete the Branch.</string>
+   	<string name="error2">All decrement (under the line) must have a Branch arrow (under the line), or End; add one, so I know what to do when the register is zero.</string>
     <string name="error3">Branches cannot branch (point to) to the same instruction.</string>
-   	<string name="error4">There is no end, loop or branch at the last instruction.</string>
+   	<string name="error4">There is no end, loop or branch at the last instruction. Add one so I know what to do.</string>
     <string name="error5">Incorrect data on line %1$d. Each line should have no more than 5 pieces of data, separated by commas</string>
     <string name="error6">Incorrect data for step %1$d. Steps must be consecutive numbers, starting at 0.</string>
     <string name="error7">Incorrect data for step %1$d. Step must be a number.</string>
     <string name="error8">Incorrect data for step %1$d. Must use a INC, DEB or END as instruction type</string>
     <string name="error9">Incorrect data for step %1$d. Register must be a number between 0 and 9.</string>
-    <string name="error10">Incorrect data for step %1$d. Go To must be a real step number.</string>
-    <string name="error11">Incorrect data for step %1$d. Branch must be a real step number.</string>
+    <string name="error10">Incorrect data for step %1$d. Go To must be a step number.</string>
+    <string name="error11">Incorrect data for step %1$d. Branch must be a step number.</string>
+    <string name="error12">End instructions on same box as Branch arrows (below the line) are pointless, because the branch will be followed. Delete the Branch or End.</string>
+    <string name="error13">End instructions on same box as Loop arrows (above the line) are pointless, because the loop will be followed. Delete the Loop or End.</string>
     
     <!-- File text -->
     
