@@ -3,6 +3,7 @@ package com.jeanpower.reggieproject;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
@@ -12,6 +13,7 @@ import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.DragEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -218,6 +220,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 	 */
 	public void updateDisplay() {
 
+		//this.clearArrows();
 		instructionList = game.getInstructionList();
 		this.setLayoutConstants();
 		instructionCounter = 0;
@@ -253,8 +256,8 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 
 			@Override
 			public void run() {
-				removeInstruction(button.getId()); // If already there, remove to allow redraw
-				container.addView(button);
+				removeInstruction(button.getId());
+				container.addView(button);		
 			}
 		});
 	}
@@ -378,12 +381,35 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 			View child = container.getChildAt(1);
 			container.removeView(child);
 		}
-		
+
 		arrowButton.setVisibility(View.INVISIBLE);
 		endButton.setVisibility(View.INVISIBLE);
 		runButton.setVisibility(View.INVISIBLE);
 		binButton.setVisibility(View.INVISIBLE);
 		this.setRegisters();
+	}
+
+	/**
+	 * Clears the screen of arrows
+	 * <p>
+	 * Helper method for laying out arrow instructions, as they impact each other's layout - 
+	 * cannot have previous versions of arrows on screen
+	 * <p>
+	 * @param void
+	 * @return void
+	 */
+	public void clearArrows(){
+
+		int childCount = container.getChildCount();
+
+		for (int i = 1; i < childCount; i++) {
+
+			View child = container.getChildAt(1);
+
+			if (game.getInstruction(child.getId()) instanceof Arrow){
+				container.removeView(child);
+			}
+		}		
 	}
 
 	/**
@@ -393,8 +419,11 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 	 * @return void
 	 */
 	public void removeInstruction(int ID){
+
 		View child = findViewById(ID);
-		container.removeView(child);
+		if (null != child){
+			container.removeView(child);
+		}
 	}
 
 	/**
@@ -454,8 +483,10 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 				parent.getLocationInWindow(rootLocation);
 
 				int relativeLeft = viewLocation[0] - rootLocation[0];
+				
+				Arrow dragArrow = (Arrow) instruction;
 
-				if ((origX < (relativeLeft + v.getWidth()/2) && v.getY() < theLineY) || (origX > (relativeLeft + v.getWidth()/2) && v.getY() >= theLineY)) {
+				if ((origX < (relativeLeft + v.getWidth()/2) && dragArrow.getType()) || (origX > (relativeLeft + v.getWidth()/2) && !dragArrow.getType())) {
 					arrowHead = true;
 				}
 
@@ -596,12 +627,18 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 					if ((newY - origY > THRESHOLD) || (origY - newY > THRESHOLD)) {
 						game.changeInstruction(currentlyDragging); 
 					}
+					this.updateDisplay();
 				}
 
 				if (draggingArrow){
 					View arrowView = findViewById(currentlyDragging.getId());
-					arrowView.setBackgroundColor(Color.TRANSPARENT);
+					arrowView.setBackgroundColor(Color.TRANSPARENT);	
+					this.updateDisplay();
 				}
+			}
+
+			if (deleteInstruction){
+				this.updateDisplay();		
 			}
 
 			currentlyDragging = null;
@@ -609,7 +646,6 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 			draggingBox = false;
 			deleteInstruction = false;
 			binButton.setImageResource(R.drawable.ic_clear);
-			this.updateDisplay();
 
 			break;
 		}
@@ -840,7 +876,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 								// If there is any overlap in the lists, increase the margin.
 								if (sizeList != newSizeList) {
 
-									if (null != findViewById(check.getId())){
+									if (null != findViewById(check.getId()) && null != findViewById(check.getId()).getLayoutParams()){
 										RelativeLayout.LayoutParams par = (RelativeLayout.LayoutParams) findViewById(check.getId()).getLayoutParams();
 										marginTop = -par.topMargin + buttonHeight;
 									}
@@ -864,8 +900,18 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 						marginTop = 0;
 					}
 
-					instructionBetween = game.getToFrom(arrow.getPred(), arrow.getTo().getId());
+					if (arrow.getTo().getSucc() instanceof Arrow){
+						Arrow toSucc = (Arrow) arrow.getTo().getSucc();
 
+						if (!toSucc.getType()){
+							instructionBetween = game.getToFrom(arrow.getPred(), toSucc.getId());
+						}
+					}
+
+					else {
+						instructionBetween = game.getToFrom(arrow.getPred(), arrow.getTo().getId());
+					}
+					
 					int pointer = 0;
 					Instruction currentPosition = instructionList.get(pointer);
 
@@ -878,7 +924,23 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 
 							if (!check.getType()) {
 
-								List<Instruction> instructList = game.getToFrom(check.getPred(), check.getTo().getId());
+								List<Instruction> instructList = null;
+								
+								if (arrow.getTo().getSucc() instanceof Arrow){
+									Arrow toSucc = (Arrow) arrow.getTo().getSucc();
+
+									if (!toSucc.getType()){
+										instructList = game.getToFrom(arrow.getPred(), toSucc.getId());
+									}
+								}
+
+								else {
+									instructList = game.getToFrom(arrow.getPred(), arrow.getTo().getId());
+								}
+								
+								
+								
+								//List<Instruction> instructList = game.getToFrom(check.getPred(), check.getTo().getId());
 								int sizeList = instructList.size();
 
 								instructList.removeAll(instructionBetween);
@@ -888,16 +950,14 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 								// If there is any overlap in the lists, increase the margin.
 								if (sizeList != newSizeList) {
 
-									if(null != findViewById(check.getId())){
+									if (null != findViewById(check.getId()) && null != findViewById(check.getId()).getLayoutParams()){
 
 										RelativeLayout.LayoutParams par = (RelativeLayout.LayoutParams) findViewById(check.getId()).getLayoutParams();
 										marginTop = par.topMargin + buttonHeight;
-
 									}
 								}
 							}
 						}
-
 						pointer++;
 						currentPosition = instructionList.get(pointer);
 					}
@@ -906,7 +966,6 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 				}
 
 				button.setLayoutParams(instructionParameters);
-
 			}
 
 			else if (inst instanceof End) {
@@ -955,10 +1014,9 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 		protected void onPostExecute(ImageButton result) {
 
 			addToScreen(result);
-			instructionCounter ++;
+			instructionCounter++;
 
 			if (instructionCounter<instructionList.size()){
-
 				Instruction [] instructions = new Instruction[1];
 				instructions[0] = instructionList.get(instructionCounter);
 
@@ -1002,7 +1060,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 		Toast toast = Toast.makeText(context, text, duration);
 		toast.show();
 	}
-	
+
 	/**
 	 * Get ButtonHeight
 	 * @return int buttonHeight
@@ -1011,7 +1069,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 		this.setLayoutConstants();
 		return buttonHeight;
 	}
-	
+
 	/**
 	 * Get ButtonWidth
 	 * @return int buttonWidth

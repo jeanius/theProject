@@ -1,0 +1,8 @@
+package testing;
+
+import junit.framework.TestCase;
+import com.jeanpower.reggieproject;
+
+public class SaveLoadTest extends TestCase {
+
+}

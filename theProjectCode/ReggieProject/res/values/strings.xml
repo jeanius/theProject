@@ -167,8 +167,10 @@
     <string name="error11">Incorrect data for step %1$d. Branch must be a step number.</string>
     <string name="error12">End instructions on same box as Branch arrows (below the line) are pointless, because the branch will be followed. Delete the Branch or End.</string>
     <string name="error13">End instructions on same box as Loop arrows (above the line) are pointless, because the loop will be followed. Delete the Loop or End.</string>
-    
-    <!-- File text -->
+    <string name="error14">There are multiple loops coming from the same Box. Only one can be followed. Delete the others!</string>
+    <string name="error15">There are multiple branches coming from the same Box. Only one can be followed. Delete the others!</string>
+   
+      <!-- File text -->
     
     <string name="inc">INC,</string>
     <string name="deb">DEB,</string>

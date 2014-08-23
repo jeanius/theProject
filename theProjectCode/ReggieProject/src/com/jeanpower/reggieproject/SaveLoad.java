@@ -312,7 +312,7 @@ public class SaveLoad{
 
 		String predString = strings[predIndex];
 		StringBuilder sb = new StringBuilder();
-		
+
 		//If more than one arrow out of same box, ignored as one will never be reached.
 		if ((curr.getPred() instanceof Box || curr.getPred() instanceof End) ||  (null != pred && (curr.getType() != pred.getType()))){ 
 
@@ -322,7 +322,7 @@ public class SaveLoad{
 
 		//And if loop followed by end, add End step number
 		if (curr.getType() && curr.getSucc() instanceof End){
-			
+
 			int endID = curr.getSucc().getId();
 			int endIndex = -1;
 
@@ -336,7 +336,7 @@ public class SaveLoad{
 			}
 			sb.append(endIndex + ",");
 		}
-		
+
 		if (sb.toString().length() >0){
 			strings[predIndex] = sb.toString();	
 		}
@@ -395,8 +395,8 @@ public class SaveLoad{
 			String [] tokens = instructionText.split(",");
 
 			if (tokens.length > 5 || tokens.length < 1){
-				
-				String error = context.getString(R.string.error5, i); 
+
+				String error = context.getString(R.string.error5, i); //Not enough operands, or too many operands
 				game.showActivityMessage(error);
 				done = false;
 			}	
@@ -406,14 +406,14 @@ public class SaveLoad{
 
 				if (step != i){ //If step does not equal the row number/index number
 					done = false;
-					
-					String error = context.getString(R.string.error6, i); 
+
+					String error = context.getString(R.string.error6, i); //Step numbers must be consecutive
 					game.showActivityMessage(error);
 				}
 			}
 			catch (Exception e) {
 				done = false;
-				String error = context.getString(R.string.error7, i); 
+				String error = context.getString(R.string.error7, i); //Step must be a number
 				game.showActivityMessage(error);
 			}
 		}
@@ -451,7 +451,7 @@ public class SaveLoad{
 			if (!instruction.equals("INC") && !instruction.equals("DEB") && !instruction.equals("END")){
 				done = false;	
 				ok = false;
-				String error = context.getString(R.string.error8, i); 
+				String error = context.getString(R.string.error8, i); //Must use INC, DEB, or END as instructions
 				game.showActivityMessage(error);
 			}
 
@@ -463,14 +463,14 @@ public class SaveLoad{
 					if (register >= game.getMaxReg() || register<0){
 						done = false;
 						ok = false;
-						String error = context.getString(R.string.error9, i);
+						String error = context.getString(R.string.error9, i); //Register must be a number between 0-9
 						game.showActivityMessage(error);
 					}
 				}
 				catch(Exception e){
 					done = false;
 					ok = false;
-					String error = context.getString(R.string.error9, i);
+					String error = context.getString(R.string.error9, i); //Register must be a number
 					game.showActivityMessage(error);
 				}			
 			}
@@ -493,12 +493,15 @@ public class SaveLoad{
 					instructionArray[i] = box;
 				}	
 
-
 				//Start off as predecessors and successors of each other. Arrows are then inserted
 				if (i-1 >= 0){
-					Instruction predIns = instructionArray[i-1];
-					instructionArray[i].setPred(predIns);
-					predIns.setSucc(instructionArray[i]);
+
+					if (null != instructionArray[i-1] && null != instructionArray[i]){
+
+						Instruction predIns = instructionArray[i-1];
+						instructionArray[i].setPred(predIns);
+						predIns.setSucc(instructionArray[i]);
+					}
 				}
 			}
 		}
@@ -542,14 +545,14 @@ public class SaveLoad{
 					goTo = Integer.parseInt(tokens[3]); //Both types of box will have a "GoTo"
 
 					if (goTo >= counter || goTo < 0){
-						String error = context.getString(R.string.error10, i);
+						String error = context.getString(R.string.error10, i); //Goto must be a real step number
 						game.showActivityMessage(error);
 						done = false;
 						ok = false;
 					}
 				}
 				catch(Exception e){
-					String error = context.getString(R.string.error10, i);
+					String error = context.getString(R.string.error10, i); //Goto must be a number
 					game.showActivityMessage(error);
 					done = false;
 					ok = false;
@@ -561,7 +564,7 @@ public class SaveLoad{
 						branch = Integer.parseInt(tokens[4]); //Only DEB will have a branch
 
 						if (branch >= counter || branch < 0){
-							String error = context.getString(R.string.error11, i);
+							String error = context.getString(R.string.error11, i); //Branch must be a real step number
 							game.showActivityMessage(error);
 							done = false;
 							ok = false;
@@ -569,7 +572,7 @@ public class SaveLoad{
 					}
 
 					catch(Exception e){
-						String error = context.getString(R.string.error11, i);
+						String error = context.getString(R.string.error11, i); //Branch must be a number
 						game.showActivityMessage(error);
 						done = false;
 						ok = false;
@@ -595,7 +598,7 @@ public class SaveLoad{
 					}
 
 					//Arrows are needed if goTo is not the immediate successor, except in case of END 
-					if (goTo >= 0 && goTo != (i+1) && (inst.getSucc() instanceof Box || inst.getSucc() == null)){ //TODO - aaaa file
+					if (goTo >= 0 && goTo != (i+1) && (inst.getSucc() instanceof Box || inst.getSucc() == null)){
 						Arrow arrow = new Arrow (game);
 
 						if (Build.VERSION.SDK_INT >= 17) {

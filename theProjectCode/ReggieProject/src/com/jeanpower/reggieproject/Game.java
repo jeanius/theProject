@@ -816,12 +816,11 @@ public class Game{
 				Box b = (Box) curr;
 
 				if (b.getType()) {
-
 					boxAbove = b.getId();
 					doneAbove = true;
 				}
 
-				if (!b.getType()) {
+				else if (!b.getType()) {
 					boxBelow = b.getId();
 					doneBelow = true;
 				}
@@ -1065,5 +1064,26 @@ public class Game{
 			}
 		}
 		return currentPosition;
+	}
+	
+	/**
+	 * Iterates through linked list of instructions, adds to list, returns list of
+	 * instruction IDs
+	 * <p>
+	 * @param void
+	 * @return ArrayList<Instruction> - list of instruction IDs
+	 */
+	public ArrayList<Integer> getInstructionIDs() {
+
+		ArrayList<Integer> instructionIDs = new ArrayList<Integer>();
+
+		Instruction currentPosition = first;
+
+		while (null != currentPosition) {
+
+			instructionIDs.add(currentPosition.getId());
+			currentPosition = currentPosition.getSucc();
+		}
+		return instructionIDs;
 	}
 }
