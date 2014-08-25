@@ -6,7 +6,7 @@
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/aFileDialog"/>
-	<classpathentry kind="lib" path="C:/Users/Jean/theProject/theProjectCode/amlcurran-ShowcaseView-392e7c3/library"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ShowcaseView"/>
+	<classpathentry kind="lib" path="C:/Users/Jean/theProject/theProjectCode/amlcurran-ShowcaseView-5bb269a"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
