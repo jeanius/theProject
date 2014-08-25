@@ -21,10 +21,10 @@ public final class R {
 		public static final int add = 0x7f020000;
 		public static final int document = 0x7f02000c;
 		public static final int document_gray = 0x7f02000d;
-		public static final int folder = 0x7f02000e;
-		public static final int ic_launcher = 0x7f020017;
-		public static final int no = 0x7f02001d;
-		public static final int tick = 0x7f02002a;
+		public static final int folder = 0x7f02000f;
+		public static final int ic_launcher = 0x7f020018;
+		public static final int no = 0x7f02001e;
+		public static final int tick = 0x7f02002b;
 	}
 	public static final class id {
 		public static final int action_settings = 0x7f06001f;
