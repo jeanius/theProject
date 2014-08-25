@@ -1,0 +1,87 @@
+package com.jeanpower.reggieproject.test;
+
+import static org.junit.Assert.assertEquals;
+
+import org.junit.BeforeClass;
+import org.junit.Test;
+import com.jeanpower.reggieproject.Arrow;
+import com.jeanpower.reggieproject.Box;
+import com.jeanpower.reggieproject.End;
+import com.jeanpower.reggieproject.Game;
+import com.jeanpower.reggieproject.MainActivity;
+
+
+/**
+ * JUnit tests of Instructions (Arrow, Box, End).
+ * 1) Constructors are not tested; just assignment of instance variables
+ * 2) Getters are not tested; just assignment of instance variables.
+ * @author Jean
+ *
+ */
+public class InstructionTest{
+
+	static Game game;
+	static Box box1;
+	static Box box2;
+	static Box box3;
+	static Arrow arrow4;
+	static Arrow arrow5;
+	static Arrow arrow6;
+	static End end7;
+	static End end8;
+	static End end9;
+	
+	@BeforeClass
+	public static void setUp(){
+
+		MainActivity ma = new MainActivity();
+		game = new Game(ma); //Required for creating instructions
+
+		box1 = new Box(game);
+		box2 = new Box(game);
+		box3 = new Box(game);
+		arrow4 = new Arrow(game);
+		arrow5 = new Arrow(game);
+		end7 = new End(game);
+
+		box1.setId(1);
+		box2.setId(2);
+		box3.setId(3);
+		arrow4.setId(4);
+		arrow5.setId(5);
+		end7.setId(7);
+
+		box1.setSucc(box2);
+		box2.setPred(box1);
+		box2.setSucc(arrow4);
+		arrow4.setPred(box2);
+		arrow4.setSucc(box3);
+		box3.setPred(arrow4);
+		box3.setSucc(arrow5);
+		arrow5.setPred(box3);
+		arrow5.setSucc(end7);
+		end7.setPred(arrow5);
+
+		arrow4.setType(); //Set Arrow4 to decrement
+		arrow4.setTo(box3);
+		arrow5.setTo(box1);
+
+		arrow4.calculateSpaces();
+		arrow5.calculateSpaces();
+
+	}
+	
+	@Test
+	public void calculateSpacesBranch() {
+
+		int branchArrowSpaces = arrow4.getSpaces();
+		assertEquals("Branch arrow spaces", branchArrowSpaces, 1);
+	}
+	
+	@Test
+	public void calculateSpacesLoop() {
+
+		int loopArrowSpaces = arrow5.getSpaces();
+		assertEquals("Branch arrow spaces", loopArrowSpaces, 1);
+	}
+}
