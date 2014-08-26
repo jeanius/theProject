@@ -128,9 +128,11 @@ public class Arrow implements Instruction{
 
 			while (currPos != null && currPos.getId() != toInstruction.getId()){
 
+
 				if (currPos instanceof Box) {
 					count ++;
 				}
+
 				currPos = currPos.getPred();
 			}
 		}

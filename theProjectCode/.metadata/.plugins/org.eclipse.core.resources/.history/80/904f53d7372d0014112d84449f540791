@@ -95,8 +95,8 @@
 	    android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:weightSum="100"
-        android:layout_toRightOf="@id/ScrollVertical">
+        android:layout_toRightOf="@id/ScrollVertical"
+        android:weightSum="100">
 
 		<com.jeanpower.reggieproject.TwoDScrollView
 	    	android:id="@+id/actionFrameScroll"
