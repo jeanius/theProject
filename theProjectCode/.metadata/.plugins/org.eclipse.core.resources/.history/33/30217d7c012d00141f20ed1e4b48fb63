@@ -1,0 +1,189 @@
+package com.jeanpower.reggieproject.test;
+
+
+import junit.framework.TestCase;
+import android.util.Log;
+import com.jeanpower.reggieproject.Arrow;
+import com.jeanpower.reggieproject.Box;
+import com.jeanpower.reggieproject.End;
+import com.jeanpower.reggieproject.Game;
+import com.jeanpower.reggieproject.Instruction;
+import com.jeanpower.reggieproject.MainActivity;
+
+
+/**
+ * JUnit tests of Instructions (Arrow, Box, End).
+ * 
+ * 1) Constructors are not tested; just assignment of instance variables<br>
+ * 2) Setters are not tested; just assignment of instance variables.<br>
+ * 3) Getters are not tested; just returning instance variables.<br>
+ * 
+ * Arrow tests: <br>
+ * a) Correct calculation of spanned Boxes. <br>
+ * b) doWork()<p>
+ * Box Tests: <br>
+ * a) Set Register<br>
+ * b) doWork()<br>
+ * 
+ * @author Jean
+ *
+ */
+public class InstructionTest extends TestCase{
+
+	Game game;
+	Box box1;
+	Box box2;
+	Box box3;
+	Arrow arrow4;
+	Arrow arrow5;
+	Arrow arrow6;
+	End end7;
+	End end8;
+	End end9;
+	int maxReg;
+
+	public InstructionTest(){
+		
+		MainActivity ma = new MainActivity();
+		game = new Game(ma); //Required for creating instructions
+		maxReg = game.getMaxReg();
+		box1 = new Box(game);
+		box2 = new Box(game);
+		box3 = new Box(game);
+		arrow4 = new Arrow(game);
+		arrow5 = new Arrow(game);
+		arrow6 = new Arrow(game);
+		end7 = new End(game);
+		end8 = new End(game);
+
+		box1.setId(1);
+		box2.setId(2);
+		box3.setId(3);
+		arrow4.setId(4);
+		arrow5.setId(5);
+		arrow6.setId(6);
+		end7.setId(7);
+		end8.setId(8);
+
+		box1.setSucc(end8);
+		end8.setPred(box1);
+		end8.setSucc(box2);
+		box2.setPred(end8);
+		box2.setSucc(arrow4);
+		arrow4.setPred(box2);
+		arrow4.setSucc(arrow6);
+		arrow6.setPred(arrow4);
+		arrow6.setSucc(end7);
+		end7.setPred(arrow6);
+		end7.setSucc(box3);
+		box3.setPred(end7);
+		box3.setSucc(arrow5);
+		arrow5.setPred(box3);
+		arrow5.setSucc(null);
+		
+		Instruction currPos = box1;
+		
+		while (currPos !=null){
+			Log.d("This is", currPos.getId() + "");
+			currPos = currPos.getSucc();
+		}
+		
+		arrow4.setType(); //Set Arrow4 to decrement
+		arrow4.setTo(box3);
+		arrow5.setTo(box1);
+		arrow6.setTo(box2);
+
+		arrow4.calculateSpaces();
+		arrow5.calculateSpaces();
+		arrow6.calculateSpaces();
+		
+	}
+	
+	/**Tests that Branches calculate the correct span, ignoring End and Arrow instructions.
+	 */
+	public void testCalculateSpacesBranch() {
+		int branchArrowSpaces = arrow4.getSpaces();
+		assertEquals("Branch arrow spaces", branchArrowSpaces, 2); //Box 2 and Box 3, ignoring end, other arrow
+	}
+	
+	/**Tests that Loop calculate the correct span, ignoring End and Arrow instructions.
+	 */
+	public void testCalculateSpacesLoop() {
+		int loopArrowSpaces = arrow5.getSpaces();
+		assertEquals("Branch arrow spaces", loopArrowSpaces, 3); //Box 1, 2, 3, ignoring end, other arrow
+	}
+	
+	/**Tests Arrows return 1, when they point to the same Box they are coming from.
+	 */
+	public void testCalculateSpacesSingle(){
+		int singleSpaces = arrow6.getSpaces();
+		assertEquals("Single arrow space", singleSpaces, 1); //Box 1, 2, 3, ignoring end, other arrow
+	}
+	
+	/**Tests Box cannot be set with register greater than 9
+	 * Iterates through, increasing the register by one each time. Method should revert to 0 instead of 10.
+	 */
+	public void testBoxRegister(){
+		
+		for (int i = 0; i<maxReg + 3; i++){
+			
+			if (i >= 0 && i < 10){
+				assertEquals("Register assigment correct", box1.getRegister(), i);
+			}
+			else {
+				assertEquals("Register assigment correct", box1.getRegister(), i-maxReg);
+			}
+
+			box1.setRegister();
+		}
+	}
+	
+	/**Tests decrement, followed by loop.
+	 */
+	public void testDoWorkLoop1(){
+		
+		box1.setPred(null);
+		box1.setSucc(arrow4);
+		arrow4.setPred(box1);
+		arrow4.setSucc(box2);
+		box2.setPred(arrow4);
+		box2.setSucc(box3);
+		box3.setPred(box2);
+		box3.setSucc(null);
+		arrow4.setType(); //Loop
+		arrow4.setTo(box3); //Succ is box2, to is box3
+		box1.setType(); //Decrement
+		
+		game.zeroReg(box1.getRegister());
+		game.incrementReg(box1.getRegister()); //Box1 contains 1.
+		
+		assertEquals("Register 1 contains 1", game.getRegData(box1.getRegister()), 1);
+		
+		box1.doWork();
+		
+		assertEquals("Box 1 has decremented Register 1", game.getRegData(box1.getRegister()), 0);
+		assertEquals("Box 1 has set currentPosition to its successor", game.getCurrPos().getId(), 4);
+		
+		game.getCurrPos().doWork(); //arrow4 do work.
+		
+		assertEquals("")
+		
+		
+	}
+	
+	public void testDoWorkBranch(){
+		
+	}
+	
+	public void testdoWorkInc(){
+		
+	}
+	
+	public void testdoWorkDec(){
+		
+	}
+	
+	public void testdoWorkEnd(){
+		
+	}
+}

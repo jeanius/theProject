@@ -1086,4 +1086,13 @@ public class Game{
 		}
 		return instructionIDs;
 	}
+	
+	/**
+	 * Get the currentPosition
+	 * @param void
+	 * @return Instruction - currentPosition
+	 */
+	public Instruction getCurrPos(){
+		return currPos;
+	}
 }
