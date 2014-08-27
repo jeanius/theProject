@@ -1,0 +1,100 @@
+package com.jeanpower.reggieproject.test;
+
+import android.content.Context;
+
+import com.jeanpower.reggieproject.Game;
+import com.jeanpower.reggieproject.Instruction;
+import com.jeanpower.reggieproject.MainActivity;
+import com.jeanpower.reggieproject.R;
+
+import junit.framework.TestCase;
+
+/**
+ * JUnit tests of Game.<p>
+ * 
+ * 1) Constructors are not tested, as just assignment of instance variables<br>
+ * 2) Setters are not tested; trivial assignment of instance variables.<br>
+ * 3) Getters are not tested; trivial returning instance variables.<br>
+ * 
+ * Tests Completed:
+ * 1) NewInstruction
+ * 
+ * @author Jean Power 2014
+ */
+public class GameTest extends TestCase{
+	
+	MainActivity main;
+	Game game;
+	Context context;
+
+	public GameTest(){
+		
+		main = new MainActivity();
+		game = new Game(main);
+	
+	}
+	
+/**Tests all aspects of adding a new instruction
+ * 
+ * 1) First instruction stays first
+ * 2) Last instruction updates to newly added instruction
+ * 3) Last box updates to Boxes only
+ * 4) Arrow added after end is added prior to end, end remains Last
+ * 5) Pred of instructions do not update, unless it is Arrow being added before End
+ * 6) Succ of instruction do update.
+ * 
+ * 
+ */
+	public void testNewInstruction() {
+		
+		
+		assertEquals("First is null", -1, game.getFirst());
+		assertEquals("Last is null", -1, game.getLast());
+		assertEquals("Last box is null", -1, game.getLastBox());
+		
+		Instruction newBox = game.newInstruction(R.id.new_box_button); //User cannot access Arrow/End icons prior to adding a Box
+		assertEquals("First instruction is first - newBox", newBox.getId(), game.getFirst());
+		assertEquals("First instruction is last - newBox", newBox.getId(), game.getLast());
+		assertEquals("newBox is the lastBox", newBox.getId(), game.getLastBox());
+		assertEquals("First instruction has no successor", null, newBox.getSucc());
+		assertEquals("First instruction has no predecessor", null, newBox.getPred());
+		
+		Instruction newArrow = game.newInstruction(R.id.new_arrow_button);
+		assertEquals("First instruction is still first - newBox", newBox.getId(), game.getFirst());
+		assertEquals("Last instruction is last - newArrow", newArrow.getId(), game.getLast());
+		assertEquals("LastBox is still the lastBox", newBox.getId(), game.getLastBox());
+		assertEquals("newArrow is succ of newBox", newArrow.getId(), newBox.getSucc().getId());
+		assertEquals("newBox still has no predecessor", null, newBox.getPred());
+		assertEquals("newArrow has predecessor of newBox", newBox.getId(), newArrow.getPred().getId());
+		assertEquals("newArrow has no successor", null, newArrow.getSucc());
+		
+		Instruction newEnd = game.newInstruction(R.id.new_end_button);
+		assertEquals("First instruction is still first - newBox", newBox.getId(), game.getFirst());
+		assertEquals("Last instruction is last - newEnd", newEnd.getId(), game.getLast());
+		assertEquals("LastBox is still the lastBox", newBox.getId(), game.getLastBox());
+		assertEquals("newArrow is still succ of newBox", newArrow.getId(), newBox.getSucc().getId());
+		assertEquals("newBox still has no predecessor", null, newBox.getPred());
+		assertEquals("newArrow has predecessor of newBox", newBox.getId(), newArrow.getPred().getId());
+		assertEquals("newArrow has successor of newEnd", newEnd.getId(), newArrow.getSucc().getId());
+		assertEquals("newEnd has predecessor of newArrow", newArrow.getId(), newEnd.getPred().getId());
+		assertEquals("newEnd has no successor", null, newEnd.getSucc());
+		
+		Instruction newArrow2 = game.newInstruction(R.id.new_arrow_button);
+		assertEquals("First instruction is still first - newBox", newBox.getId(), game.getFirst());
+		assertEquals("Last instruction remains End", newEnd.getId(), game.getLast());
+		assertEquals("LastBox is still the lastBox", newBox.getId(), game.getLastBox());
+		assertEquals("newArrow is still succ of newBox", newArrow.getId(), newBox.getSucc().getId());
+		assertEquals("newBox still has no predecessor", null, newBox.getPred());
+		assertEquals("newArrow has predecessor of newBox", newBox.getId(), newArrow.getPred().getId());
+		assertEquals("newArrow2 gets added as predecessor of newEnd", newArrow2.getId(), newEnd.getPred().getId());
+		assertEquals("newArrow2 gets added as successor of newArrow", newArrow2.getId(), newArrow.getSucc().getId());
+		assertEquals("newArrow2 has successor of newEnd", newEnd.getId(), newArrow2.getSucc().getId());
+		assertEquals("newArrow2 has predecessor of newArrow", newArrow.getId(), newArrow2.getPred().getId());
+		
+		Instruction newBox2 = game.newInstruction(R.id.new_box_button); //User cannot access Arrow/End icons prior to adding a Box
+		assertEquals("First instruction is first - newBox", newBox.getId(), game.getFirst());
+		assertEquals("Last instruction is last - newBox2", newBox2.getId(), game.getLast());
+		assertEquals("newBox2 is the new lastBox", newBox2.getId(), game.getLastBox());
+	}
+	
+}

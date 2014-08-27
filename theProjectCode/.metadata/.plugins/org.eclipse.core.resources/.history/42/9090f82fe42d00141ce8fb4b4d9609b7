@@ -1,0 +1,43 @@
+package com.jeanpower.reggieproject.test;
+
+import junit.framework.TestCase;
+import com.jeanpower.reggieproject.Arrow;
+import com.jeanpower.reggieproject.Box;
+import com.jeanpower.reggieproject.End;
+import com.jeanpower.reggieproject.Game;
+import com.jeanpower.reggieproject.Instruction;
+import com.jeanpower.reggieproject.MainActivity;
+
+/**
+ * JUnit tests of Game.<p>
+ * 
+ * 1) Constructors are not tested, as just assignment of instance variables<br>
+ * 2) Setters are not tested; trivial assignment of instance variables.<br>
+ * 3) Getters are not tested; trivial returning instance variables.<br>
+ * 
+ * Arrow tests: <br>
+ * a) Correct calculation of spanned Boxes. <br>
+ * b) doWork()<p>
+ * Box Tests: <br>
+ * a) Set Register<br>
+ * b) doWork() - NB: doWork is tested in the Arrow tests<br>
+ * End Tests:<br>
+ * a) doWork()<br>
+ * 
+ * @author Jean Power 2014
+ */
+public class GameTest extends TestCase{
+
+
+
+	public GameTest(){
+		
+
+		
+	}
+
+	public void testCalculateSpacesBranch() {
+
+	}
+	
+}

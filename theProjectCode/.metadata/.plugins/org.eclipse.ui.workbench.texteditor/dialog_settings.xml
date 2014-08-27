@@ -3,26 +3,26 @@
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
 		<item value="800" key="DIALOG_WIDTH"/>
 		<item value="55" key="DIALOG_Y_ORIGIN"/>
-		<item value="813" key="DIALOG_HEIGHT"/>
 		<item value="647" key="DIALOG_X_ORIGIN"/>
+		<item value="813" key="DIALOG_HEIGHT"/>
 		<item value="1|Segoe UI|9.0|0|WINDOWS|1|-12|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI" key="DIALOG_FONT_NAME"/>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="true" key="wrap"/>
-		<item value="false" key="isRegEx"/>
 		<item value="true" key="casesensitive"/>
+		<item value="false" key="isRegEx"/>
 		<item value="true" key="incremental"/>
 		<item value="false" key="wholeword"/>
-		<item value="" key="selection"/>
+		<item value="head" key="selection"/>
 		<list key="findhistory">
+			<item value="headmo"/>
+			<item value="getLastBo"/>
+			<item value="getFi"/>
+			<item value="newInstruction"/>
 			<item value="CreatreIn"/>
 			<item value="Creatre"/>
 			<item value="CreatrIn"/>
 			<item value="createIn"/>
-			<item value="RunG"/>
-			<item value="runG"/>
-			<item value="register 1"/>
-			<item value="Register"/>
 		</list>
 		<list key="replacehistory">
 			<item value="x"/>

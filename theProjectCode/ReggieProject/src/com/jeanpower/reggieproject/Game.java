@@ -130,7 +130,7 @@ public class Game{
 
 				//But, new Arrows must always be added as predecessor of an End instructions
 				else if (last instanceof End){
-
+					
 					Instruction endPred = last.getPred();
 
 					while (endPred instanceof End){//In case of multiple end instructions
@@ -162,6 +162,7 @@ public class Game{
 		else {
 			instruction.setId(Util.generateViewId());
 		}
+		
 		return instruction;
 	}
 
@@ -423,7 +424,7 @@ public class Game{
 			}
 		}
 	}
-	
+
 	/**
 	 * Changes Box instruction to inc or dec. Changes Arrow instruction to loop or branch.
 	 * <p>
@@ -562,7 +563,7 @@ public class Game{
 					}
 				}
 			}
-			
+
 			//Delete the instruction itself by resetting succ/pred.
 			if (null != succ){
 				succ.setPred(pred);
@@ -621,7 +622,7 @@ public class Game{
 		SaveLoad sl = new SaveLoad(activity, game);
 		sl.readFile(file);	
 	}
-	
+
 	/**
 	 * Wipes Game data and resets registers to zero
 	 * <p>
@@ -653,7 +654,7 @@ public class Game{
 		activity.clearScreen();
 		activity.updateDisplay();
 	}
-	
+
 	/**
 	 * Increments data held in specific register
 	 * <p>
@@ -683,7 +684,7 @@ public class Game{
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Zeros a specific register
 	 * <p>
@@ -694,7 +695,7 @@ public class Game{
 
 		registers[registerNum] = 0;
 	}
-	
+
 	/**
 	 * Helper method for RunGame to access MainActivity
 	 * <p>
@@ -828,9 +829,9 @@ public class Game{
 			curr = curr.getSucc();
 		}
 	}
-	
+
 	//Getters, Setters
-	
+
 	/**
 	 * Get the ID of any Arrow for Tutorial to highlight
 	 * @param void
@@ -928,14 +929,20 @@ public class Game{
 	public void setLast(Instruction l){
 		last = l;
 	}
-	
+
 	/**
 	 * Get the first instruction ID in the list
 	 * @param void
 	 * @return int ID of first instruction
 	 */
 	public int getFirst(){
-		return first.getId();
+
+		if (null != first){
+			return first.getId();
+		}
+		else { 
+			return -1;
+		}
 	}
 
 	/**
@@ -944,9 +951,30 @@ public class Game{
 	 * @return int ID of last instruction
 	 */
 	public int getLast(){
-		return last.getId();
+
+		if (null != last){
+			return last.getId();
+		}
+		else{
+			return -1;
+		}
 	}
-	
+
+	/**
+	 * Get the last instruction ID in the list
+	 * @param void
+	 * @return int ID of last instruction
+	 */
+	public int getLastBox(){
+
+		if (null != lastBox){
+			return lastBox.getId();
+		}
+		else{
+			return -1;
+		}
+	}
+
 	/**
 	 * Get the first instruction in the list
 	 * @param void
@@ -1065,7 +1093,7 @@ public class Game{
 		}
 		return currentPosition;
 	}
-	
+
 	/**
 	 * Iterates through linked list of instructions, adds to list, returns list of
 	 * instruction IDs
@@ -1086,7 +1114,7 @@ public class Game{
 		}
 		return instructionIDs;
 	}
-	
+
 	/**
 	 * Get the currentPosition
 	 * @param void

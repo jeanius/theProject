@@ -1,0 +1,51 @@
+package com.jeanpower.reggieproject.test;
+
+import android.content.Context;
+
+import com.jeanpower.reggieproject.Game;
+import com.jeanpower.reggieproject.Instruction;
+import com.jeanpower.reggieproject.MainActivity;
+import com.jeanpower.reggieproject.R;
+
+import junit.framework.TestCase;
+
+/**
+ * JUnit tests of Game.<p>
+ * 
+ * 1) Constructors are not tested, as just assignment of instance variables<br>
+ * 2) Setters are not tested; trivial assignment of instance variables.<br>
+ * 3) Getters are not tested; trivial returning instance variables.<br>
+ * 
+ * Tests Completed:
+ * 1) NewInstruction
+ * 
+ * @author Jean Power 2014
+ */
+public class GameTest extends TestCase{
+	
+	MainActivity main;
+	Game game;
+	Context context;
+
+	public GameTest(){
+		
+		main = new MainActivity();
+		game = new Game(main);
+	
+	}
+
+	public void testNewInstruction() {
+		
+		
+		assertEquals("First is null", -1, game.getFirst());
+		assertEquals("Last is null", -1, game.getLast());
+		Instruction new1 = game.newInstruction(R.id.new_box_button); //User cannot access Arrow/End icons prior to adding a Box
+		
+		assertEquals("First instruction is first", new1.getId(), game.getFirst());
+		assertEquals("First instruction is last", new1.getId(), game.getFirst());
+		
+		
+
+	}
+	
+}

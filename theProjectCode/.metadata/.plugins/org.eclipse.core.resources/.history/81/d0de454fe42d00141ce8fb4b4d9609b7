@@ -1,0 +1,31 @@
+package com.jeanpower.reggieproject.test;
+
+import com.jeanpower.reggieproject.MainActivity;
+
+import junit.framework.TestCase;
+
+/**
+ * JUnit tests of Game.<p>
+ * 
+ * 1) Constructors are not tested, as just assignment of instance variables<br>
+ * 2) Setters are not tested; trivial assignment of instance variables.<br>
+ * 3) Getters are not tested; trivial returning instance variables.<br>
+ * 
+ * 
+ * 
+ * @author Jean Power 2014
+ */
+public class GameTest extends TestCase{
+
+	public GameTest(){
+		
+		MainActivity ma = new MainActivity();
+
+		
+	}
+
+	public void testCalculateSpacesBranch() {
+
+	}
+	
+}

@@ -5,13 +5,12 @@ import com.jeanpower.reggieproject.Arrow;
 import com.jeanpower.reggieproject.Box;
 import com.jeanpower.reggieproject.End;
 import com.jeanpower.reggieproject.Game;
-import com.jeanpower.reggieproject.Instruction;
 import com.jeanpower.reggieproject.MainActivity;
 
 /**
- * JUnit tests of Instructions (Arrow, Box, End).
+ * JUnit tests of Instructions (Arrow, Box, End).<p>
  * 
- * 1) Constructors are not tested; just assignment of instance variables<br>
+ * 1) Constructors are not tested, as just assignment of instance variables<br>
  * 2) Setters are not tested; trivial assignment of instance variables.<br>
  * 3) Getters are not tested; trivial returning instance variables.<br>
  * 
@@ -78,8 +77,6 @@ public class InstructionTest extends TestCase{
 		box3.setSucc(arrow5);
 		arrow5.setPred(box3);
 		arrow5.setSucc(null);
-		
-		Instruction currPos = box1;
 		
 		arrow4.setType(); //Set Arrow4 to decrement
 		arrow4.setTo(box3);
