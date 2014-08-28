@@ -308,7 +308,6 @@ public class Game{
 			boolean canMove = this.headMove(arrow, move.getId()); //Check if move is acceptable
 
 			if (canMove) {
-
 				arrow.setTo(move);
 				arrow.calculateSpaces();
 			}
@@ -380,7 +379,6 @@ public class Game{
 				Arrow boxSuccArrow = null;
 
 				if (boxSucc instanceof Arrow){
-
 					boxSuccArrow = (Arrow) boxSucc;
 				}
 

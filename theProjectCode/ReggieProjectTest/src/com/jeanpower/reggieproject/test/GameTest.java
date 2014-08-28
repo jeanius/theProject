@@ -3,6 +3,7 @@ package com.jeanpower.reggieproject.test;
 import android.content.Context;
 
 import com.jeanpower.reggieproject.Arrow;
+import com.jeanpower.reggieproject.Box;
 import com.jeanpower.reggieproject.Game;
 import com.jeanpower.reggieproject.Instruction;
 import com.jeanpower.reggieproject.MainActivity;
@@ -130,7 +131,6 @@ public class GameTest extends TestCase{
 		assertEquals("Head can move in front of predecessor", true, game.headMove(newArrow1, newBox4.getId()));
 		assertEquals("Head cannot move behind predecesssor", false, game.headMove(newArrow1, newBox2.getId()));
 		assertEquals("Head cannot move back to the same as predecessor", false, game.headMove(newArrow1, newBox3.getId()));
-		
 	}
 	
 	/**
@@ -142,7 +142,6 @@ public class GameTest extends TestCase{
 	 * 
 	 */
 	public void testTailMove(){
-		
 		
 		Instruction newBox1 = game.newInstruction(R.id.new_box_button);
 		Instruction newBox2 = game.newInstruction(R.id.new_box_button);
@@ -160,14 +159,88 @@ public class GameTest extends TestCase{
 		
 		newArrow1.setType(); //change to branch.
 		
-		assertEquals("newArrow pred is newBox3", newBox3.getId(), newArrow1.getPred().getId());
+		assertEquals("newArrow predecessor is newBox3", newBox3.getId(), newArrow1.getPred().getId());
 		assertEquals("newArrow1 is branch", false, newArrow1.getType());
 		assertEquals("newArrow1 is pointing at newBox3", newBox3.getId(), newArrow1.getTo().getId());
 		
 		assertEquals("Tail can move in front of to", true, game.tailMove(newArrow1, newBox2.getId()));
 		assertEquals("Tail cannot move behind to", false, game.tailMove(newArrow1, newBox4.getId()));
 		assertEquals("Tail can move back to the same as to", true, game.tailMove(newArrow1, newBox3.getId()));
+	}
+	
+	
+	/**
+	 * Tests the updateHead() method<p>
+	 * 
+	 * 1) Head updates when given a new "to" box (loop/branch)<br>
+	 * 2) Arrow re calculates its spaces (loop/branch) <br>
+	 */
+	public void testUpdateHead(){
+		
+		Box newBox2 = (Box) game.newInstruction(R.id.new_box_button);
+		Box newBox3 = (Box) game.newInstruction(R.id.new_box_button);
+		Arrow newArrow1 = (Arrow) game.newInstruction(R.id.new_arrow_button); //Arrow's pred is box3, and 'to' is box3. Arrow is loop.
+		Box newBox4 = (Box) game.newInstruction(R.id.new_box_button);
+		
+		assertEquals("newArrow predecessor is newBox3", newBox3.getId(), newArrow1.getPred().getId());
+		assertEquals("newArrow1 is loop", true, newArrow1.getType());
+		assertEquals("newArrow1 is pointing at newBox3", newBox3.getId(), newArrow1.getTo().getId());
+		assertEquals("newArrow1 has a space of 1", 1, newArrow1.getSpaces());
+		
+		game.updateHead(newArrow1, newBox2);
+		
+		assertEquals("Head moves when given a new to box", newBox2.getId(), newArrow1.getTo().getId()); 
+		assertEquals("newArrow1 has a space of 2", 2, newArrow1.getSpaces());
+		
+		game.updateHead(newArrow1, newBox3); //Reset
+		
+		assertEquals("newArrow1 is pointing at newBox3", newBox3.getId(), newArrow1.getTo().getId()); 
+		assertEquals("newArrow1 has a space of 1", 1, newArrow1.getSpaces());
+		
+		newArrow1.setType(); //change to branch.
+		
+		game.updateHead(newArrow1, newBox4);
+		
+		assertEquals("Head moves when given a new to box", newBox4.getId(), newArrow1.getTo().getId()); 
+		assertEquals("newArrow1 has a space of 2", 2, newArrow1.getSpaces());
 		
 	}
 	
+	/**
+	 * Tests the updateTail() method<p>
+	 * 
+	 * Tail updates when given a new predecessor Box<br>
+	 * 1) If new Box's successor is end, arrow becomes successor of the Box
+	 * 2) If new Box's successor is box, arrow becomes successor of the Box
+	 * 3) If new Box's successor is loop, arrow becomes successor of the Box
+	 * 4) Spaces update
+	 */
+	public void testUpdateTail(){
+		
+		Box newBox1 = (Box) game.newInstruction(R.id.new_box_button);
+		Box newBox2 = (Box) game.newInstruction(R.id.new_box_button);
+		Box newBox3 = (Box) game.newInstruction(R.id.new_box_button);
+		Arrow newArrow1 = (Arrow) game.newInstruction(R.id.new_arrow_button); //Arrow's pred is box3, and 'to' is box3. Arrow is loop.
+		Box newBox4 = (Box) game.newInstruction(R.id.new_box_button);
+		
+		newArrow1.setTo(newBox1);
+		newArrow1.calculateSpaces();
+		
+		//Tests the first scenarios - where successor is end, box or loop.
+		assertEquals("newArrow1 has a space of 3", 3, newArrow1.getSpaces());
+		assertEquals("newBox3 successor is newArrow1", newArrow1.getId(), newBox3.getSucc().getId());
+		assertEquals("newBox4 predecessor is newArrow1", newArrow1.getId(), newBox4.getPred().getId());
+		assertEquals("newArrow predecessor is newBox3", newBox3.getId(), newArrow1.getPred().getId());
+		assertEquals("newArrow successor is newBox4", newBox4.getId(), newArrow1.getSucc().getId());
+		
+		game.updateTail(newArrow1, newBox2);
+		
+		assertEquals("newArrow predecessor is newBox2", newBox2.getId(), newArrow1.getPred().getId());
+		assertEquals("newArrow successor is newBox3", newBox3.getId(), newArrow1.getSucc().getId());
+		assertEquals("newArrow1 has a space of 2", 2, newArrow1.getSpaces());
+		assertEquals("newBox3 successor is newBox4", newBox4.getId(), newBox3.getSucc().getId());
+		assertEquals("newBox4 predecessor is newBox3", newBox3.getId(), newBox4.getPred().getId());
+
+		
+	}
 }

@@ -1,5 +1,7 @@
 package com.jeanpower.reggieproject;
 
+import android.util.Log;
+
 /**
  * Arrow model object
  * <p>
@@ -150,7 +152,9 @@ public class Arrow implements Instruction{
 				}
 			}
 		}
+		Log.d("Spaces", spaces +"");
 		spaces = count;
+		
 	}
 
 
