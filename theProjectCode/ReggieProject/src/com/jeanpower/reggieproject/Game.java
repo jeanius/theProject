@@ -130,7 +130,7 @@ public class Game{
 
 				//But, new Arrows must always be added as predecessor of an End instructions
 				else if (last instanceof End){
-					
+
 					Instruction endPred = last.getPred();
 
 					while (endPred instanceof End){//In case of multiple end instructions
@@ -162,10 +162,9 @@ public class Game{
 		else {
 			instruction.setId(Util.generateViewId());
 		}
-		
+
 		return instruction;
 	}
-
 
 	/**
 	 * Updates Box instruction to be associated with a new register. Updates End instruction to a new Box.
@@ -314,7 +313,6 @@ public class Game{
 		}
 	}
 
-
 	/**
 	 * Assesses if the tail of the arrow can move
 	 * <p>
@@ -376,11 +374,6 @@ public class Game{
 				Instruction arrowPred = arrow.getPred();
 				Instruction arrowSucc = arrow.getSucc();
 				Instruction boxSucc = move.getSucc();
-				Arrow boxSuccArrow = null;
-
-				if (boxSucc instanceof Arrow){
-					boxSuccArrow = (Arrow) boxSucc;
-				}
 
 				arrowPred.setSucc(arrowSucc);
 
@@ -392,27 +385,35 @@ public class Game{
 					last = arrowPred;
 				}
 
-				//Branch will always move in before a loop, all Arrows come before an End, 
-				if (!arrow.getType() || boxSucc instanceof Box || boxSucc instanceof End || null == boxSucc || (arrow.getType() && null!= boxSuccArrow && boxSuccArrow.getType())){
-					arrow.setPred(move);
-					move.setSucc(arrow);
-					arrow.setSucc(boxSucc); //Instruction inserts before successor - arrow will not move past end, or after an end instruction
+				arrow.setPred(move);
+				move.setSucc(arrow);
+				arrow.setSucc(boxSucc);
 
-					if (null != boxSucc) {
-						boxSucc.setPred(arrow); 
-					}
+				if (null != boxSucc){
+					boxSucc.setPred(arrow);
 				}
 
-				//Loops come after branches
-				else if (arrow.getType() && null != boxSuccArrow && !boxSuccArrow.getType()){ 
+				//If ends up with Loop in front of a branch, re-sort with Branch in front of loop
+				if (arrow.getSucc() instanceof Arrow){
 
-					arrow.setPred(boxSuccArrow);
-					arrow.setSucc(boxSuccArrow.getSucc());
+					Arrow newSucc = (Arrow) arrow.getSucc();
 
-					if (null != boxSuccArrow.getSucc()){
-						boxSuccArrow.getSucc().setPred(arrow);
+					if (!newSucc.getType() && arrow.getType()){
+
+						Instruction newPred = arrow.getPred();
+						Instruction succOfSucc = newSucc.getSucc();
+
+						arrow.setSucc(succOfSucc);
+
+						if (null != succOfSucc){
+							succOfSucc.setPred(arrow);
+						}
+
+						newPred.setSucc(newSucc);
+						newSucc.setSucc(arrow);
+						newSucc.setPred(newPred);
+						arrow.setPred(newSucc);
 					}
-					boxSuccArrow.setSucc(arrow);	
 				}
 
 				if (null == arrow.getSucc()){ //Reset last, if arrow was last.
@@ -443,50 +444,52 @@ public class Game{
 			Instruction succ = arrow.getSucc();
 			Instruction goTo = arrow.getTo();
 			Instruction goToSucc = goTo.getSucc();
-			Arrow succArrow = null;
-
-			if (goToSucc instanceof Arrow){
-				succArrow = (Arrow) goToSucc;
-			}
 
 			arrow.setType();
 
-			//All arrows come before an End, branches come before loops
-			if (goToSucc instanceof End || goToSucc instanceof Box || null == goToSucc || !arrow.getType() || (arrow.getType() && null != succArrow && succArrow.getType())){
+			if (pred.getId() != goTo.getId()){
 
-				if (pred.getId() != goTo.getId()){ //No need to change pred/goTo, if already a single arrow.
+				arrow.setPred(goTo);
+				goTo.setSucc(arrow);
+				arrow.setSucc(goToSucc);
+				pred.setSucc(succ);
 
-					arrow.setPred(goTo);
-					goTo.setSucc(arrow);
-					arrow.setSucc(goToSucc);
-					pred.setSucc(succ);
+				if (null != goToSucc) {
 
-					if (null != goToSucc) {
+					goToSucc.setPred(arrow);
+				}
 
-						goToSucc.setPred(arrow);
-					}
+				if (null != succ) {
 
-					if (null != succ) {
+					succ.setPred(pred);
+				}
 
-						succ.setPred(pred);
-					}
-
-					else {
-						last = pred;
-					}
+				else {
+					last = pred;
 				}
 			}
-			//Loops come after branches.
-			else if (arrow.getType() && null != succArrow && !succArrow.getType()){
 
-				arrow.setPred(succArrow);
-				arrow.setSucc(succArrow.getSucc());
+			//If ends up with Loop in front of a branch, re-sort with Branch in front of loop
+			if (arrow.getSucc() instanceof Arrow){
 
-				if (null != succArrow.getSucc()){
-					succArrow.setPred(arrow);
+				Arrow newSucc = (Arrow) arrow.getSucc();
+
+				if (!newSucc.getType() && arrow.getType()){
+
+					Instruction newPred = arrow.getPred();
+					Instruction succOfSucc = newSucc.getSucc();
+
+					arrow.setSucc(succOfSucc);
+
+					if (null != succOfSucc){
+						succOfSucc.setPred(arrow);
+					}
+
+					newPred.setSucc(newSucc);
+					newSucc.setSucc(arrow);
+					newSucc.setPred(newPred);
+					arrow.setPred(newSucc);
 				}
-
-				succArrow.setSucc(arrow);	
 			}
 
 			if (null == arrow.getSucc()){
@@ -509,6 +512,7 @@ public class Game{
 	public void deleteInstruction(Instruction inst){
 		List<Instruction> instructionList = this.getInstructionList();
 		int countBox = 0;
+		int instructionID = inst.getId();
 		Instruction succ = inst.getSucc();
 		Instruction pred = inst.getPred();
 
@@ -579,7 +583,7 @@ public class Game{
 				first = succ;
 			}
 
-			activity.removeInstruction(inst.getId());
+			activity.removeInstruction(instructionID);
 		}
 	}
 
@@ -738,7 +742,7 @@ public class Game{
 					currPos.doWork(); 
 
 					game.updateActivityDisplay(); //Will update display highlighting the instruction that did the work
-
+					
 					try {
 						Thread.sleep(DELAY);
 						game.updateActivityDisplay(); //Dehighlight
@@ -746,7 +750,6 @@ public class Game{
 					catch (Exception e){
 						Log.d("This was interrupted", "interrupted");
 					}	
-
 				}
 
 				else if (currPos instanceof Arrow){

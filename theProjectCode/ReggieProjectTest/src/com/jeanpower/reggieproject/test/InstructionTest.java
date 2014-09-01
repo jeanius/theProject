@@ -1,6 +1,8 @@
 package com.jeanpower.reggieproject.test;
 
 import junit.framework.TestCase;
+import android.test.ActivityInstrumentationTestCase2;
+
 import com.jeanpower.reggieproject.Arrow;
 import com.jeanpower.reggieproject.Box;
 import com.jeanpower.reggieproject.End;
@@ -25,7 +27,7 @@ import com.jeanpower.reggieproject.MainActivity;
  * 
  * @author Jean Power 2014
  */
-public class InstructionTest extends TestCase{
+public class InstructionTest extends ActivityInstrumentationTestCase2<MainActivity>{
 
 	Game game;
 	Box box1;
@@ -37,13 +39,17 @@ public class InstructionTest extends TestCase{
 	End end7;
 	End end8;
 	End end9;
-	int maxReg;
+	MainActivity main;
 
-	public InstructionTest(){
+	public InstructionTest() {
+		super(MainActivity.class);
+	}
+	
+	public void setUp() throws Exception{
 		
-		MainActivity ma = new MainActivity();
-		game = new Game(ma); //Required for creating instructions
-		maxReg = game.getMaxReg();
+		super.setUp();
+		main = getActivity();
+		game = new Game(main);
 		box1 = new Box(game);
 		box2 = new Box(game);
 		box3 = new Box(game);
@@ -121,6 +127,8 @@ public class InstructionTest extends TestCase{
 	 */
 	public void testBoxRegister(){
 		
+		int maxReg = game.getMaxReg();
+		
 		for (int i = 0; i<maxReg + 3; i++){
 			
 			if (i >= 0 && i < 10){
@@ -142,6 +150,7 @@ public class InstructionTest extends TestCase{
 	 * 4) Decrement box sets decrementdone boolean to true, if decrement completed.<br>
 	 */
 	public void testDoWorkLoop1(){
+		
 		game.setCurrPos(null);
 		box1.setPred(null);
 		box1.setSucc(arrow4);
@@ -184,8 +193,8 @@ public class InstructionTest extends TestCase{
 	 * 4) Decrement box sets decrementdone boolean to false, if decrement not completed.<br>
 	 */
 	public void testDoWorkLoop2(){
-		game.setCurrPos(null);
 		
+		game.setCurrPos(null);
 		box1.setPred(null);
 		box1.setSucc(arrow4);
 		arrow4.setPred(box1);
@@ -224,8 +233,8 @@ public class InstructionTest extends TestCase{
 	 * 3) Loop sets currentPosition to "to" instruction when preceded an increment<br>
 	 */
 	public void testDoWorkLoop3(){
-		game.setCurrPos(null);
 		
+		game.setCurrPos(null);
 		box1.setPred(null);
 		box1.setSucc(arrow4);
 		arrow4.setPred(box1);
@@ -265,7 +274,6 @@ public class InstructionTest extends TestCase{
 	public void testDoWorkBranch1(){
 		
 		game.setCurrPos(null);
-		
 		box1.setPred(null);
 		box1.setSucc(arrow4);
 		arrow4.setPred(box1);
@@ -306,7 +314,6 @@ public class InstructionTest extends TestCase{
 	public void testDoWorkBranch2(){
 		
 		game.setCurrPos(null);
-		
 		box1.setPred(null);
 		box1.setSucc(arrow4);
 		arrow4.setPred(box1);
@@ -348,7 +355,6 @@ public class InstructionTest extends TestCase{
 	public void testdoWorkEnd1(){
 		
 		game.setCurrPos(null);
-		
 		box1.setPred(null);
 		box1.setSucc(end7);
 		end7.setPred(box1);
@@ -386,7 +392,6 @@ public class InstructionTest extends TestCase{
 	public void testdoWorkEnd2(){
 		
 		game.setCurrPos(null);
-		
 		box1.setPred(null);
 		box1.setSucc(end7);
 		end7.setPred(box1);
@@ -424,7 +429,6 @@ public class InstructionTest extends TestCase{
 	public void testdoWorkEnd3(){
 		
 		game.setCurrPos(null);
-		
 		box1.setPred(null);
 		box1.setSucc(end7);
 		end7.setPred(box1);

@@ -3,6 +3,7 @@ package com.jeanpower.reggieproject;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
@@ -12,6 +13,7 @@ import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.DragEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -418,8 +420,8 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 	 */
 	public void removeInstruction(int ID){
 
-		View child = findViewById(ID);
-		if (null != child){
+		if (null != findViewById(ID)){
+			View child = findViewById(ID);
 			container.removeView(child);
 		}
 	}
@@ -481,7 +483,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 				parent.getLocationInWindow(rootLocation);
 
 				int relativeLeft = viewLocation[0] - rootLocation[0];
-				
+
 				Arrow dragArrow = (Arrow) instruction;
 
 				if ((origX < (relativeLeft + v.getWidth()/2) && dragArrow.getType()) || (origX > (relativeLeft + v.getWidth()/2) && !dragArrow.getType())) {
@@ -592,21 +594,8 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 			}
 
 			else if (instruction instanceof Box && currentlyDragging != null && draggingArrow) { //If an arrow enters a box.
-
 				currentlyIn = (Box) instruction;
-				Arrow currentArrow = (Arrow) currentlyDragging;
-
-				if (arrowHead){
-
-					game.updateHead(currentArrow, currentlyIn);
-				}
-
-				else if (!arrowHead){
-
-					game.updateTail(currentArrow, currentlyIn);
-				}
 			}
-
 			break;
 
 		case DragEvent.ACTION_DRAG_EXITED:
@@ -624,17 +613,33 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 
 					if ((newY - origY > THRESHOLD) || (origY - newY > THRESHOLD)) {
 						game.changeInstruction(currentlyDragging); 
+						this.updateDisplay();
+					}
+				}
+
+				if (draggingArrow && null != currentlyIn){
+
+					Arrow currentArrow = (Arrow) currentlyDragging;
+
+					if (arrowHead){
+
+						game.updateHead(currentArrow, currentlyIn);
+					}
+
+					else if (!arrowHead){
+
+						game.updateTail(currentArrow, currentlyIn);
 					}
 					this.updateDisplay();
 				}
 
 				if (draggingArrow){
 					View arrowView = findViewById(currentlyDragging.getId());
-					arrowView.setBackgroundColor(Color.TRANSPARENT);	
+					arrowView.setBackgroundColor(Color.TRANSPARENT);
 					this.updateDisplay();
 				}
 			}
-
+			
 			if (deleteInstruction){
 				this.updateDisplay();		
 			}
@@ -694,11 +699,9 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 	}
 
 	/**
-	 * As Game iterates through instructions, call this to highlights on screen<br>
-	 * Also highlights register, if inc/deb instruction
+	 * As Game iterates through instructions, method highlights these on screen
 	 * <p>
-	 * @param ID - identity of instruction, and therefore on screen ImageButton
-	 * @param reg - associated register
+	 * @param int - ID of instruction, int - associated register
 	 * @return void
 	 */
 	public synchronized void updateInstructionDisplay(int ID, int reg) {
@@ -715,12 +718,12 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 
 				if (!changingButton) {
 
-					currentlyChanging.getDrawable().setAlpha(100); //Alpha sets opaque value between 0 (transparent) and 255 (fully opaque)
+					currentlyChanging.getDrawable().setAlpha(100);
 
-					if (register > 0){
+					if (register >= 0){
 						int regID = registerIds[register]; //Get View ID from array of register IDs
-						Button register = (Button) findViewById(regID);
-						register.getBackground().setAlpha(100);
+						Button register1 = (Button) findViewById(regID);
+						register1.getBackground().setAlpha(100);
 					}
 					changingButton = true;
 				}
@@ -729,10 +732,10 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 
 					currentlyChanging.getDrawable().setAlpha(255);
 
-					if (register > 0){
+					if (register >= 0){
 						int regID = registerIds[register];
-						Button register = (Button) findViewById(regID);
-						register.getBackground().setAlpha(255);
+						Button register2 = (Button) findViewById(regID);
+						register2.getBackground().setAlpha(255);
 					}
 					changingButton = false;
 				}
@@ -904,12 +907,15 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 						if (!toSucc.getType()){
 							instructionBetween = game.getToFrom(arrow.getPred(), toSucc.getId());
 						}
+						else {
+							instructionBetween = game.getToFrom(arrow.getPred(), arrow.getTo().getId());
+						}
 					}
 
 					else {
 						instructionBetween = game.getToFrom(arrow.getPred(), arrow.getTo().getId());
 					}
-					
+
 					int pointer = 0;
 					Instruction currentPosition = instructionList.get(pointer);
 
@@ -923,21 +929,23 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 							if (!check.getType()) {
 
 								List<Instruction> instructList = null;
-								
+
 								if (arrow.getTo().getSucc() instanceof Arrow){
 									Arrow toSucc = (Arrow) arrow.getTo().getSucc();
 
 									if (!toSucc.getType()){
 										instructList = game.getToFrom(arrow.getPred(), toSucc.getId());
 									}
+
+									else {
+										instructList = game.getToFrom(arrow.getPred(), arrow.getTo().getId());
+									}
 								}
 
 								else {
 									instructList = game.getToFrom(arrow.getPred(), arrow.getTo().getId());
 								}
-								
-								
-								
+
 								//List<Instruction> instructList = game.getToFrom(check.getPred(), check.getTo().getId());
 								int sizeList = instructList.size();
 

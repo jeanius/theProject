@@ -1,0 +1,464 @@
+package com.jeanpower.reggieproject.test;
+
+import junit.framework.TestCase;
+import android.test.ActivityInstrumentationTestCase2;
+
+import com.jeanpower.reggieproject.Arrow;
+import com.jeanpower.reggieproject.Box;
+import com.jeanpower.reggieproject.End;
+import com.jeanpower.reggieproject.Game;
+import com.jeanpower.reggieproject.MainActivity;
+
+/**
+ * JUnit tests of Instructions (Arrow, Box, End).<p>
+ * 
+ * 1) Constructors are not tested, as just assignment of instance variables<br>
+ * 2) Setters are not tested; trivial assignment of instance variables.<br>
+ * 3) Getters are not tested; trivial returning instance variables.<br>
+ * 
+ * Arrow tests: <br>
+ * a) Correct calculation of spanned Boxes. <br>
+ * b) doWork()<p>
+ * Box Tests: <br>
+ * a) Set Register<br>
+ * b) doWork() - NB: doWork is tested in the Arrow tests<br>
+ * End Tests:<br>
+ * a) doWork()<br>
+ * 
+ * @author Jean Power 2014
+ */
+public class InstructionTest extends ActivityInstrumentationTestCase2<MainActivity>{
+
+
+
+	Game game;
+	Box box1;
+	Box box2;
+	Box box3;
+	Arrow arrow4;
+	Arrow arrow5;
+	Arrow arrow6;
+	End end7;
+	End end8;
+	End end9;
+	int maxReg;
+	MainActivity main;
+
+	public InstructionTest(Class<MainActivity> activityClass) {
+		super(MainActivity.class);
+	}
+	
+	public void setUp() throws Exception{
+		
+		super.setUp();
+		main = getActivity();
+		maxReg = game.getMaxReg();
+		box1 = new Box(game);
+		box2 = new Box(game);
+		box3 = new Box(game);
+		arrow4 = new Arrow(game);
+		arrow5 = new Arrow(game);
+		arrow6 = new Arrow(game);
+		end7 = new End(game);
+		end8 = new End(game);
+
+		box1.setId(1);
+		box2.setId(2);
+		box3.setId(3);
+		arrow4.setId(4);
+		arrow5.setId(5);
+		arrow6.setId(6);
+		end7.setId(7);
+		end8.setId(8);
+
+		box1.setSucc(end8);
+		end8.setPred(box1);
+		end8.setSucc(box2);
+		box2.setPred(end8);
+		box2.setSucc(arrow4);
+		arrow4.setPred(box2);
+		arrow4.setSucc(arrow6);
+		arrow6.setPred(arrow4);
+		arrow6.setSucc(end7);
+		end7.setPred(arrow6);
+		end7.setSucc(box3);
+		box3.setPred(end7);
+		box3.setSucc(arrow5);
+		arrow5.setPred(box3);
+		arrow5.setSucc(null);
+		
+		arrow4.setType(); //Set Arrow4 to decrement
+		arrow4.setTo(box3);
+		arrow5.setTo(box1);
+		arrow6.setTo(box2);
+
+		arrow4.calculateSpaces();
+		arrow5.calculateSpaces();
+		arrow6.calculateSpaces();
+		
+	}
+	
+	/**Tests that Branches calculate the correct span, ignoring End and Arrow instructions.<br>
+	 * Arrow 4 spans 2 boxes, its predecessor and its "To", as well as End and Arrow instructions.<br>
+	 * Expected outcome is 2.
+	 */
+	public void testCalculateSpacesBranch() {
+		int branchArrowSpaces = arrow4.getSpaces();
+		assertEquals("Branch arrow spaces", 2, branchArrowSpaces); //Box 2 and Box 3, ignoring end, other arrow
+	}
+	
+	/**Tests that Loop calculate the correct span, ignoring End and Arrow instructions.<br>
+	 * Arrow 4 spans  boxes, its predecessor, successor and its "To", as well as End and Arrow instructions.<br>
+	 * Expected outcome is 3.<br>
+	 */
+	public void testCalculateSpacesLoop() {
+		int loopArrowSpaces = arrow5.getSpaces();
+		assertEquals("Branch arrow spaces", 3, loopArrowSpaces); //Box 1, 2, 3, ignoring end, other arrow
+	}
+	
+	/**Tests Arrows return 1, when they point to the same Box they are coming from.<br>
+	 * Arrow 6 spans 1 box as its predecessor and "to" are the same<br>
+	 * Expected outcome is 1.<br>
+	 */
+	public void testCalculateSpacesSingle(){
+		int singleSpaces = arrow6.getSpaces();
+		assertEquals("Single arrow space", 1, singleSpaces);
+	}
+	
+	/**Tests Box cannot be set with register greater than 9<br>
+	 * Iterates through, increasing the register by one each time. Method should revert to 0 instead of 10.<br>
+	 */
+	public void testBoxRegister(){
+		
+		for (int i = 0; i<maxReg + 3; i++){
+			
+			if (i >= 0 && i < 10){
+				assertEquals("Register assigment correct", i,  box1.getRegister());
+			}
+			else {
+				assertEquals("Register assigment correct", i-maxReg, box1.getRegister());
+			}
+
+			box1.setRegister();
+		}
+	}
+	
+	/**Tests completed decrement, followed by loop.
+	 * Multiple tests:<br>
+	 * 1) A decrement box decrements the register<br>
+	 * 2) loop sets currentPosition to "to", if decrement completed.<br>
+	 * 3) Decrement box sets currentPosition to its successor.<br>
+	 * 4) Decrement box sets decrementdone boolean to true, if decrement completed.<br>
+	 */
+	public void testDoWorkLoop1(){
+		
+		Game game = new Game(main);
+		game.setCurrPos(null);
+		box1.setPred(null);
+		box1.setSucc(arrow4);
+		arrow4.setPred(box1);
+		arrow4.setSucc(box2);
+		box2.setPred(arrow4);
+		box2.setSucc(box3);
+		box3.setPred(box2);
+		box3.setSucc(null);
+		
+		arrow4.setType(); //Loop
+		arrow4.setTo(box1); //Succ is box2, to is box1
+		box1.setType(); //Decrement
+		
+		assertEquals("Arrow 4 is a loop", true, arrow4.getType());
+		assertEquals("Box 1 is a decrement", false, box1.getType());
+		
+		game.zeroReg(box1.getRegister());
+		game.incrementReg(box1.getRegister()); //Box1 contains 1.
+		
+		assertEquals("Associated register contains 1", 1, game.getRegData(box1.getRegister()));
+		
+		box1.doWork();
+		
+		assertEquals("Box 1 has decremented associated register ", 0, game.getRegData(box1.getRegister()));
+		assertEquals("Box 1 could decrement associated register ", true, box1.decDone());
+		assertEquals("Box 1 has set currentPosition to its successor", 4, game.getCurrPos().getId());
+		
+		game.getCurrPos().doWork(); //arrow4 do work.
+		
+		assertEquals("Arrow 4 has set currentPosition to its toInstruction", 1, game.getCurrPos().getId());
+
+	}
+	
+	/**Tests non-completed decrement, followed by loop.
+	 * Multiple tests:<br>
+	 * 1) A decrement box cannot decrements the register past 0.<br>
+	 * 2) Loop sets currentPosition to successor, if decrement not completed.<br>
+	 * 3) Decrement box sets currentPosition to its successor.<br>
+	 * 4) Decrement box sets decrementdone boolean to false, if decrement not completed.<br>
+	 */
+	public void testDoWorkLoop2(){
+		
+		Game game = new Game(main);
+		
+		box1.setPred(null);
+		box1.setSucc(arrow4);
+		arrow4.setPred(box1);
+		arrow4.setSucc(box2);
+		box2.setPred(arrow4);
+		box2.setSucc(box3);
+		box3.setPred(box2);
+		box3.setSucc(null);
+		
+		arrow4.setType(); //Loop
+		arrow4.setTo(box1); //Succ is box2, to is box1
+		box1.setType(); //Decrement
+		
+		assertEquals("Arrow 4 is a loop", true, arrow4.getType());
+		assertEquals("Box 1 is a decrement", false, box1.getType());
+		
+		game.zeroReg(box1.getRegister()); //Register contains 0
+		
+		assertEquals("Associated register contains 0", 0, game.getRegData(box1.getRegister()));
+		
+		box1.doWork();
+		
+		assertEquals("Box 1 could not decrement past zero", false, box1.decDone());
+		assertEquals("Associated register still contains 0", 0, game.getRegData(box1.getRegister()));
+		assertEquals("Box 1 has set currentPosition to its successor", 4, game.getCurrPos().getId());
+		
+		game.getCurrPos().doWork(); //arrow4 do work.
+		
+		assertEquals("Arrow 4 has set currentPosition to its successor", 2, game.getCurrPos().getId());
+	}
+	
+	/**Tests completed increment, followed by loop.
+	 * Multiple tests:<br>
+	 * 1) Increment instruction increments the associated register<br>
+	 * 2) Increment instruction sets currentPosition to its successor<br>
+	 * 3) Loop sets currentPosition to "to" instruction when preceded an increment<br>
+	 */
+	public void testDoWorkLoop3(){
+		
+		Game game = new Game(main);
+		
+		box1.setPred(null);
+		box1.setSucc(arrow4);
+		arrow4.setPred(box1);
+		arrow4.setSucc(box2);
+		box2.setPred(arrow4);
+		box2.setSucc(box3);
+		box3.setPred(box2);
+		box3.setSucc(null);
+		
+		arrow4.setType(); //Loop
+		arrow4.setTo(box1); //Succ is box2, to is box1
+		
+		assertEquals("Arrow 4 is a loop", true, arrow4.getType());
+		assertEquals("Box 1 is an increment", true, box1.getType());
+		
+		game.zeroReg(box1.getRegister()); //Register contains 0
+		
+		assertEquals("Associated register contains 0", 0, game.getRegData(box1.getRegister()));
+		
+		box1.doWork();
+		
+		assertEquals("Box 1 incremented its associated register", 1, game.getRegData(box1.getRegister()));
+		assertEquals("Box 1 has set currentPosition to its successor", 4, game.getCurrPos().getId());
+		
+		game.getCurrPos().doWork(); //arrow4 do work.
+		
+		assertEquals("Arrow 4 has set currentPosition to its to instruction", 1, game.getCurrPos().getId());
+	}
+	
+	/**Tests non-completed decrement, followed by branch
+	 * Multiple tests:<br>
+	 * 1) A decrement box cannot decrements the register past 0.<br>
+	 * 2) Branch sets currentPosition to "to", if decrement not completed.<br>
+	 * 3) Decrement box sets currentPosition to its successor.<br>
+	 * 4) Decrement box sets decrementdone boolean to false, if decrement not completed.<br>
+	 */
+	public void testDoWorkBranch1(){
+		
+		Game game = new Game(main);
+		
+		box1.setPred(null);
+		box1.setSucc(arrow4);
+		arrow4.setPred(box1);
+		arrow4.setSucc(box2);
+		box2.setPred(arrow4);
+		box2.setSucc(box3);
+		box3.setPred(box2);
+		box3.setSucc(null);
+		
+		arrow4.setTo(box1); //Succ is box2, to is box1
+		box1.setType(); //Decrement
+		
+		assertEquals("Arrow 4 is a branch", false, arrow4.getType());
+		assertEquals("Box 1 is a decrement", false, box1.getType());
+		
+		game.zeroReg(box1.getRegister()); //Register contains 0
+		
+		assertEquals("Associated register contains 0", 0, game.getRegData(box1.getRegister()));
+		
+		box1.doWork();
+		
+		assertEquals("Box 1 could not decrement past zero", false, box1.decDone());
+		assertEquals("Associated register still contains 0", 0, game.getRegData(box1.getRegister()));
+		assertEquals("Box 1 has set currentPosition to its successor", 4, game.getCurrPos().getId());
+		
+		game.getCurrPos().doWork(); //arrow4 do work.
+		
+		assertEquals("Arrow 4 has set currentPosition to its to instruction", 1, game.getCurrPos().getId());
+	}
+	
+	/**Tests completed decrement, followed by branch
+	 * Multiple tests:<br>
+	 * 1) A decrement box decrements the register<br>
+	 * 2) Branch sets currentPosition to successor, if decrement completed.<br>
+	 * 3) Decrement box sets currentPosition to its successor.<br>
+	 * 4) Decrement box sets decrementdone boolean to true, if decrement completed.<br>
+	 */
+	public void testDoWorkBranch2(){
+		
+		Game game = new Game(main);
+		
+		box1.setPred(null);
+		box1.setSucc(arrow4);
+		arrow4.setPred(box1);
+		arrow4.setSucc(box2);
+		box2.setPred(arrow4);
+		box2.setSucc(box3);
+		box3.setPred(box2);
+		box3.setSucc(null);
+		
+		arrow4.setTo(box1); //Succ is box2, to is box1
+		box1.setType(); //Decrement
+		
+		assertEquals("Arrow 4 is a branch", false, arrow4.getType());
+		assertEquals("Box 1 is a decrement", false, box1.getType());
+		
+		game.zeroReg(box1.getRegister());
+		game.incrementReg(box1.getRegister()); //Register contains 1
+		
+		assertEquals("Associated register contains 1", 1, game.getRegData(box1.getRegister()));
+		
+		box1.doWork();
+		
+		assertEquals("Box 1 has decremented associated register ", 0, game.getRegData(box1.getRegister()));
+		assertEquals("Box 1 decremented associated register", true, box1.decDone());
+		assertEquals("Box 1 has set currentPosition to its successor", 4, game.getCurrPos().getId());
+		
+		game.getCurrPos().doWork(); //arrow4 do work.
+		
+		assertEquals("Arrow 4 has set currentPosition to its successor", 2, game.getCurrPos().getId());
+	}
+	
+	/**Tests completed decrement, followed by end
+	 * Multiple tests:<br>
+	 * 1) A decrement box decrements the register<br>
+	 * 2) End sets currentPosition to successor, if decrement completed.<br>
+	 * 3) Decrement box sets currentPosition to its successor.<br>
+	 * 4) Decrement box sets decrementdone boolean to true, if decrement completed.<br>
+	 */
+	public void testdoWorkEnd1(){
+		
+		Game game = new Game(main);
+		
+		box1.setPred(null);
+		box1.setSucc(end7);
+		end7.setPred(box1);
+		end7.setSucc(box2);
+		box2.setPred(end7);
+		box2.setSucc(null);
+		
+		box1.setType(); //Decrement
+
+		assertEquals("Box 1 is a decrement", false, box1.getType());
+		
+		game.zeroReg(box1.getRegister());
+		game.incrementReg(box1.getRegister()); //Register contains 1
+		
+		assertEquals("Associated register contains 1", 1, game.getRegData(box1.getRegister()));
+		
+		box1.doWork();
+		
+		assertEquals("Box 1 has decremented associated register ", 0, game.getRegData(box1.getRegister()));
+		assertEquals("Box 1 decremented associated register", true, box1.decDone());
+		assertEquals("Box 1 has set currentPosition to its successor", 7, game.getCurrPos().getId());
+		
+		game.getCurrPos().doWork(); //end7 do work.
+		
+		assertEquals("End 7 has set currentPosition to its successor", 2, game.getCurrPos().getId());
+	}
+	
+	/**Tests non- completed decrement, followed by end
+	 * Multiple tests:<br>
+	 * 1) A decrement box decrements the register<br>
+	 * 2) End sets currentPosition to null, if decrement was not completed.<br>
+	 * 3) Decrement box sets currentPosition to its successor.<br>
+	 * 4) Decrement box sets decrementdone boolean to true, if decrement completed.<br>
+	 */
+	public void testdoWorkEnd2(){
+		
+		Game game = new Game(main);
+		
+		box1.setPred(null);
+		box1.setSucc(end7);
+		end7.setPred(box1);
+		end7.setSucc(box2);
+		box2.setPred(end7);
+		box2.setSucc(null);
+		
+		box1.setType(); //Decrement
+
+		assertEquals("Box 1 is a decrement", false, box1.getType());
+		
+		game.zeroReg(box1.getRegister()); //Register contains 0
+		
+		assertEquals("Associated register contains 0", 0, game.getRegData(box1.getRegister()));
+		
+		box1.doWork();
+		
+		
+		assertEquals("Box 1 could not decrement past zero", false, box1.decDone());
+		assertEquals("Associated register still contains 0", 0, game.getRegData(box1.getRegister()));
+		assertEquals("Box 1 has set currentPosition to its successor", 7, game.getCurrPos().getId());
+		
+		game.getCurrPos().doWork(); //end7 do work.
+		
+		assertEquals("End 7 has set currentPosition to null", null, game.getCurrPos());
+	
+	}
+	
+	/**Tests completed increment, followed by End
+	 * Multiple tests:<br>
+	 * 1) Increment instruction increments the associated register<br>
+	 * 2) Increment instruction sets currentPosition to its successor<br>
+	 * 3) End sets currentPosition to null when preceded an increment<br>
+	 */
+	public void testdoWorkEnd3(){
+		
+		Game game = new Game(main);
+		
+		box1.setPred(null);
+		box1.setSucc(end7);
+		end7.setPred(box1);
+		end7.setSucc(box2);
+		box2.setPred(end7);
+		box2.setSucc(null);
+
+		assertEquals("Box 1 is an increment", true, box1.getType());
+		
+		game.zeroReg(box1.getRegister()); //Register contains 0
+		
+		assertEquals("Associated register contains 0", 0, game.getRegData(box1.getRegister()));
+		
+		box1.doWork();
+		
+		assertEquals("Box 1 incremented its associated register", 1, game.getRegData(box1.getRegister()));
+		assertEquals("Box 1 has set currentPosition to its successor", 7, game.getCurrPos().getId());
+		
+		game.getCurrPos().doWork(); //end7 do work.
+		
+		assertEquals("End 7 has set currentPosition to null", null, game.getCurrPos());
+	
+	}
+}
