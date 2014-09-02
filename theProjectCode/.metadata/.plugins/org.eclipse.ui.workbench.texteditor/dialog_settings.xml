@@ -2,27 +2,27 @@
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
 		<item value="800" key="DIALOG_WIDTH"/>
-		<item value="152" key="DIALOG_Y_ORIGIN"/>
+		<item value="151" key="DIALOG_Y_ORIGIN"/>
+		<item value="794" key="DIALOG_X_ORIGIN"/>
 		<item value="716" key="DIALOG_HEIGHT"/>
-		<item value="808" key="DIALOG_X_ORIGIN"/>
 		<item value="1|Segoe UI|9.0|0|WINDOWS|1|-12|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI" key="DIALOG_FONT_NAME"/>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="true" key="wrap"/>
-		<item value="false" key="isRegEx"/>
 		<item value="true" key="casesensitive"/>
+		<item value="false" key="isRegEx"/>
 		<item value="true" key="incremental"/>
 		<item value="false" key="wholeword"/>
-		<item value="onDrag" key="selection"/>
+		<item value="clearScre" key="selection"/>
 		<list key="findhistory">
-			<item value="onDrag"/>
+			<item value="clearScre"/>
+			<item value="runOn"/>
+			<item value="getFirst"/>
+			<item value="dialog"/>
 			<item value="Log.d"/>
+			<item value="onDrag"/>
 			<item value="getIns"/>
 			<item value="findIn"/>
-			<item value="maxReg"/>
-			<item value="getMax"/>
-			<item value="game"/>
-			<item value="ErrorCh"/>
 		</list>
 		<list key="replacehistory">
 			<item value="x"/>

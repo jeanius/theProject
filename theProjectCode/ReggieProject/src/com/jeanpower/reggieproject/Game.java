@@ -32,7 +32,7 @@ public class Game{
 	private int boxAbove; //ID of any box above the line, for Arrow layout
 	private int boxBelow;
 	private Game game = this;
-	private final int DELAY = 1000; //As instructions do work, highlighted on screen, with short delay.
+	private final int DELAY = 700; //As instructions do work, highlighted on screen, with short delay.
 
 	/**
 	 * Constructor. 
@@ -664,8 +664,11 @@ public class Game{
 	 * @return void
 	 */
 	public void incrementReg(int registerNum) {
-		int newNum = registers[registerNum] + 1;
-		registers[registerNum] = newNum;
+
+		if (registerNum >= 0 && registerNum < MAXREGISTERS){
+			int newNum = registers[registerNum] + 1;
+			registers[registerNum] = newNum;
+		}
 	}
 
 	/**
@@ -677,14 +680,17 @@ public class Game{
 	 */
 	public boolean decrementReg(int registerNum) {
 
-		if (registers[registerNum] >=1){
-			int newNum = registers[registerNum] - 1;
-			registers[registerNum] = newNum;
-			return true;
+		if (registerNum >= 0 && registerNum < MAXREGISTERS){
+			if (registers[registerNum] >=1){
+				int newNum = registers[registerNum] - 1;
+				registers[registerNum] = newNum;
+				return true;
+			}
+			else {
+				return false;
+			}
 		}
-		else {
-			return false;
-		}
+		return false;
 	}
 
 	/**
@@ -694,8 +700,10 @@ public class Game{
 	 * @return void
 	 */
 	public void zeroReg(int registerNum) {
-
+		
+		if (registerNum >= 0 && registerNum < MAXREGISTERS){
 		registers[registerNum] = 0;
+		}
 	}
 
 	/**
@@ -742,10 +750,11 @@ public class Game{
 					currPos.doWork(); 
 
 					game.updateActivityDisplay(); //Will update display highlighting the instruction that did the work
-					
+
 					try {
 						Thread.sleep(DELAY);
 						game.updateActivityDisplay(); //Dehighlight
+						Thread.sleep(DELAY);
 					}
 					catch (Exception e){
 						Log.d("This was interrupted", "interrupted");
@@ -763,16 +772,16 @@ public class Game{
 					boolean setSucc = currArrow.getIfSet();
 
 					if (currArrow.getType() && !setSucc || !currArrow.getType() && !setSucc){
-
 						game.updateActivityDisplay(); 
 
 						try {
 							Thread.sleep(DELAY);
 							game.updateActivityDisplay();
+							Thread.sleep(DELAY);
 						}
 						catch (Exception e){
 							Log.d("This was interrupted", "interrupted");
-						}	
+						}
 					}
 				}
 
@@ -890,7 +899,13 @@ public class Game{
 	 * @return int - data in register
 	 */
 	public int getRegData(int registerNum) {
+		
+		if (registerNum >=0 && registerNum < MAXREGISTERS){
 		return registers[registerNum];
+		}
+		else {
+			return -1;
+		}
 	}
 
 	/**

@@ -1,8 +1,6 @@
 package com.jeanpower.reggieproject.test;
 
-import junit.framework.TestCase;
 import android.test.ActivityInstrumentationTestCase2;
-
 import com.jeanpower.reggieproject.Arrow;
 import com.jeanpower.reggieproject.Box;
 import com.jeanpower.reggieproject.End;

@@ -3,7 +3,6 @@ package com.jeanpower.reggieproject;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
@@ -13,7 +12,6 @@ import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.DragEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -374,19 +372,24 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 	 */
 	public void clearScreen(){
 
-		int childCount = container.getChildCount();
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				int childCount = container.getChildCount();
 
-		for (int i = 1; i < childCount; i++) {
+				for (int i = 1; i < childCount; i++) {
 
-			View child = container.getChildAt(1);
-			container.removeView(child);
-		}
+					View child = container.getChildAt(1);
+					container.removeView(child);
+				}
 
-		arrowButton.setVisibility(View.INVISIBLE);
-		endButton.setVisibility(View.INVISIBLE);
-		runButton.setVisibility(View.INVISIBLE);
-		binButton.setVisibility(View.INVISIBLE);
-		this.setRegisters();
+				arrowButton.setVisibility(View.INVISIBLE);
+				endButton.setVisibility(View.INVISIBLE);
+				runButton.setVisibility(View.INVISIBLE);
+				binButton.setVisibility(View.INVISIBLE);
+				setRegisters();
+			}
+		});
 	}
 
 	/**
@@ -639,7 +642,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 					this.updateDisplay();
 				}
 			}
-			
+
 			if (deleteInstruction){
 				this.updateDisplay();		
 			}
@@ -674,6 +677,20 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 			this.finish();
 		}
 		return true;
+	}
+
+	/**Prevent leak of Dialog from tutorial when MainActivity is destroyed.
+	 * <p>
+	 * @param void
+	 * @return void
+	 */
+	@Override
+	public void onDestroy() {	
+		super.onDestroy();
+
+		if (null != tutorial && null != tutorial.getDialog()){ //Ensures all dialogs are closed
+			tutorial.getDialog().dismiss();	
+		}
 	}
 
 	/**

@@ -1,9 +1,10 @@
 package com.jeanpower.reggieproject.test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.content.Context;
 import android.test.ActivityInstrumentationTestCase2;
-import android.util.Log;
-
 import com.jeanpower.reggieproject.Arrow;
 import com.jeanpower.reggieproject.Box;
 import com.jeanpower.reggieproject.End;
@@ -19,16 +20,20 @@ import com.jeanpower.reggieproject.R;
  * 1) Constructors are not tested, as just assignment of instance variables<br>
  * 2) Setters are not tested; trivial assignment of instance variables.<br>
  * 3) Getters are not tested; trivial returning instance variables.<br>
+ * 4) RunGame not tested, as doWork() tested as part of InstructionTest. Also verified through watching programs run<br>
  * 
- * Tests Completed:
- * 1) newInstruction();
- * 2) headMove();
- * 3) tailMove();
- * 4) updateHead();
- * 5) updateTail();
- * 6) updateInstruction();
- * 7) changeInstruction();
- * 8) deleteInstruction();
+ * Tests Completed:<br>
+ * 1) newInstruction();<br>
+ * 2) headMove();<br>
+ * 3) tailMove();<br>
+ * 4) updateHead();<br>
+ * 5) updateTail();<br>
+ * 6) updateInstruction();<br>
+ * 7) changeInstruction();<br>
+ * 8) deleteInstruction();<br>
+ * 9) incrementReg/decrementReg()/zeroReg();<br>
+ * 10) setAboveBelow()<br>
+ * 11) getInstructionList()/getInstructionID()/getInstruction()/getToFrom();<br>
  * 
  * @author Jean Power 2014
  */
@@ -41,10 +46,10 @@ public class GameTest extends ActivityInstrumentationTestCase2<MainActivity>{
 	public GameTest(){
 		super(MainActivity.class);
 	}
-	
+
 	public void setUp() throws Exception{
-		 super.setUp();
-		 main = getActivity();		 
+		super.setUp();
+		main = getActivity();		 
 	}
 
 	/**Tests all aspects of adding a new instruction<p>
@@ -59,7 +64,7 @@ public class GameTest extends ActivityInstrumentationTestCase2<MainActivity>{
 	public void testNewInstruction() {
 
 		Game game = new Game(main);
-		
+
 		assertEquals("First is null", -1, game.getFirst());
 		assertEquals("Last is null", -1, game.getLast());
 		assertEquals("Last box is null", -1, game.getLastBox());
@@ -122,7 +127,7 @@ public class GameTest extends ActivityInstrumentationTestCase2<MainActivity>{
 	 * 
 	 */
 	public void testHeadMove(){
-		
+
 		Game game = new Game(main);
 
 		Instruction newBox1 = game.newInstruction(R.id.new_box_button);
@@ -161,7 +166,7 @@ public class GameTest extends ActivityInstrumentationTestCase2<MainActivity>{
 	public void testTailMove(){
 
 		Game game = new Game(main);
-		
+
 		Instruction newBox1 = game.newInstruction(R.id.new_box_button);
 		Instruction newBox2 = game.newInstruction(R.id.new_box_button);
 		Instruction newBox3 = game.newInstruction(R.id.new_box_button);
@@ -195,7 +200,7 @@ public class GameTest extends ActivityInstrumentationTestCase2<MainActivity>{
 	 * 2) Arrow re calculates its spaces (loop/branch) <br>
 	 */
 	public void testUpdateHead(){
-		
+
 		Game game = new Game(main);
 
 		Box newBox2 = (Box) game.newInstruction(R.id.new_box_button);
@@ -215,7 +220,7 @@ public class GameTest extends ActivityInstrumentationTestCase2<MainActivity>{
 
 		game.updateHead(newArrow1, newBox3); //Reset
 
-		assertEquals("newArrow1 is pointing at newBox3", newBox3.getId(), newArrow1.getTo().getId()); 
+		assertEquals("newArrow1 is pointing at newBox3 - reset", newBox3.getId(), newArrow1.getTo().getId()); 
 		assertEquals("newArrow1 has a space of 1", 1, newArrow1.getSpaces());
 
 		newArrow1.setType(); //change to branch.
@@ -233,10 +238,11 @@ public class GameTest extends ActivityInstrumentationTestCase2<MainActivity>{
 	 * 1) If new Box's successor is end, arrow becomes successor of the Box<br>
 	 * 2) If new Box's successor is box, arrow becomes successor of the Box<br>
 	 * 3) If new Box's successor is loop, arrow becomes successor of the Box<br>
-	 * 4) Spaces update<br>
+	 * 4) If new Box's successor is branch, loop becomes successor of branch<br>
+	 * 5) Spaces update<br>
 	 */
 	public void testUpdateTail(){
-		
+
 		Game game = new Game(main);
 
 		Box newBox1 = (Box) game.newInstruction(R.id.new_box_button);
@@ -244,24 +250,38 @@ public class GameTest extends ActivityInstrumentationTestCase2<MainActivity>{
 		Box newBox3 = (Box) game.newInstruction(R.id.new_box_button);
 		Arrow newArrow1 = (Arrow) game.newInstruction(R.id.new_arrow_button); //Arrow's pred is box3, and 'to' is box3. Arrow is loop.
 		Box newBox4 = (Box) game.newInstruction(R.id.new_box_button);
+		Arrow newArrow2 = (Arrow) game.newInstruction(R.id.new_arrow_button); 
 
 		newArrow1.setTo(newBox1);
 		newArrow1.calculateSpaces();
 
-		//Tests the first scenarios - where successor is end, box or loop.
 		assertEquals("newArrow1 has a space of 3", 3, newArrow1.getSpaces());
 		assertEquals("newBox3 successor is newArrow1", newArrow1.getId(), newBox3.getSucc().getId());
 		assertEquals("newBox4 predecessor is newArrow1", newArrow1.getId(), newBox4.getPred().getId());
-		assertEquals("newArrow predecessor is newBox3", newBox3.getId(), newArrow1.getPred().getId());
-		assertEquals("newArrow successor is newBox4", newBox4.getId(), newArrow1.getSucc().getId());
+		assertEquals("newArrow1 predecessor is newBox3", newBox3.getId(), newArrow1.getPred().getId());
+		assertEquals("newArrow1 successor is newBox4", newBox4.getId(), newArrow1.getSucc().getId());
 
 		game.updateTail(newArrow1, newBox2);
 
-		assertEquals("newArrow predecessor is newBox2", newBox2.getId(), newArrow1.getPred().getId());
-		assertEquals("newArrow successor is newBox3", newBox3.getId(), newArrow1.getSucc().getId());
+		//Loop moves in front of other instructions.
+		assertEquals("newArrow1 predecessor is now newBox2", newBox2.getId(), newArrow1.getPred().getId());
+		assertEquals("newArrow1 successor is now newBox3", newBox3.getId(), newArrow1.getSucc().getId());
 		assertEquals("newArrow1 has a space of 2", 2, newArrow1.getSpaces());
-		assertEquals("newBox3 successor is newBox4", newBox4.getId(), newBox3.getSucc().getId());
-		assertEquals("newBox4 predecessor is newBox3", newBox3.getId(), newBox4.getPred().getId());
+		assertEquals("newBox3 successor is now newBox4", newBox4.getId(), newBox3.getSucc().getId());
+		assertEquals("newBox4 predecessor is now newBox3", newBox3.getId(), newBox4.getPred().getId());
+
+		game.changeInstruction(newArrow2); //becomes a branch.
+
+		game.updateTail(newArrow1, newBox4);
+
+		//Loop moves in behind branch
+		assertEquals("newArrow1 predecessor is newArrow2", newArrow2.getId(), newArrow1.getPred().getId());
+		assertEquals("newArrow1 successor is null", null, newArrow1.getSucc());
+		assertEquals("newArrow1 has a space of 3", 4, newArrow1.getSpaces());
+		assertEquals("newArrow2 is a branch", false, newArrow2.getType());
+		assertEquals("newArrow1 is a loop", true, newArrow1.getType());
+		assertEquals("newArrow2 successor is newArrow1", newArrow1.getId(), newArrow2.getSucc().getId());
+
 	}
 
 	/**
@@ -274,7 +294,7 @@ public class GameTest extends ActivityInstrumentationTestCase2<MainActivity>{
 	public void testUpdateInstruction(){
 
 		Game game = new Game(main);
-		
+
 		Instruction newBox1 = game.newInstruction(R.id.new_box_button);
 		Instruction newArrow1 = game.newInstruction(R.id.new_arrow_button); 
 		Instruction newBox2 = game.newInstruction(R.id.new_box_button);
@@ -307,13 +327,13 @@ public class GameTest extends ActivityInstrumentationTestCase2<MainActivity>{
 		game.updateInstruction(newEnd);
 
 		assertEquals("newBox1 is first", newBox1.getId(), game.getFirst());
-		assertEquals("End is removed", null, main.findViewById(newEnd.getId()));
-		assertEquals("End is removed", null, game.getInstruction(newEnd.getId()));
+		assertEquals("End is now removed", null, main.findViewById(newEnd.getId()));
+		assertEquals("End is now removed", null, game.getInstruction(newEnd.getId()));
 		assertEquals("newBox1 successor is newArrow1", newArrow1.getId(), newBox1.getSucc().getId());
 		assertEquals("newArrow1 predecessor is newBox1", newBox1.getId(), newArrow1.getPred().getId());
 		assertEquals("newArrow1 successor is newBox2", newBox2.getId(), newArrow1.getSucc().getId());
 	}
-	
+
 	/**
 	 * Tests the changeInstruction() method<p>
 	 * 
@@ -326,26 +346,25 @@ public class GameTest extends ActivityInstrumentationTestCase2<MainActivity>{
 	public void testChangeInstruction(){
 
 		Game game = new Game(main);
-		
+
 		Box newBox = (Box) game.newInstruction(R.id.new_box_button);
 		Box newBox1 = (Box) game.newInstruction(R.id.new_box_button);
 		Arrow newArrow1 = (Arrow) game.newInstruction(R.id.new_arrow_button); //loop
 		Instruction newBox2 = game.newInstruction(R.id.new_box_button);
 		Instruction newBox3 = game.newInstruction(R.id.new_box_button);
 		Arrow newArrow2 = (Arrow) game.newInstruction(R.id.new_arrow_button);
-
 		Instruction newEnd = game.newInstruction(R.id.new_end_button);
 
 		game.updateHead(newArrow2, newBox1);
 
-		assertEquals("newArrow pred is newBox3", newBox3.getId(), newArrow2.getPred().getId());
+		assertEquals("newArrow2 pred is newBox3", newBox3.getId(), newArrow2.getPred().getId());
 		assertEquals("newArrow2 is loop", true, newArrow2.getType());
 		assertEquals("newArrow2 is pointing at newBox1", newBox1.getId(), newArrow2.getTo().getId());
 
 		game.changeInstruction(newArrow2);
-		
-		assertEquals("newArrow2 pred is newBox1", newBox1.getId(), newArrow2.getPred().getId());
-		assertEquals("newBox1 succ is newArrow", newArrow2.getId(), newBox1.getSucc().getId());
+		//Loop comes before other instructions.
+		assertEquals("newArrow2 pred is now newBox1", newBox1.getId(), newArrow2.getPred().getId());
+		assertEquals("newBox1 succ is now newArrow2", newArrow2.getId(), newBox1.getSucc().getId());
 		assertEquals("newArrow2 is branch", false, newArrow2.getType());
 		assertEquals("newArrow2 is pointing at newBox1", newBox1.getId(), newArrow2.getTo().getId());
 		assertEquals("newArrow2 succ is newArrow1", newArrow1.getId(), newArrow2.getSucc().getId());
@@ -359,21 +378,244 @@ public class GameTest extends ActivityInstrumentationTestCase2<MainActivity>{
 		assertEquals("newArrow2 is pointing at newBox1", newBox1.getId(), newArrow2.getTo().getId());
 
 		game.changeInstruction(newArrow2);
-		
+		//Loop comes after branch
 		assertEquals("newArrow2 pred is still newArrow1", newArrow1.getId(), newArrow2.getPred().getId());
 		assertEquals("newArrow2 is loop", true, newArrow2.getType());
 		assertEquals("newArrow1 succ is still newArrow2", newArrow2.getId(), newArrow1.getSucc().getId());
 		assertEquals("newArrow1 is branch", false, newArrow1.getType());
 		assertEquals("newArrow2 is still pointing at newBox1", newBox1.getId(), newArrow2.getTo().getId());		
 	}
-	
+
 	/**
 	 * Tests the delete instruction method <p>
 	 * 
-	 * 1)Arrow pointing to deleted Box have their head reset<br>
-	 * 2) If only one box on screen, and this is deleted, screen is cleared<br>
+	 * 1) Tests that arrows coming from deleted boxes are also removed.<br>
+	 * 2) Tests if last box is removed, lastBox is updated.<br>
+	 * 3) Tests if last is removed, last is updated.<br>
+	 * 4) Arrow resets its "to" to its pred, if its "to" is deleted<br>
+	 * 5) First resets if first is removed - but to a box, not to an arrow<br>
+	 * 6) Boxes not impacted if end/arrow deleted from them <br>
+	 * 7) If last box is deleted, all are deleted.
 	 */
 	public void testDeleteInstruction(){
+
+		Game game = new Game(main);
+
+		Box newBox = (Box) game.newInstruction(R.id.new_box_button);
+		Arrow newArrow = (Arrow) game.newInstruction(R.id.new_arrow_button);
+		Box newBox1 = (Box) game.newInstruction(R.id.new_box_button);
+		Arrow newArrow1 = (Arrow) game.newInstruction(R.id.new_arrow_button);
+		Instruction newBox2 = game.newInstruction(R.id.new_box_button);
+		Instruction newEnd = game.newInstruction(R.id.new_end_button);
+		Box newBox3 = (Box) game.newInstruction(R.id.new_box_button);
+		Arrow newArrow2 = (Arrow) game.newInstruction(R.id.new_arrow_button);
+
+		game.changeInstruction(newArrow1); //Branch
+		game.updateHead(newArrow1, newBox3);
+		game.updateHead(newArrow2, newBox); //Loop
+
+		//Confirmation of correct structure of program.
+		assertEquals("First is newBox", newBox.getId(), game.getFirst());
+		assertEquals("newBox pred is null", null, newBox.getPred());
+		assertEquals("newBox succ is newArrow", newArrow.getId(), newBox.getSucc().getId());
+		assertEquals("newArrow pred is newBox", newBox.getId(), newArrow.getPred().getId());
+		assertEquals("newArrow succ is newBox1", newBox1.getId(), newArrow.getSucc().getId());
+		assertEquals("newBox1 pred is newArrow", newArrow.getId(), newBox1.getPred().getId());
+		assertEquals("newBox1 succ is newArrow1", newArrow1.getId(), newBox1.getSucc().getId());
+		assertEquals("newArrow1 pred is newBox1", newBox1.getId(), newArrow1.getPred().getId());
+		assertEquals("newArrow1 succ is newBox2", newBox2.getId(), newArrow1.getSucc().getId());
+		assertEquals("newBox2 pred is newArrow1", newArrow1.getId(), newBox2.getPred().getId());
+		assertEquals("newBox2 succ is newEnd", newEnd.getId(), newBox2.getSucc().getId());
+		assertEquals("newEnd pred is newBox2", newBox2.getId(), newEnd.getPred().getId());
+		assertEquals("newEnd succ is newBox3", newBox3.getId(), newEnd.getSucc().getId());
+		assertEquals("newBox3 pred is newEnd", newEnd.getId(), newBox3.getPred().getId());
+		assertEquals("newBox3 succ is newArrow2", newArrow2.getId(), newBox3.getSucc().getId());
+		assertEquals("newArrow2 pred is newBox3", newBox3.getId(), newArrow2.getPred().getId());
+		assertEquals("newArrow2 succ is null", null, newArrow2.getSucc());
+		assertEquals("Last is newArrow2", newArrow2.getId(), game.getLast());
+		assertEquals("LastBox is newBox3", newBox3.getId(), game.getLastBox());
+		assertEquals("newArrow3 points to newBox3", newBox3.getId(), newArrow1.getTo().getId());
+		assertEquals("newArrow3 has spaces of 3", 3, newArrow1.getSpaces());
+
+		game.deleteInstruction(newBox3);
+		newArrow1.calculateSpaces();
+
+		assertEquals("Last is now newEnd", newEnd.getId(), game.getLast());
+		assertEquals("LastBox is newBox2", newBox2.getId(), game.getLastBox());
+		assertEquals("newEnd successor is null", null, newEnd.getSucc());
+		assertEquals("newArrow1 points to newBox1", newBox1.getId(), newArrow1.getTo().getId()); //
+		assertEquals("newArrow1 has spaces of 1", 1, newArrow1.getSpaces());
+
+		game.deleteInstruction(newBox);
+
+		assertEquals("First is newBox1, not newArrow1", newBox1.getId(), game.getFirst());
+		assertEquals("newBox1 pred is null", null, newBox1.getPred());
+
+		game.deleteInstruction(newEnd);
+
+		assertEquals("Last is now newBox2", newBox2.getId(), game.getLast());
+		assertEquals("newBox2 successor is null", null, newBox2.getSucc());
+
+		game.deleteInstruction(newBox2);
+
+		assertEquals("First is newBox1", newBox1.getId(), game.getFirst());
+		assertEquals("newBox1 succ is newArrow1", newArrow1.getId(), newBox1.getSucc().getId());
+		assertEquals("newArrow1 pred is newBox1", newBox1.getId(), newArrow1.getPred().getId());
+		assertEquals("newArrow1 succ is null", null, newArrow1.getSucc());
+		assertEquals("newArrow1 is last", newArrow1.getId(), game.getLast());
+		assertEquals("newBox1 is lastBox", newBox1.getId(), game.getLastBox());
+
+		game.deleteInstruction(newBox1);
+
+		assertEquals("First is null", -1, game.getFirst());
+		assertEquals("Last is null", -1, game.getLast());
+		assertEquals("lastBox is null", -1, game.getLastBox());
+	}
+
+	/**
+	 * Tests the increment, decrement and zero register methods<p>
+	 * 
+	 * 1) Verifies all are zero<br>
+	 * 2) Verifies incrementing a register outside the range does not work.<br>
+	 * 3) Verifies Increments a register to 1000<br>
+	 * 4) Verifies decrementing a register<br>
+	 * 5) Verifies zeroing a register<br>
+	 * 6) Verifies cannot decrement past 0.<br>
+	 */
+	public void testIncDecZeroReg(){
+
+		Game game = new Game(main);
+
+		for (int i = 0; i < game.getMaxReg(); i++){
+			assertEquals("Register is zero", 0, game.getRegData(i));
+		}
+
+		game.incrementReg(-1);
+
+		for (int i = 0; i < game.getMaxReg(); i++){
+			assertEquals("Register is zero", 0, game.getRegData(i));
+		}
+
+		game.incrementReg(10);
+
+
+		for (int i = 0; i < game.getMaxReg(); i++){
+			assertEquals("Register is zero", 0, game.getRegData(i));
+		}
+
+		for (int i = 1; i <1001; i++){
+			game.incrementReg(8);
+			assertEquals("Register is incremented", i, game.getRegData(8));
+		}
+
+		for (int i = 1000; i>50; i--){
+			assertEquals("Register is decremented", i, game.getRegData(8));
+			game.decrementReg(8);
+		}
+
+		game.zeroReg(8);
+		assertEquals("Register is zeroed", 0, game.getRegData(8));
+
+		game.decrementReg(8);
+		assertEquals("Register doesn't go past zero", 0, game.getRegData(8));
+	}
+	
+	/**
+	 * Tests the setAboveBelow() method<p>
+	 * 
+	 * 1) Verifies a box above the line is set as above<br>
+	 * 2) Verifies a box below the line is set as below<br>
+	 */
+	public void testAboveBelow(){
 		
+		Game game = new Game(main);
+		
+		Instruction newBox = game.newInstruction(R.id.new_box_button);
+		Instruction newEnd = game.newInstruction(R.id.new_end_button);
+		Instruction newBox1 = game.newInstruction(R.id.new_box_button);
+		Instruction newArrow1 = game.newInstruction(R.id.new_arrow_button);
+	
+		game.changeInstruction(newBox1);
+		
+		game.setAboveBelow();
+		
+		assertEquals("newBox is above", newBox.getId(), game.getAbove());
+		assertEquals("newBox is below", newBox1.getId(), game.getBelow());
+	}
+	
+	
+	/**
+	 * Tests the findArrow and findBox methods<p>
+	 * 
+	 * 1) Verifies method finds instanceof Box<br>
+	 * 2) Verifies method finds instanceof Arrow<br>
+	 */
+	public void testArrowBox(){
+		
+		Game game = new Game(main);
+		
+		Instruction newBox = game.newInstruction(R.id.new_box_button);
+		Instruction newEnd = game.newInstruction(R.id.new_end_button);
+		Instruction newArrow = game.newInstruction(R.id.new_arrow_button);
+
+		assertEquals("Method finds a box", newBox.getId(), game.findBox());
+		assertEquals("Method finds an arrow", newArrow.getId(), game.findArrow());
+	}
+	
+	/**
+	 * Tests the getInstructionList(), getInstructionIDs(), getToFrom() and getInstruction()<p>
+	 * 
+	 * 1) Verifies getInstructionList() returns all instructions
+	 * 2) Verifies getInstructionIDs() returns all IDs
+	 * 3) Verifies an instruction can be found by ID
+	 * 
+	 */
+	
+	public void testgetInstruction(){
+		
+		Game game = new Game(main);
+
+		Box newBox = (Box) game.newInstruction(R.id.new_box_button);
+		Arrow newArrow = (Arrow) game.newInstruction(R.id.new_arrow_button);
+		Box newBox1 = (Box) game.newInstruction(R.id.new_box_button);
+		Arrow newArrow1 = (Arrow) game.newInstruction(R.id.new_arrow_button);
+		Instruction newBox2 = game.newInstruction(R.id.new_box_button);
+		Instruction newEnd = game.newInstruction(R.id.new_end_button);
+		Box newBox3 = (Box) game.newInstruction(R.id.new_box_button);
+		Arrow newArrow2 = (Arrow) game.newInstruction(R.id.new_arrow_button);
+		
+		ArrayList<Instruction> instructions = game.getInstructionList();
+		ArrayList<Integer> instructionIDs = game.getInstructionIDs();
+		List<Instruction> toFrom = game.getToFrom(newBox1, newBox3.getId());
+		
+		assertEquals("Instruction list is 8 in length", 8, instructions.size());
+		assertEquals("1 instruction is newBox", newBox.getId(), instructions.get(0).getId());
+		assertEquals("2 instruction is newArrow", newArrow.getId(), instructions.get(1).getId());
+		assertEquals("3 instruction is newBox1", newBox1.getId(), instructions.get(2).getId());
+		assertEquals("4 instruction is newArrow1", newArrow1.getId(), instructions.get(3).getId());
+		assertEquals("5 instruction is newBox2", newBox2.getId(), instructions.get(4).getId());
+		assertEquals("6 instruction is newEnd", newEnd.getId(), instructions.get(5).getId());
+		assertEquals("7 instruction is newBox3", newBox3.getId(), instructions.get(6).getId());
+		assertEquals("8 instruction is newArrow2", newArrow2.getId(), instructions.get(7).getId());
+		
+		assertEquals("Instruction list is 8 in length", 8, instructionIDs.size());
+		assertEquals("1 instruction is newBox", newBox.getId(), (int) instructionIDs.get(0));
+		assertEquals("2 instruction is newArrow", newArrow.getId(), (int) instructionIDs.get(1));
+		assertEquals("3 instruction is newBox1", newBox1.getId(), (int) instructionIDs.get(2));
+		assertEquals("4 instruction is newArrow1", newArrow1.getId(), (int) instructionIDs.get(3));
+		assertEquals("5 instruction is newBox2", newBox2.getId(), (int) instructionIDs.get(4));
+		assertEquals("6 instruction is newEnd", newEnd.getId(), (int) instructionIDs.get(5));
+		assertEquals("7 instruction is newBox3", newBox3.getId(), (int) instructionIDs.get(6));
+		assertEquals("8 instruction is newArrow2", newArrow2.getId(), (int) instructionIDs.get(7));
+		
+		assertEquals("Can find instruction by ID", newArrow1.getId(), game.getInstruction(newArrow1.getId()).getId());
+		assertEquals("Cannot find instruction with wrong ID", null, game.getInstruction(-1));
+		
+		assertEquals("To From is 5 in length", 5, toFrom.size());
+		assertEquals("1 instruction is newBox1", newBox1.getId(), toFrom.get(0).getId());
+		assertEquals("2 instruction is newArrow1", newArrow1.getId(), toFrom.get(1).getId());
+		assertEquals("3 instruction is newBox2", newBox2.getId(), toFrom.get(2).getId());
+		assertEquals("4 instruction is newEnd", newEnd.getId(), toFrom.get(3).getId());
+		assertEquals("1 instruction is newBox3", newBox3.getId(), toFrom.get(4).getId());
 	}
 }
