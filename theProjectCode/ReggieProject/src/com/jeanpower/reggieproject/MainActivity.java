@@ -12,6 +12,7 @@ import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.DragEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -218,7 +219,6 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 	 */
 	public void updateDisplay() {
 
-		//this.clearArrows();
 		instructionList = game.getInstructionList();
 		this.setLayoutConstants();
 		instructionCounter = 0;
@@ -393,40 +393,24 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 	}
 
 	/**
-	 * Clears the screen of arrows
-	 * <p>
-	 * Helper method for laying out arrow instructions, as they impact each other's layout - 
-	 * cannot have previous versions of arrows on screen
-	 * <p>
-	 * @param void
-	 * @return void
-	 */
-	public void clearArrows(){
-
-		int childCount = container.getChildCount();
-
-		for (int i = 1; i < childCount; i++) {
-
-			View child = container.getChildAt(1);
-
-			if (game.getInstruction(child.getId()) instanceof Arrow){
-				container.removeView(child);
-			}
-		}		
-	}
-
-	/**
 	 * Removes one instruction
 	 * <p>
 	 * @param ID - int identity of instruction to be removed, therefore ID of ImageButton
 	 * @return void
 	 */
 	public void removeInstruction(int ID){
-
-		if (null != findViewById(ID)){
-			View child = findViewById(ID);
-			container.removeView(child);
-		}
+		
+		final int identity = ID;
+		
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				if (null != findViewById(identity)){
+					View child = findViewById(identity);
+					container.removeView(child);
+				}	
+			}
+		});
 	}
 
 	/**
@@ -1084,9 +1068,14 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 		toast.show();
 	}
 
+	
+	//Getters/setters
+	
 	/**
-	 * Get ButtonHeight
+	 * Get ButtonHeight<p>
+	 * @param void
 	 * @return int buttonHeight
+	 * 
 	 */
 	public int getHeight(){
 		this.setLayoutConstants();
@@ -1094,11 +1083,34 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 	}
 
 	/**
-	 * Get ButtonWidth
+	 * Get ButtonWidth<p>
+	 * @param void
 	 * @return int buttonWidth
+	 * 
 	 */
 	public int getWidth(){
 		this.setLayoutConstants();
 		return buttonWidth;
+	}
+	
+	/**
+	 * Get theLineY<p>
+	 * @param void
+	 * @return double theLineY
+	 * 
+	 */
+	public double getLineY(){
+		this.setLayoutConstants();
+		return theLineY;
+	}
+	
+	/**
+	 * Get the Game<p>
+	 * @param void
+	 * @return Game game
+	 * 
+	 */
+	public Game getGame(){
+		return game;
 	}
 }

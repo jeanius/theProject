@@ -1,0 +1,89 @@
+package com.jeanpower.reggieproject.test;
+
+import android.test.ActivityInstrumentationTestCase2;
+import android.test.ViewAsserts;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import com.jeanpower.reggieproject.MainActivity;
+import com.jeanpower.reggieproject.R;
+
+
+/**
+ * JUnit tests of MainActivity.<p>
+ * 
+ * Tests completed:<br>
+ * 1) onCreate()<br>
+ * 2) layoutConstants()<br>
+
+ * @author Jean Power 2014
+ */
+public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActivity>{
+
+	MainActivity main;
+	RelativeLayout actionFrame;
+
+	public MainActivityTest(){
+		super(MainActivity.class);
+	}
+
+	public void setUp() throws Exception{
+		super.setUp();
+		main = getActivity();		 
+		actionFrame = (RelativeLayout) main.findViewById(R.id.actionFrame);
+	}
+	
+	/**
+	 * Tests onCreate() method<p>
+	 * 
+	 * 1) Ensures all views present, except sizer which is dynmically added<br>
+	 * 2) Checks no child is null<br>
+	 * 3) Checks button height and width are zero<br>
+	 */
+	public void testOnCreate(){
+
+		LinearLayout registerFrame = (LinearLayout) main.findViewById(R.id.register_frame);
+		RelativeLayout bottomFrame = (RelativeLayout) main.findViewById(R.id.bottom_frame);
+		
+		//bottom frame		
+		ViewAsserts.assertGroupContains(bottomFrame, main.findViewById(R.id.new_box_button));
+		ViewAsserts.assertGroupContains(bottomFrame, main.findViewById(R.id.new_arrow_button));
+		ViewAsserts.assertGroupContains(bottomFrame, main.findViewById(R.id.new_end_button));
+		ViewAsserts.assertGroupContains(bottomFrame, main.findViewById(R.id.run_button));
+		ViewAsserts.assertGroupContains(bottomFrame, main.findViewById(R.id.bin_clear_button));
+		
+		//register frame
+		ViewAsserts.assertGroupContains(registerFrame, main.findViewById(R.string.Register0));
+		ViewAsserts.assertGroupContains(registerFrame, main.findViewById(R.string.Register1));
+		ViewAsserts.assertGroupContains(registerFrame, main.findViewById(R.string.Register2));
+		ViewAsserts.assertGroupContains(registerFrame, main.findViewById(R.string.Register3));
+		ViewAsserts.assertGroupContains(registerFrame, main.findViewById(R.string.Register4));
+		ViewAsserts.assertGroupContains(registerFrame, main.findViewById(R.string.Register5));
+		ViewAsserts.assertGroupContains(registerFrame, main.findViewById(R.string.Register6));
+		ViewAsserts.assertGroupContains(registerFrame, main.findViewById(R.string.Register7));
+		ViewAsserts.assertGroupContains(registerFrame, main.findViewById(R.string.Register8));
+		ViewAsserts.assertGroupContains(registerFrame, main.findViewById(R.string.Register9));
+		
+		//action frame
+		ViewAsserts.assertGroupContains(actionFrame, main.findViewById(R.id.theLine));
+		
+		
+		ViewAsserts.assertGroupIntegrity(actionFrame);
+		ViewAsserts.assertGroupIntegrity(registerFrame);
+		ViewAsserts.assertGroupIntegrity(bottomFrame);
+		
+		assertEquals("Button height is 0", 0, main.getHeight());
+		assertEquals("Button width is 0", 0, main.getWidth());
+		
+	}
+	
+	/**
+	 * Tests layoutConstants() method<p>
+	 * 
+	 * 1)
+	 * 
+	 */
+	public void testLayoutConstant(){
+		
+	}
+	//sizer confirmed to be there by fact has size.
+}

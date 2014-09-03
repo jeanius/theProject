@@ -1,0 +1,43 @@
+package com.jeanpower.reggieproject.test;
+
+import android.content.Context;
+import android.test.ActivityInstrumentationTestCase2;
+import android.view.ViewGroup;
+import android.view.View;
+import com.jeanpower.reggieproject.Game;
+import com.jeanpower.reggieproject.MainActivity;
+
+
+/**
+ * JUnit tests of MainActivity.<p>
+ * 
+ * Tests completed
+ * 1) onCreate()
+
+ * @author Jean Power 2014
+ */
+public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActivity>{
+
+	MainActivity main;
+
+	public MainActivityTest(){
+		super(MainActivity.class);
+	}
+
+	public void setUp() throws Exception{
+		super.setUp();
+		main = getActivity();		 
+	}
+	
+	/**
+	 * Tests onCreate() method
+	 * 
+	 * 1) Ensures all placement correct
+	 */
+	public void testOnCreate(){
+		
+		
+		assertGroupContains(ViewGroup parent, View child)
+
+	}
+}

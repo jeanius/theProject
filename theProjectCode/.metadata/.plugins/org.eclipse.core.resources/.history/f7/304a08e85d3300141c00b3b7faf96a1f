@@ -1,0 +1,61 @@
+package com.jeanpower.reggieproject.test;
+
+import android.content.Context;
+import android.test.ActivityInstrumentationTestCase2;
+import android.test.InstrumentationTestCase;
+import android.test.ViewAsserts;
+import android.view.ViewGroup;
+import android.view.View;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.test.MoreAsserts;
+
+import com.jeanpower.reggieproject.Game;
+import com.jeanpower.reggieproject.MainActivity;
+import com.jeanpower.reggieproject.R;
+
+
+/**
+ * JUnit tests of MainActivity.<p>
+ * 
+ * Tests completed
+ * 1) onCreate()
+
+ * @author Jean Power 2014
+ */
+public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActivity>{
+
+	MainActivity main;
+	RelativeLayout actionFrame;
+
+	public MainActivityTest(){
+		super(MainActivity.class);
+	}
+
+	public void setUp() throws Exception{
+		super.setUp();
+		main = getActivity();		 
+		actionFrame = (RelativeLayout) main.findViewById(R.id.actionFrame);
+	}
+	
+	/**
+	 * Tests onCreate() method
+	 * 
+	 * 1) Ensures all views present, except sizer which is dynmically added<br>
+	 */
+	public void testOnCreate(){
+
+		LinearLayout registerFrame = (LinearLayout) main.findViewById(R.id.register_frame);
+		RelativeLayout bottomFrame = (RelativeLayout) main.findViewById(R.id.bottom_frame);
+		
+		//bottom frame		
+		ViewAsserts.assertGroupContains(bottomFrame, main.findViewById(R.id.new_box_button));
+		ViewAsserts.assertGroupContains(bottomFrame, main.findViewById(R.id.new_arrow_button));
+		ViewAsserts.assertGroupContains(bottomFrame, main.findViewById(R.id.new_end_button));
+		ViewAsserts.assertGroupContains(bottomFrame, main.findViewById(R.id.run_button));
+		ViewAsserts.assertGroupContains(bottomFrame, main.findViewById(R.id.bin_clear_button));
+	}
+	
+	//sizer confirmed to be there by fact has size.
+}

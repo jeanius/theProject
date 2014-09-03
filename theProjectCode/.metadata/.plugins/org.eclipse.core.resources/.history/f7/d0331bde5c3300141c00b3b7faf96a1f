@@ -1,0 +1,50 @@
+package com.jeanpower.reggieproject.test;
+
+import android.content.Context;
+import android.test.ActivityInstrumentationTestCase2;
+import android.view.ViewGroup;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+
+import com.jeanpower.reggieproject.Game;
+import com.jeanpower.reggieproject.MainActivity;
+import com.jeanpower.reggieproject.R;
+
+
+/**
+ * JUnit tests of MainActivity.<p>
+ * 
+ * Tests completed
+ * 1) onCreate()
+
+ * @author Jean Power 2014
+ */
+public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActivity>{
+
+	MainActivity main;
+	RelativeLayout actionFrame;
+
+	public MainActivityTest(){
+		super(MainActivity.class);
+	}
+
+	public void setUp() throws Exception{
+		super.setUp();
+		main = getActivity();		 
+	}
+	
+	/**
+	 * Tests onCreate() method
+	 * 
+	 * 1) Ensures all views present
+	 */
+	public void testOnCreate(){
+		
+		actionFrame = (RelativeLayout) main.findViewById(R.id.actionFrame);
+		LinearLayout registerFrame = (LinearLayout) main.findViewById(R.id.register_frame);
+		
+		assertGroupContains(registerFrame, View child)
+
+	}
+}
