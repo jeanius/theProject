@@ -16,15 +16,15 @@ import android.graphics.RectF;
  * @author Jean Power 2014
  */
 public class DrawArrow {
-	Paint paint = new Paint();
-	Path pathBefore = new Path(); //Before head (>)
-	Path pathAfter = new Path(); //After head (>)
-	int beforeColour;
-	int afterColour;
-	int numberButtons;
-	boolean loop;
-	float arrowWidth;
-	float arrowHeight;
+	private Paint paint = new Paint();
+	private Path pathBefore = new Path(); //Before head (>)
+	private Path pathAfter = new Path(); //After head (>)
+	private int beforeColour;
+	private int afterColour;
+	private int numberButtons;
+	private boolean loop;
+	private float arrowWidth;
+	private float arrowHeight;
 	
 	/**
 	 * Constructor.

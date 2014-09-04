@@ -12,7 +12,6 @@ import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.DragEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -41,7 +40,7 @@ public class MainActivity extends Activity implements View.OnClickListener, OnMe
 
 	private Game game;
 	private int[] registerColours;
-	int[] registerIds;
+	private int[] registerIds;
 	private ImageButton arrowButton;
 	private ImageButton endButton;
 	private ImageButton runButton;

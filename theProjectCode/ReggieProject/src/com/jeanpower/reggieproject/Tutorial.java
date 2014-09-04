@@ -205,7 +205,7 @@ public class Tutorial implements View.OnClickListener{
 			break;
 
 		case 2:			
-			target = new ViewTarget(main.registerIds[0], main);
+			target = new ViewTarget(R.string.Register0, main);
 			this.showSV();
 			break;
 

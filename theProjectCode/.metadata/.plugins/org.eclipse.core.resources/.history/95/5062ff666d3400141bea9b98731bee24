@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<class-diagram version="1.1.6" icons="true" always-add-relationships="false" generalizations="false" 
+  realizations="false" associations="false" dependencies="false" nesting-relationships="false">  
+  <class id="1" language="java" name="com.jeanpower.reggieproject.Arrow" project="ReggieProject" 
+    file="/ReggieProject/src/com/jeanpower/reggieproject/Arrow.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="499" width="147" x="-23" y="-87"/>    
+    <display autosize="true" stereotype="true" package="false" initial-value="true" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="2" language="java" name="com.jeanpower.reggieproject.Box" project="ReggieProject" 
+    file="/ReggieProject/src/com/jeanpower/reggieproject/Box.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="238" y="140"/>    
+    <display autosize="true" stereotype="true" package="false" initial-value="true" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="3" language="java" name="com.jeanpower.reggieproject.End" project="ReggieProject" 
+    file="/ReggieProject/src/com/jeanpower/reggieproject/End.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="425" y="81"/>    
+    <display autosize="true" stereotype="true" package="false" initial-value="true" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="4" language="java" name="com.jeanpower.reggieproject.ErrorCheck" project="ReggieProject" 
+    file="/ReggieProject/src/com/jeanpower/reggieproject/ErrorCheck.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="121" width="156" x="556" y="47"/>    
+    <display autosize="true" stereotype="true" package="false" initial-value="true" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="5" language="java" name="com.jeanpower.reggieproject.Game" project="ReggieProject" 
+    file="/ReggieProject/src/com/jeanpower/reggieproject/Game.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="837" y="162"/>    
+    <display autosize="true" stereotype="true" package="false" initial-value="true" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="6" language="java" name="com.jeanpower.reggieproject.Game.RunGame" project="ReggieProject" 
+    file="/ReggieProject/src/com/jeanpower/reggieproject/Game.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="1073" y="-306"/>    
+    <display autosize="true" stereotype="true" package="false" initial-value="true" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <interface id="7" language="java" name="com.jeanpower.reggieproject.Instruction" project="ReggieProject" 
+    file="/ReggieProject/src/com/jeanpower/reggieproject/Instruction.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="193" width="147" x="351" y="285"/>    
+    <display autosize="true" stereotype="true" package="false" initial-value="true" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </interface>  
+  <class id="8" language="java" name="com.jeanpower.reggieproject.MainActivity.CreateInstruction" 
+    project="ReggieProject" file="/ReggieProject/src/com/jeanpower/reggieproject/MainActivity.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="1091" y="-162"/>    
+    <display autosize="true" stereotype="true" package="false" initial-value="true" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="9" language="java" name="com.jeanpower.reggieproject.MainActivity" project="ReggieProject" 
+    file="/ReggieProject/src/com/jeanpower/reggieproject/MainActivity.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="1387" y="315"/>    
+    <display autosize="true" stereotype="true" package="false" initial-value="true" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="10" language="java" name="com.jeanpower.reggieproject.OptionScreen" project="ReggieProject" 
+    file="/ReggieProject/src/com/jeanpower/reggieproject/OptionScreen.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="236" y="426"/>    
+    <display autosize="true" stereotype="true" package="false" initial-value="true" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="11" language="java" name="com.jeanpower.reggieproject.SaveLoad" project="ReggieProject" 
+    file="/ReggieProject/src/com/jeanpower/reggieproject/SaveLoad.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="603" y="462"/>    
+    <display autosize="true" stereotype="true" package="false" initial-value="true" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="12" language="java" name="com.jeanpower.reggieproject.SplashScreen" project="ReggieProject" 
+    file="/ReggieProject/src/com/jeanpower/reggieproject/SplashScreen.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="103" width="134" x="324" y="549"/>    
+    <display autosize="true" stereotype="true" package="false" initial-value="true" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="13" language="java" name="com.jeanpower.reggieproject.Tutorial" project="ReggieProject" 
+    file="/ReggieProject/src/com/jeanpower/reggieproject/Tutorial.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="284" y="903"/>    
+    <display autosize="true" stereotype="true" package="false" initial-value="true" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="14" language="java" name="com.jeanpower.reggieproject.DrawArrow" project="ReggieProject" 
+    file="/ReggieProject/src/com/jeanpower/reggieproject/DrawArrow.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="68" y="-239"/>    
+    <display autosize="true" stereotype="true" package="false" initial-value="true" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <classifier-display autosize="true" stereotype="true" package="false" initial-value="true" signature="true" 
+    accessors="true" visibility="true">    
+    <attributes public="true" package="true" protected="true" private="true" static="true"/>    
+    <operations public="true" package="true" protected="true" private="true" static="true"/>  
+  </classifier-display>  
+  <association-display labels="false" multiplicity="true"/>
+</class-diagram>
