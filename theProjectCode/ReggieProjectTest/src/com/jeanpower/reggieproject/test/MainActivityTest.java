@@ -1,15 +1,18 @@
 package com.jeanpower.reggieproject.test;
 
-import java.util.Calendar;
 
-import android.content.Intent;
+import junit.framework.Assert;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.ViewAsserts;
-import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-
+import com.jeanpower.reggieproject.Arrow;
+import com.jeanpower.reggieproject.Box;
+import com.jeanpower.reggieproject.End;
+import com.jeanpower.reggieproject.Instruction;
 import com.jeanpower.reggieproject.MainActivity;
 import com.jeanpower.reggieproject.R;
 
@@ -19,12 +22,15 @@ import com.jeanpower.reggieproject.R;
  * 
  * 1) Setters are not tested; trivial assignment of instance variables.<br>
  * 2) Getters are not tested; trivial returning instance variables.<br>
- * 3) updateColour() not tested, as verified on screeen
+ * 3) updateColour() not tested, as verified on screen<br>
+ * 4) drag/touch operations not tested, due to complexity - verified through usage test<br>
+ * 5) updateInstruction Display not tested, due to trivial nature - verified through usage test<br>
  * 
- * Tests completed:<br>
+ * Tests completed:<p>
  * 1) onCreate()<br>
  * 2) layoutConstants()<br>
- * 3) addToScreen()/removeInstruction()
+ * 3) addToScreen()/removeInstruction()<br>
+ * 4) setRegisters()/onClick()/onLongClick()/clearScreen()<br>
 
  * @author Jean Power 2014
  */
@@ -43,7 +49,7 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
 		main = getActivity();		
 		actionFrame = (RelativeLayout) main.findViewById(R.id.actionFrame);
 	}
-	
+
 	/**
 	 * Tests onCreate() method<p>
 	 * 
@@ -55,14 +61,14 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
 
 		LinearLayout registerFrame = (LinearLayout) main.findViewById(R.id.register_frame);
 		RelativeLayout bottomFrame = (RelativeLayout) main.findViewById(R.id.bottom_frame);
-		
+
 		//bottom frame		
 		ViewAsserts.assertGroupContains(bottomFrame, main.findViewById(R.id.new_box_button));
 		ViewAsserts.assertGroupContains(bottomFrame, main.findViewById(R.id.new_arrow_button));
 		ViewAsserts.assertGroupContains(bottomFrame, main.findViewById(R.id.new_end_button));
 		ViewAsserts.assertGroupContains(bottomFrame, main.findViewById(R.id.run_button));
 		ViewAsserts.assertGroupContains(bottomFrame, main.findViewById(R.id.bin_clear_button));
-		
+
 		//register frame
 		ViewAsserts.assertGroupContains(registerFrame, main.findViewById(R.string.Register0));
 		ViewAsserts.assertGroupContains(registerFrame, main.findViewById(R.string.Register1));
@@ -74,17 +80,17 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
 		ViewAsserts.assertGroupContains(registerFrame, main.findViewById(R.string.Register7));
 		ViewAsserts.assertGroupContains(registerFrame, main.findViewById(R.string.Register8));
 		ViewAsserts.assertGroupContains(registerFrame, main.findViewById(R.string.Register9));
-		
+
 		//action frame
 		ViewAsserts.assertGroupContains(actionFrame, main.findViewById(R.id.theLine));
-		
+
 		ViewAsserts.assertGroupIntegrity(actionFrame);
 		ViewAsserts.assertGroupIntegrity(registerFrame);
 		ViewAsserts.assertGroupIntegrity(bottomFrame);
-		
+
 		assertNotSame("Activity is not null", null, main);
 	}
-	
+
 	/**
 	 * Tests layoutConstants() method<p>
 	 * 
@@ -96,11 +102,11 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
 	 * NB: setLayoutConstants() is called from getWidth/getHeight/getLineY methods<br>
 	 */
 	public void testLayoutConstant(){
-		
+
 		boolean widthNotZero = main.getWidth() > 0;
 		boolean heightNotZero = main.getHeight() > 0;
 		boolean lineNotZero = main.getLineY() > 0;
-		
+
 		assertEquals("Width is not zero", true, widthNotZero);
 		assertEquals("Height is not zero", true, heightNotZero);
 		assertEquals("Line Y is not zero", true, lineNotZero);	
@@ -112,24 +118,179 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
 	 * 1) Adds ImageButton to screen<br>
 	 * 2) Removes ImageButton from screen<br>
 	 */
-	
-	public void testAddToScreen(){
-		
+	public void testAddRemove(){
+
 		actionFrame = (RelativeLayout) main.findViewById(R.id.actionFrame);
 		ImageButton ib =  new ImageButton(main);
 		main.addToScreen(ib);
 		ib.setId(256);
 
 		getInstrumentation().waitForIdleSync();
-		
+
 		ViewAsserts.assertGroupContains(actionFrame, main.findViewById(ib.getId()));
-		
+
 		main.removeInstruction(ib.getId());
-		
+
 		getInstrumentation().waitForIdleSync();
-		
+
 		ViewAsserts.assertGroupNotContains(actionFrame, main.findViewById(ib.getId()));
 	}
-	
 
+	/**
+	 * Tests onClick(), onLongClick(), setRegisters(), clearScreen()<p>
+	 * 
+	 * 1) setRegisters is called as part of onClick() on a register<br>
+	 * 2) Checks that click increments Register 1, and Register 5.<br>
+	 * 3) Checks that long click zeros registers<br>
+	 * 4) Clicks on box, arrow and end - verifies these are added<br>
+	 * 5) Clicks on bin/clear -verifies views are removed - calls clearScreen()<br>
+	 */
+	public void testOnClickSetReg(){
+
+		main.runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+
+				main = getActivity();
+				
+				//Register 1
+				View register1 = main.findViewById(R.string.Register0);
+				Button regBut1 = (Button) register1;
+
+				int data1 = Integer.parseInt(regBut1.getText().toString());
+				assertEquals("Register 1 has 0", 0, data1);
+
+				register1.performClick();
+
+				data1 = Integer.parseInt(regBut1.getText().toString());
+				assertEquals("Register 1 has 1", 1, data1);
+
+				//Register 5
+				View register5 = main.findViewById(R.string.Register5);
+				Button regBut5 = (Button) register5;
+
+				int data5 = Integer.parseInt(regBut5.getText().toString());
+				assertEquals("Register 5 has 0", 0, data5);
+
+				register5.performClick();
+				register5.performClick();
+				register5.performClick();
+
+				data5 = Integer.parseInt(regBut5.getText().toString());
+				assertEquals("Register 5 has 3", 3, data5);
+
+				//Long Click
+				register1.performLongClick();
+				register5.performLongClick();
+
+				data1 = Integer.parseInt(regBut1.getText().toString());
+				assertEquals("Register 1 has 0", 0, data1);
+
+				data5 = Integer.parseInt(regBut5.getText().toString());
+				assertEquals("Register 5 has 0", 0, data5);
+
+				//Click on instruction icons
+				View box = main.findViewById(R.id.new_box_button);
+				View arrow = main.findViewById(R.id.new_arrow_button);
+				View end = main.findViewById(R.id.new_end_button);
+				View bin = main.findViewById(R.id.bin_clear_button);
+
+				int [] childIDs = helper();
+
+				for (int i = 0; i < 10; i++){
+					Instruction found = main.getGame().getInstruction(childIDs[i]);
+					assertEquals("No instruction on screen prior to click", null, found);
+				}
+
+				box.performClick();
+				childIDs = helper();
+
+				for (int i = 0; i < 10; i++){
+					Instruction found = main.getGame().getInstruction(childIDs[i]);
+
+					if (found != null){
+						assertEquals("Instruction is instanceof Box", true, found instanceof Box);
+					}
+					else if (found instanceof Arrow){
+						Assert.fail("Arrow present");
+					}
+					else if (found instanceof End){
+						Assert.fail("End present");
+					}
+				}
+
+				arrow.performClick();
+				childIDs = helper();
+
+				for (int i = 0; i < 10; i++){
+					Instruction found = main.getGame().getInstruction(childIDs[i]);
+
+					if (found != null){
+						if (found instanceof Arrow){
+							assertEquals("Instruction is instanceof Arrow", true, found instanceof Arrow);
+						}
+						else if (found instanceof Box){
+							assertEquals("Instruction is instanceof Arrow", true, found instanceof Box);
+						}
+						else if (found instanceof End){
+							Assert.fail("End is present");
+						}
+					}
+				}
+
+				end.performClick();
+				childIDs = helper();
+
+				for (int i = 0; i < 10; i++){
+					Instruction found = main.getGame().getInstruction(childIDs[i]);
+
+					if (found != null){
+						if (found instanceof Arrow){
+							assertEquals("Instruction is instanceof Arrow", true, found instanceof Arrow);
+						}
+						else if (found instanceof Box){
+							assertEquals("Instruction is instanceof Arrow", true, found instanceof Box);
+						}
+						else if (found instanceof End){
+							assertEquals("Instruction is instanceof End", true, found instanceof End);
+						}
+					}
+				}
+
+				bin.performClick();
+				childIDs = helper();
+
+				for (int i = 0; i < 10; i++){
+					Instruction found = main.getGame().getInstruction(childIDs[i]);
+
+					if (found != null){
+						if (found instanceof Arrow){
+							Assert.fail("Arrow still present");
+						}
+						else if (found instanceof Box){
+							Assert.fail("Box still present");
+						}
+						else if (found instanceof End){
+							Assert.fail("End still present");
+						}
+
+					}
+				}
+
+			}
+		});
+	}
+	/**
+	 * A helper to get the children of actionFrame
+	 * @return int[] children
+	 */
+	public int[] helper(){
+
+		int [] childIDs = new int[10];
+		for (int i = 0; i < actionFrame.getChildCount(); i++) {
+			View child = actionFrame.getChildAt(i);
+			childIDs[i] = child.getId();
+		}
+		return childIDs;
+	}
 }
